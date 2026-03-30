@@ -8,18 +8,40 @@ allowed-tools: Read, Write, Edit, Glob, Grep, Bash, WebFetch, WebSearch
 
 Data extraction from 35+ OpenWeb Ninja APIs. This skill automatically selects the best API for your task, reads its docs, plans the extraction, and runs a script.
 
-## Prerequisites
-(No need to check upfront)
+## When to use
 
-- `.env` file with `RAPIDAPI_KEY` (or `OPENWEBNINJA_API_KEY`)
-- Node.js 20.6+ (for native `--env-file` support)
+Use this skill when the user wants to:
+- Extract structured data from the web (businesses, products, jobs, reviews, news, social profiles, finance data, etc.)
+- Generate leads or enrich contact lists
+- Run market research, competitor analysis, or price tracking
+- Monitor content, trends, or brand mentions
+- Build datasets from any of the 35+ OpenWeb Ninja APIs
+- Chain multiple APIs together for complex data pipelines
 
-## Missing API Key — Setup Instructions
+## Instructions
 
-Before making any API call, check that the required key exists in `.env`. If it is missing:
+1. **Check for API key** — before anything else, verify `.env` has `RAPIDAPI_KEY` or `OPENWEBNINJA_API_KEY`. Node.js 20.6+ required for native `--env-file` support.
+
+2. **Understand the user goal and select the best API** from the catalog below.
+
+3. **Read the API docs** — always read `apis/{api_id}/README.md` before making any call. Never guess params or endpoints.
+
+4. **Estimate and confirm cost** — tell the user exactly which APIs and endpoints will be called and how many requests, then ask for confirmation before proceeding.
+
+5. **Ask user preferences** — output destination, number of results, filename (if saving to file).
+
+6. **Run the script** — use `scrape.js` if available, otherwise write a custom script using `lib/utils.js`.
+
+7. **Summarize results and offer follow-up workflows**.
+
+---
+
+### Missing API Key — Setup Instructions
+
+If the required key is missing from `.env`:
 
 1. Read `meta.json` for the selected API to get `openwebninja_url` and `rapidapi_url`
-2. Open the subscription page in the user's browser (prefer OpenWeb Ninja):
+2. Open the subscription page in the user's browser:
    ```bash
    open "{openwebninja_url}"    # preferred
    # or: open "{rapidapi_url}" # if user prefers RapidAPI
@@ -28,36 +50,18 @@ Before making any API call, check that the required key exists in `.env`. If it 
 4. When the user pastes the key, append it to `.env`:
    - If the key starts with `ak_`: append `OPENWEBNINJA_API_KEY={key}`
    - Otherwise: append `RAPIDAPI_KEY={key}`
-   - Check if the line already exists in `.env` first — replace it rather than duplicating
+   - Check if the line already exists — replace it rather than duplicating
 5. Continue with the original request
-
-## Workflow
-
-Copy this checklist and track progress:
-
-```
-Task Progress:
-- [ ] Step 1: Understand user goal and select API(s)
-- [ ] Step 2: Read API docs (README.md, recipes.md, meta.json)
-- [ ] Step 3: Estimate and confirm cost (number of API requests required for each relevant API) with user
-- [ ] Step 4: Ask user preferences (format, filename, count)
-- [ ] Step 5: Run the script
-- [ ] Step 6: Summarize results and offer follow-ups
-```
 
 ---
 
-### Step 1: Understand User Goal and Select API
-
-First, understand what the user wants to achieve. Then select the best API from the catalog below.
+### Step 2: API Catalog
 
 Each API has its own folder at `apis/{api_id}/` containing:
 - `README.md` — endpoints, params, pagination, response fields (source of truth)
 - `meta.json` — host, pricing notes, subscription URLs
-- `scrape.js` — per-API CLI script (if available for this API)
+- `scrape.js` — per-API CLI script (if available)
 - `recipes.md` — common use cases with exact commands (if available)
-
-#### API Catalog
 
 | API ID | What It Does | Best For |
 |--------|-------------|----------|
@@ -126,11 +130,7 @@ Each API has its own folder at `apis/{api_id}/` containing:
 | **Web Scraping (any website)** | `web-unblocker` |
 | **AI-Augmented Enrichment** | `chatgpt`, `gemini`, `copilot`, `google-ai-mode`, `ai-overviews` |
 
----
-
 #### Multi-API Workflows
-
-For complex tasks, chain multiple APIs:
 
 | Workflow | Step 1 | Step 2 |
 |----------|--------|--------|
@@ -165,59 +165,41 @@ For complex tasks, chain multiple APIs:
 
 ---
 
-### Step 2: Read API Docs
-
-> **CRITICAL RULE: Always read the API's README.md before making any API call.** Never guess endpoints, parameters, or request structure. The README.md is the single source of truth — check it every time, including for quick tests or diagnostic calls.
-
-Read the docs and meta for the selected API:
-
-```
-apis/{api_id}/README.md    ← endpoints, params, response schema (source of truth)
-apis/{api_id}/meta.json    ← host, pricing notes, subscription URLs
-apis/{api_id}/recipes.md   ← common use cases with exact commands (if available)
-```
-
-From these files, determine:
-- Which endpoint(s) to call
-- Required and optional parameters
-- Pagination style for the specific endpoint (`page_number`, `offset`, `cursor`, `none`)
-- Any pricing multipliers or quirks
-- Response field paths for the data you need
-
 ### Step 3: Estimate and Confirm Cost
 
 Before asking preferences or running anything, tell the user exactly what calls will be made:
 
-- Which API(s) will be called and which endpoint(s)
-- How many API calls are required (based on requested result count ÷ page size, plus any multi-step lookups)
-- If multiple APIs are chained, break down the call count per API
+- Which API(s) and endpoint(s)
+- How many API calls (requested results ÷ page size, plus any multi-step lookups)
+- If multiple APIs are chained, break down per API
 
-Example format:
+Example:
 ```
 Planned API calls:
   • local-business-data /search — 1 call per zip code × 50 zip codes = 50 calls
-  • local-business-data /business-details (extract_emails_and_contacts=true) — 1 call per business × up to 500 = 500 calls
+  • local-business-data /business-details (extract_emails_and_contacts=true) — up to 500 calls
   Total: ~550 calls
 ```
 
-Then ask: **"Does that look okay? Would you like to proceed?"**
+Ask: **"Does that look okay? Would you like to proceed?"** — only continue once confirmed.
 
-Only continue to Step 4 once the user confirms.
+---
 
 ### Step 4: Ask User Preferences
 
-Before running, ask:
-1. **Output destination** — if the user did not specify where to send the data, always present all available options:
+1. **Output destination** — if not specified, present all options:
    - **Chat** — display top results inline (no file saved)
    - **Local file (JSON or CSV)** — saved to `./output/`
-   - **Google Sheets** — requires `GOOGLE_CLIENT_CREDENTIALS`, `SPREADSHEET_ID`, `SHEET_NAME` in `.env`
-   - **Webhook** — HTTP POST to any URL (Zapier, Make, n8n, custom); requires `WEBHOOK_URL` in `.env`
+   - **Webhook** — HTTP POST to Zapier, Make, n8n, or custom URL; requires `WEBHOOK_URL` in `.env`
    - **Airtable** — requires `AIRTABLE_API_KEY`, `AIRTABLE_BASE_ID`, `AIRTABLE_TABLE_NAME` in `.env`
    - **Slack** — post summary + data to a channel; requires `SLACK_WEBHOOK_URL` in `.env`
    - **S3** — requires `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_REGION`, `S3_BUCKET`, `S3_KEY` in `.env`
    - **FTP** — requires `FTP_HOST`, `FTP_USER`, `FTP_PASS`, `FTP_PATH` in `.env`
+   - **Google Sheets** — requires `GOOGLE_CLIENT_CREDENTIALS`, `SPREADSHEET_ID`, `SHEET_NAME` in `.env`
 2. **Number of results** (default: 100)
-3. **Output filename** (default: auto-generated with timestamp) — only if saving to a file
+3. **Output filename** (default: auto-generated with timestamp) — only if saving to file
+
+---
 
 ### Step 5: Run the Script
 
@@ -227,104 +209,88 @@ Before running, ask:
 # Full export to file
 node --env-file=.env apis/{api_id}/scrape.js --query "search terms" --count 100 --format csv --output output/results.csv
 
-# Quick answer (no file, display top results in chat)
+# Quick answer (display top results in chat, no file saved)
 node --env-file=.env apis/{api_id}/scrape.js --query "search terms" --dry-run
 ```
 
-**Quick answer mode**: For simple lookups (e.g., "what's Nike's rating on Trustpilot?", "find me 3 coffee shops in LA"), use `--dry-run`. It fetches one page of results and prints them to the console without saving a file. Use this when the user just needs a quick answer, not a full data export.
+**Quick answer mode (`--dry-run`)**: For simple lookups (e.g., "what's Nike's rating on Trustpilot?", "find me 3 coffee shops in LA"), use `--dry-run`. Fetches one page and prints results to console without saving a file.
 
 Check `apis/{api_id}/recipes.md` for exact command examples.
+Run `node apis/{api_id}/scrape.js --help` to see all available flags.
 
-Run `node apis/{api_id}/scrape.js --help` to see all available flags for that API.
-
-**For multi-API workflows or APIs without `scrape.js`**, write a custom script importing from `lib/utils.js`:
+**For multi-API workflows or APIs without `scrape.js`**, write a custom script:
 
 ```js
-const { getApiKey, loadMeta, apiCall, fetchAll, toCSV, writeOutput, displayQuickAnswer, sleep } = require('lib/utils');
+const { getApiKey, loadMeta, apiCall, fetchAll, toCSV, writeOutput, displayQuickAnswer, sleep,
+        pushWebhook, pushAirtable, postSlack, slackSummary, pushS3, pushFTP, pushGoogleSheets } = require('lib/utils');
 ```
 
 `lib/utils.js` exports:
-- `getApiKey()` — reads `RAPIDAPI_KEY` / `OPENWEBNINJA_API_KEY` from env
-- `loadMeta(apiId)` — loads `meta.json`
-- `apiCall(host, endpoint, params, apiKey, method, body)` — single HTTP call (GET or POST)
-- `fetchAll({ host, endpoint, params, apiKey, count, pagination, ... })` — paginated fetch, returns `{ results, totalCallsMade }`
-- `toCSV(records)` — converts array of objects to CSV string
-- `writeOutput(records, outputPath, format, manifest)` — writes file + `.meta.json`
-- `displayQuickAnswer(records, { limit, fields })` — print top N results to chat (no file)
-- `pushWebhook(records, { url, batchMode, delay })` — POST to Zapier/Make/n8n/custom webhook
-- `pushAirtable(records, { apiKey, baseId, tableName })` — push to Airtable table
-- `postSlack(message)` / `slackSummary(records, outputPath)` — post to Slack channel
-- `pushS3(content, { bucket, key, region })` — upload JSON/CSV to S3
-- `pushFTP(localFilePath, { host, user, pass, remotePath })` — upload file via FTP
-- `pushGoogleSheets(records, { credentialsPath, spreadsheetId, sheetName })` — write to Google Sheets
-- `sleep(ms)` — promise-based delay
+
+| Function | Purpose |
+|----------|---------|
+| `getApiKey()` | Reads `RAPIDAPI_KEY` / `OPENWEBNINJA_API_KEY` from env |
+| `loadMeta(apiId)` | Loads `apis/{apiId}/meta.json` |
+| `apiCall(host, endpoint, params, apiKey, method, body)` | Single HTTP call (GET or POST) |
+| `fetchAll({ host, endpoint, params, apiKey, count, pagination, ... })` | Paginated fetch → `{ results, totalCallsMade }` |
+| `toCSV(records)` | Array of objects → CSV string |
+| `writeOutput(records, outputPath, format, manifest)` | Write file + `.meta.json` |
+| `displayQuickAnswer(records, { limit, fields })` | Print top N results to chat (no file) |
+| `pushWebhook(records, { url, batchMode, delay })` | POST to Zapier/Make/n8n/custom webhook |
+| `pushAirtable(records, { apiKey, baseId, tableName })` | Push rows to Airtable table |
+| `postSlack(message)` / `slackSummary(records, outputPath)` | Post to Slack channel |
+| `pushS3(content, { bucket, key, region, contentType })` | Upload JSON/CSV to S3 |
+| `pushFTP(localFilePath, { host, user, pass, remotePath, port })` | Upload file via FTP |
+| `pushGoogleSheets(records, { credentialsPath, spreadsheetId, sheetName })` | Write to Google Sheets |
+| `sleep(ms)` | Promise-based delay |
+
+**Output destination notes:**
+- Webhook `batchMode=true` (default) sends all records in one POST. Set `batchMode=false` for Zapier (one POST per record).
+- Airtable field names must match existing column names exactly.
+- S3/FTP/Google Sheets require npm packages: `npm install @aws-sdk/client-s3 basic-ftp googleapis`
+- Google Sheets requires a service account JSON with the Sheets API enabled.
+
+---
 
 ### Step 6: Summarize Results and Offer Follow-ups
 
 After completion, report:
 - Number of results found
-- File location and name
+- File location and name (if saved)
 - Key fields available in the output
-- **Suggested follow-up workflows** based on results:
+- Suggested follow-up workflows:
 
 | If the User Retrieved | Suggested Next Workflow |
 |-----------------------|------------------------|
 | **Product listings** | Fetch reviews with `realtime-amazon-data` / `realtime-walmart-data` or generate insights with `chatgpt` |
-| **Reviews or feedback data** | Summarize sentiment and themes with `gemini`, `copilot`, or `chatgpt` |
-| **Job listings** | Enrich compensation data using `jsearch /estimated-salary` or company insights with `realtime-glassdoor-data` |
+| **Reviews or feedback data** | Summarize sentiment with `gemini`, `copilot`, or `chatgpt` |
+| **Job listings** | Enrich compensation with `jsearch /estimated-salary` or company insights with `realtime-glassdoor-data` |
 | **News / forum discussions** | Generate trend analysis using `gemini`, `copilot`, or `ai-overviews` |
-| **Property listings** | Add commute insights using `driving-directions` or traffic context with `waze` |
-| **Search keyword ideas** | Expand queries using `web-search-autocomplete` and validate with `realtime-web-search` |
-| **App listings** | Analyze reputation using `realtime-forums-search` or summarize feedback with `chatgpt` |
+| **Property listings** | Add commute insights with `driving-directions` or traffic context with `waze` |
+| **Search keyword ideas** | Expand with `web-search-autocomplete`, validate with `realtime-web-search` |
+| **App listings** | Analyze reputation with `realtime-forums-search` or summarize feedback with `chatgpt` |
 
 ---
 
-## General Usage Tips
+## General Tips
 
-- **Lead generation:** Use `local-business-data` with `extract_emails_and_contacts=true`. For full coverage of a region, use `--grid` mode with a bounding box (auto-subdivides dense areas). For city-level, use `--zips` mode. The scrape.js script loads `gmb_categories.json` and `us_zipcodes.json` internally when needed.
-- **Contact enrichment from domains:** `website-contacts-scraper` → `email-search` → `social-links-search`.
-- **Multi-store price comparison:** Chain `realtime-amazon-data` + `realtime-walmart-data` + `realtime-product-search`. Note: price formats differ across APIs (string vs numeric).
-- **AI enrichment:** `chatgpt`, `gemini`, `copilot` use POST endpoints — use their `scrape.js` or write a custom script importing from `lib/utils.js`.
+- **Lead generation:** Use `local-business-data` with `extract_emails_and_contacts=true`. For full regional coverage, use `--grid` mode (bounding box, auto-subdivides dense areas). For city-level, use `--zips` mode. `gmb_categories.json` and `us_zipcodes.json` are loaded internally.
+- **Contact enrichment from domains:** `website-contacts-scraper` → `email-search` → `social-links-search`
+- **Multi-store price comparison:** Chain `realtime-amazon-data` + `realtime-walmart-data` + `realtime-product-search`. Note: price formats differ across APIs.
+- **AI enrichment:** `chatgpt`, `gemini`, `copilot` use POST endpoints — use their `scrape.js` or write a custom script.
 - **Known limitations:**
   - Yelp name matching is unreliable for cross-referencing with other APIs
   - Trustpilot reviews capped at ~200 without authentication
   - `realtime-shorts-search` may return empty results for some queries
-  - Company name searches (Glassdoor, Trustpilot) need exact names for disambiguation — "Disney" ≠ "Walt Disney Company"
-
----
+  - Company name searches (Glassdoor, Trustpilot) need exact names — "Disney" ≠ "Walt Disney Company"
 
 ## Error Handling
 
-- `RAPIDAPI_KEY not found` / `OPENWEBNINJA_API_KEY not found` — Follow the **Missing API Key — Setup Instructions** section above
-- `HTTP 401` — API key invalid or expired; check subscription
-- `HTTP 403` — Not subscribed to this API; check subscription on RapidAPI or OpenWeb Ninja dashboard
-- `HTTP 429` — Rate limit hit; increase `--delay` (try 1000ms)
-- `No results on page 1` — Check params against the API's `README.md`; required params may be missing
-- `Cost cap exceeded` — Increase `--max-calls` or reduce `--count`
-
----
-
-## Output Destinations
-
-All destinations are implemented in `lib/utils.js` and can be imported in any custom script:
-
-```js
-const { pushWebhook, pushAirtable, postSlack, slackSummary, pushS3, pushFTP, pushGoogleSheets } = require('lib/utils');
-```
-
-| Destination | Function | Env Vars Required | npm Package |
-|-------------|----------|-------------------|-------------|
-| Local file | `writeOutput(records, path, format)` | — | — |
-| Chat (quick answer) | `displayQuickAnswer(records)` | — | — |
-| Webhook (Zapier/Make/n8n) | `pushWebhook(records, { url, batchMode, delay })` | `WEBHOOK_URL` | — |
-| Airtable | `pushAirtable(records, { apiKey, baseId, tableName })` | `AIRTABLE_API_KEY`, `AIRTABLE_BASE_ID`, `AIRTABLE_TABLE_NAME` | — |
-| Slack | `postSlack(message)` / `slackSummary(records, outputPath)` | `SLACK_WEBHOOK_URL` | — |
-| S3 | `pushS3(content, { bucket, key, region, contentType })` | `S3_BUCKET`, `S3_KEY`, `AWS_REGION`, `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY` | `@aws-sdk/client-s3` |
-| FTP | `pushFTP(localFilePath, { host, user, pass, remotePath })` | `FTP_HOST`, `FTP_USER`, `FTP_PASS`, `FTP_PATH` | `basic-ftp` |
-| Google Sheets | `pushGoogleSheets(records, { credentialsPath, spreadsheetId, sheetName })` | `GOOGLE_CLIENT_CREDENTIALS`, `SPREADSHEET_ID`, `SHEET_NAME` | `googleapis` |
-
-**Notes:**
-- Webhook `batchMode=true` (default) sends all records in one POST as `{ records: [...] }`. Set `batchMode=false` for Zapier (one POST per record).
-- Airtable field names must match existing column names in the table exactly.
-- S3/FTP/Google Sheets require their npm package installed: `npm install @aws-sdk/client-s3 basic-ftp googleapis`
-- Google Sheets requires a service account JSON file with the Sheets API enabled.
+| Error | Cause & Fix |
+|-------|-------------|
+| `RAPIDAPI_KEY not found` | Follow Missing API Key setup instructions above |
+| `HTTP 401` | Key invalid or expired — check subscription |
+| `HTTP 403` | Not subscribed — check RapidAPI or OpenWeb Ninja dashboard |
+| `HTTP 429` | Rate limit hit — increase `--delay` (try 1000ms) |
+| `No results on page 1` | Check params against `README.md` — required params may be missing |
+| `Cost cap exceeded` | Increase `--max-calls` or reduce `--count` |
