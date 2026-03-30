@@ -67,7 +67,7 @@ async function main() {
         if (!args.businessId) { console.error('Error: --business-id required for /business-details'); process.exit(1); }
         const params = { business_id: args.businessId, yelp_domain: yelpDomain };
         const data = await apiCall(host, '/business-details', params, apiKey);
-        const records = data.data ? [data.data] : [data];
+        const records = Array.isArray(data.data) ? data.data : (data.data ? [data.data] : [data]);
         writeOutput(records, outputPath, format, { api: 'yelp-business-data', endpoint: '/business-details', totalCalls: 1 });
         return;
     }

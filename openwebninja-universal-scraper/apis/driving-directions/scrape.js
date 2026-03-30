@@ -80,7 +80,15 @@ async function main() {
     console.error(`${routes.length} route(s) returned.`);
 
     if (dryRun) {
-        console.log(JSON.stringify(routes, null, 2));
+        const preview = routes.map(r => ({
+            summary: r.summary,
+            distance: r.distance,
+            duration: r.duration,
+            duration_in_traffic: r.duration_in_traffic,
+            steps_count: Array.isArray(r.steps) ? r.steps.length : undefined,
+            steps_preview: Array.isArray(r.steps) ? r.steps.slice(0, 3).map(s => s.instruction || s.html_instructions || s) : undefined,
+        }));
+        console.log(JSON.stringify(preview, null, 2));
         return;
     }
 

@@ -14,7 +14,7 @@ Required:
   --query         Search query (e.g. "best CRM software 2025")
 
 Optional:
-  --endpoint      Endpoint: /search (default), /search-light, /ai-mode
+  --endpoint      Endpoint: /search (default), /search-light, /ai-mode, /ai-overviews
   --count         Max results to fetch (default: 30)
   --format        json | csv (default: json)
   --output        Output file path (auto-generated if omitted)
@@ -64,10 +64,22 @@ async function main() {
     if (endpoint === '/ai-mode') {
         if (!args.query) { console.error('Error: --query required for /ai-mode'); process.exit(1); }
         const params = { prompt: args.query, gl: args.country || 'us', hl: args.language || 'en' };
+        if (args.sessionToken) params.session_token = args.sessionToken;
         const data = await apiCall(host, '/ai-mode', params, apiKey);
         const records = data.data ? [data.data] : [data];
         if (dryRun) { console.log(JSON.stringify(records, null, 2)); return; }
         writeOutput(records, outputPath, format, { api: 'realtime-web-search', endpoint: '/ai-mode', totalCalls: 1 });
+        return;
+    }
+
+    // ── AI Overviews (single call, no pagination) ────────────────────────────
+    if (endpoint === '/ai-overviews') {
+        if (!args.query) { console.error('Error: --query required for /ai-overviews'); process.exit(1); }
+        const params = { q: args.query, gl: args.country || 'us', hl: args.language || 'en' };
+        const data = await apiCall(host, '/ai-overviews', params, apiKey);
+        const records = data.data ? [data.data] : [data];
+        if (dryRun) { console.log(JSON.stringify(records, null, 2)); return; }
+        writeOutput(records, outputPath, format, { api: 'realtime-web-search', endpoint: '/ai-overviews', query: args.query, totalCalls: 1 });
         return;
     }
 

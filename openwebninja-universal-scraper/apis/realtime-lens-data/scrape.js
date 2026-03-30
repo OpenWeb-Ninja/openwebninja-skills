@@ -63,7 +63,11 @@ async function main() {
         const params = { url: args.url, language: args.language || 'en', country: args.country || 'us' };
         if (args.query) params.query = args.query;
         const data = await apiCall(host, '/search', params, apiKey);
-        const records = Array.isArray(data.data) ? data.data : (data.data ? [data.data] : [data]);
+        // data.data is an object with sub-arrays: organic_results, visual_matches, knowledge_graph, related_searches
+        const d = data.data || data;
+        const records = Array.isArray(d.organic_results) ? d.organic_results
+            : Array.isArray(d.visual_matches) ? d.visual_matches
+            : Array.isArray(d) ? d : [d];
         console.error(`${records.length} result(s) in 1 call.`);
         if (dryRun) { console.log(JSON.stringify(records.slice(0, 5), null, 2)); return; }
         writeOutput(records, outputPath, format, { api: 'realtime-lens-data', endpoint: '/search', totalCalls: 1 });
@@ -75,7 +79,9 @@ async function main() {
         const params = { url: args.url, language: args.language || 'en', country: args.country || 'us' };
         if (args.query) params.query = args.query;
         const data = await apiCall(host, '/visual-matches', params, apiKey);
-        const records = Array.isArray(data.data) ? data.data : (data.data ? [data.data] : [data]);
+        // data.data may be an array of matches directly, or an object with visual_matches key
+        const d = data.data || data;
+        const records = Array.isArray(d) ? d : (Array.isArray(d.visual_matches) ? d.visual_matches : [d]);
         console.error(`${records.length} visual match(es) in 1 call.`);
         if (dryRun) { console.log(JSON.stringify(records.slice(0, 5), null, 2)); return; }
         writeOutput(records, outputPath, format, { api: 'realtime-lens-data', endpoint: '/visual-matches', totalCalls: 1 });

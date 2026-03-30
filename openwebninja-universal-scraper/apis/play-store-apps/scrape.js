@@ -140,8 +140,8 @@ async function main() {
 
         const { results, totalCallsMade } = await fetchAll({
             host, endpoint: '/search', params, apiKey, count,
-            pagination: 'cursor', cursorParam: 'cursor', cursorPath: 'cursor',
-            resultsPath: 'data', dryRun, delay: 300, maxCalls,
+            pagination: 'cursor', cursorParam: 'cursor', cursorPath: 'data.cursor',
+            resultsPath: 'data.apps', dryRun, delay: 300, maxCalls,
         });
 
         console.error(`${results.length} app(s) in ${totalCallsMade} call(s).`);

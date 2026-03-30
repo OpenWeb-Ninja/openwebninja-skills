@@ -77,7 +77,9 @@ async function main() {
     if (args.fields) params.fields = args.fields;
 
     const data = await apiCall(host, '/search', params, apiKey);
-    const records = Array.isArray(data.data) ? data.data : (data.data ? [data.data] : [data]);
+    const raw = Array.isArray(data.data) ? data.data : (data.data ? [data.data] : [data]);
+    const records = raw.filter(r => r && typeof r === 'object');
+    if (records.length === 0) { console.error('Warning: API returned 0 valid image records. The upstream API may be unavailable or the subscription key may lack access.'); }
 
     console.error(`${records.length} image result(s) in 1 call.`);
     if (dryRun) { console.log(JSON.stringify(records.slice(0, 5), null, 2)); return; }

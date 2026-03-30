@@ -10,9 +10,6 @@ Usage: node scrape.js --query <search> [options]
 
 Search short-form videos across the web.
 
-WARNING: This API currently returns empty results for all queries and may be
-non-functional. Use --dry-run first to verify before running large scrapes.
-
 Required:
   --query         Search query (e.g. "funny cat")
 
@@ -61,8 +58,6 @@ async function main() {
 
     const ts = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
     const outputPath = args.output || path.join('output', `realtime-shorts-search_${ts}.${format}`);
-
-    console.error('NOTE: This API currently returns empty results. Verify with --dry-run first.');
 
     const params = { query: args.query };
     if (args.time) params.time = args.time;
