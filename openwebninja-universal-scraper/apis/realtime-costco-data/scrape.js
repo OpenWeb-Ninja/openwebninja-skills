@@ -62,7 +62,7 @@ async function main() {
     const { results, totalCallsMade } = await fetchAll({
         host, endpoint: '/search', params, apiKey, count,
         pagination: 'offset', offsetParam: 'start', pageSize: 10,
-        resultsPath: 'data', dryRun, delay: 300, maxCalls,
+        resultsPath: 'data.products', dryRun, delay: 300, maxCalls,
     });
 
     console.error(`${results.length} results in ${totalCallsMade} call(s).`);

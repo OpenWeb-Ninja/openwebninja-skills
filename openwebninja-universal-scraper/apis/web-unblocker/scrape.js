@@ -111,11 +111,13 @@ async function main() {
 
     if (dryRun) {
         // For dry-run, show a summary: status, content length, snippet
+        const htmlBody = (data.data && data.data.body) || data.body || data.html;
         const summary = {
             url: args.url,
-            statusCode: data.status_code || data.statusCode,
-            contentLength: data.body ? data.body.length : (data.html ? data.html.length : null),
-            bodySnippet: (data.body || data.html || JSON.stringify(data)).slice(0, 500),
+            statusCode: (data.data && data.data.status) || data.status_code || data.statusCode,
+            finalUrl: (data.data && data.data.final_url) || data.final_url,
+            contentLength: htmlBody ? htmlBody.length : null,
+            bodySnippet: (htmlBody || JSON.stringify(data)).slice(0, 500),
         };
         console.log(JSON.stringify(summary, null, 2));
         return;
