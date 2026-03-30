@@ -1,0 +1,1 @@
+{"name":"openwebninja-universal-scraper","version":"1.0.0","private":true,"dependencies":{"@aws-sdk/client-s3":"^3.1019.0","basic-ftp":"^5.2.0"}}

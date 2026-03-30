@@ -490,7 +490,7 @@ async function pushS3(content, { bucket, key, region, contentType = 'application
  * Upload a local file to an FTP server.
  * Requires: npm install basic-ftp
  */
-async function pushFTP(localFilePath, { host, user, pass, remotePath } = {}) {
+async function pushFTP(localFilePath, { host, user, pass, remotePath, port } = {}) {
     let ftp;
     try {
         ftp = require('basic-ftp');
@@ -502,6 +502,7 @@ async function pushFTP(localFilePath, { host, user, pass, remotePath } = {}) {
     const u = user       || process.env.FTP_USER;
     const p = pass       || process.env.FTP_PASS;
     const r = remotePath || process.env.FTP_PATH;
+    const pt = port      || parseInt(process.env.FTP_PORT, 10) || 21;
     if (!h) throw new Error('pushFTP: host is required (or set FTP_HOST)');
     if (!u) throw new Error('pushFTP: user is required (or set FTP_USER)');
     if (!p) throw new Error('pushFTP: pass is required (or set FTP_PASS)');
@@ -509,8 +510,8 @@ async function pushFTP(localFilePath, { host, user, pass, remotePath } = {}) {
 
     const client = new ftp.Client();
     try {
-        console.error(`pushFTP: connecting to ${h}`);
-        await client.access({ host: h, user: u, password: p, secure: false });
+        console.error(`pushFTP: connecting to ${h}:${pt}`);
+        await client.access({ host: h, port: pt, user: u, password: p, secure: false });
         console.error(`pushFTP: uploading ${localFilePath} → ${r}`);
         await client.uploadFrom(localFilePath, r);
         console.error('pushFTP: done');
