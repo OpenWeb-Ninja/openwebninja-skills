@@ -251,6 +251,12 @@ const { getApiKey, loadMeta, apiCall, fetchAll, toCSV, writeOutput, displayQuick
 - `toCSV(records)` — converts array of objects to CSV string
 - `writeOutput(records, outputPath, format, manifest)` — writes file + `.meta.json`
 - `displayQuickAnswer(records, { limit, fields })` — print top N results to chat (no file)
+- `pushWebhook(records, { url, batchMode, delay })` — POST to Zapier/Make/n8n/custom webhook
+- `pushAirtable(records, { apiKey, baseId, tableName })` — push to Airtable table
+- `postSlack(message)` / `slackSummary(records, outputPath)` — post to Slack channel
+- `pushS3(content, { bucket, key, region })` — upload JSON/CSV to S3
+- `pushFTP(localFilePath, { host, user, pass, remotePath })` — upload file via FTP
+- `pushGoogleSheets(records, { credentialsPath, spreadsheetId, sheetName })` — write to Google Sheets
 - `sleep(ms)` — promise-based delay
 
 ### Step 6: Summarize Results and Offer Follow-ups
@@ -300,101 +306,25 @@ After completion, report:
 
 ## Output Destinations
 
-### Local File (default)
-No extra env vars. Output path: `./output/{timestamp}_{description}.{ext}`
-
-### S3
-Required env vars: `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_REGION`, `S3_BUCKET`, `S3_KEY`
-Install: `npm install @aws-sdk/client-s3`
-
-### FTP
-Required env vars: `FTP_HOST`, `FTP_USER`, `FTP_PASS`, `FTP_PATH`
-Install: `npm install basic-ftp`
-
-### Google Sheets
-Required env vars: `GOOGLE_CLIENT_CREDENTIALS`, `SPREADSHEET_ID`, `SHEET_NAME`
-Install: `npm install googleapis`
-
-### Webhook (Zapier / Make / n8n / custom)
-Required env vars: `WEBHOOK_URL`
-No extra packages needed — use native `https`. POST each record (or the full batch) as JSON to the URL.
-
-**Batching options:**
-- Send all records in one POST: `{ records: [...] }`
-- Send one POST per record (useful for Zapier): loop and POST each item individually with a small delay
+All destinations are implemented in `lib/utils.js` and can be imported in any custom script:
 
 ```js
-const https = require('https');
-async function postWebhook(url, payload) {
-    const body = JSON.stringify(payload);
-    return new Promise((resolve, reject) => {
-        const u = new URL(url);
-        const req = https.request({ hostname: u.hostname, port: 443, path: u.pathname + u.search,
-            method: 'POST', headers: { 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(body) }
-        }, res => { res.resume(); res.on('end', resolve); });
-        req.on('error', reject);
-        req.write(body);
-        req.end();
-    });
-}
-// Send all at once:
-await postWebhook(process.env.WEBHOOK_URL, { records });
-// Or one by one (e.g. Zapier):
-for (const record of records) { await postWebhook(process.env.WEBHOOK_URL, record); await sleep(200); }
+const { pushWebhook, pushAirtable, postSlack, slackSummary, pushS3, pushFTP, pushGoogleSheets } = require('lib/utils');
 ```
 
-### Airtable
-Required env vars: `AIRTABLE_API_KEY`, `AIRTABLE_BASE_ID`, `AIRTABLE_TABLE_NAME`
-No extra packages needed — use native `https`. Airtable's REST API accepts up to 10 records per request.
+| Destination | Function | Env Vars Required | npm Package |
+|-------------|----------|-------------------|-------------|
+| Local file | `writeOutput(records, path, format)` | — | — |
+| Chat (quick answer) | `displayQuickAnswer(records)` | — | — |
+| Webhook (Zapier/Make/n8n) | `pushWebhook(records, { url, batchMode, delay })` | `WEBHOOK_URL` | — |
+| Airtable | `pushAirtable(records, { apiKey, baseId, tableName })` | `AIRTABLE_API_KEY`, `AIRTABLE_BASE_ID`, `AIRTABLE_TABLE_NAME` | — |
+| Slack | `postSlack(message)` / `slackSummary(records, outputPath)` | `SLACK_WEBHOOK_URL` | — |
+| S3 | `pushS3(content, { bucket, key, region, contentType })` | `S3_BUCKET`, `S3_KEY`, `AWS_REGION`, `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY` | `@aws-sdk/client-s3` |
+| FTP | `pushFTP(localFilePath, { host, user, pass, remotePath })` | `FTP_HOST`, `FTP_USER`, `FTP_PASS`, `FTP_PATH` | `basic-ftp` |
+| Google Sheets | `pushGoogleSheets(records, { credentialsPath, spreadsheetId, sheetName })` | `GOOGLE_CLIENT_CREDENTIALS`, `SPREADSHEET_ID`, `SHEET_NAME` | `googleapis` |
 
-```js
-async function pushToAirtable(records) {
-    const { AIRTABLE_API_KEY, AIRTABLE_BASE_ID, AIRTABLE_TABLE_NAME } = process.env;
-    const chunkSize = 10;
-    for (let i = 0; i < records.length; i += chunkSize) {
-        const chunk = records.slice(i, i + chunkSize).map(r => ({ fields: r }));
-        const body = JSON.stringify({ records: chunk });
-        await new Promise((resolve, reject) => {
-            const req = https.request({
-                hostname: 'api.airtable.com', port: 443,
-                path: `/v0/${AIRTABLE_BASE_ID}/${encodeURIComponent(AIRTABLE_TABLE_NAME)}`,
-                method: 'POST',
-                headers: { 'Authorization': `Bearer ${AIRTABLE_API_KEY}`,
-                    'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(body) }
-            }, res => { res.resume(); res.on('end', resolve); });
-            req.on('error', reject);
-            req.write(body);
-            req.end();
-        });
-        await sleep(200);
-    }
-    console.log(`Pushed ${records.length} records to Airtable.`);
-}
-```
-
-**Note:** Field names in `fields` must exactly match the column names in the Airtable table. Create the table columns first or use the Airtable UI to auto-create them.
-
-### Slack
-Required env vars: `SLACK_WEBHOOK_URL` (Incoming Webhook URL from Slack app settings)
-No extra packages needed. Posts a summary message; optionally attaches a CSV snippet for small datasets.
-
-```js
-async function postToSlack(webhookUrl, message) {
-    const body = JSON.stringify({ text: message });
-    return new Promise((resolve, reject) => {
-        const u = new URL(webhookUrl);
-        const req = https.request({ hostname: u.hostname, port: 443, path: u.pathname,
-            method: 'POST', headers: { 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(body) }
-        }, res => { res.resume(); res.on('end', resolve); });
-        req.on('error', reject);
-        req.write(body);
-        req.end();
-    });
-}
-// Example summary message:
-await postToSlack(process.env.SLACK_WEBHOOK_URL,
-    `:white_check_mark: Extraction complete: *${records.length} results* fetched.\nFile saved to \`${outputPath}\``
-);
-```
-
-**Tip:** For richer formatting use Slack Block Kit. For large datasets, save to a file first and post the file path or a public URL in the Slack message.
+**Notes:**
+- Webhook `batchMode=true` (default) sends all records in one POST as `{ records: [...] }`. Set `batchMode=false` for Zapier (one POST per record).
+- Airtable field names must match existing column names in the table exactly.
+- S3/FTP/Google Sheets require their npm package installed: `npm install @aws-sdk/client-s3 basic-ftp googleapis`
+- Google Sheets requires a service account JSON file with the Sheets API enabled.

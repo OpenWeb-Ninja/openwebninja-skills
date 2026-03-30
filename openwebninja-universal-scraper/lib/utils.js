@@ -286,6 +286,290 @@ function displayQuickAnswer(records, { limit = 5, fields } = {}) {
     if (records.length > limit) console.log(`Showing ${limit} of ${records.length} results. Use --output to save all.`);
 }
 
+// ─── Output Destinations ──────────────────────────────────────────────────────
+
+/**
+ * POST records to a webhook URL.
+ * batchMode=true  → single POST with { records }
+ * batchMode=false → one POST per record, with `delay` ms between requests
+ */
+async function pushWebhook(records, { url, batchMode = true, delay = 200 } = {}) {
+    const target = url || process.env.WEBHOOK_URL;
+    if (!target) throw new Error('pushWebhook: url is required (or set WEBHOOK_URL env var)');
+
+    function post(payload) {
+        return new Promise((resolve, reject) => {
+            const body = JSON.stringify(payload);
+            const parsed = new URL(target);
+            const options = {
+                hostname: parsed.hostname,
+                port: parsed.port || 443,
+                path: parsed.pathname + parsed.search,
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Content-Length': Buffer.byteLength(body),
+                },
+            };
+            const mod = parsed.protocol === 'http:' ? require('http') : https;
+            const req = mod.request(options, res => {
+                const chunks = [];
+                res.on('data', c => chunks.push(c));
+                res.on('end', () => {
+                    if (res.statusCode < 200 || res.statusCode >= 300) {
+                        return reject(new Error(`pushWebhook: HTTP ${res.statusCode}: ${Buffer.concat(chunks).toString('utf8').slice(0, 200)}`));
+                    }
+                    resolve();
+                });
+            });
+            req.on('error', reject);
+            req.write(body);
+            req.end();
+        });
+    }
+
+    if (batchMode) {
+        console.error(`pushWebhook: sending ${records.length} records in one batch → ${target}`);
+        await post({ records });
+        console.error('pushWebhook: done');
+    } else {
+        console.error(`pushWebhook: sending ${records.length} records individually → ${target}`);
+        for (let i = 0; i < records.length; i++) {
+            if (i > 0) await sleep(delay);
+            await post(records[i]);
+            console.error(`pushWebhook: sent ${i + 1}/${records.length}`);
+        }
+        console.error('pushWebhook: done');
+    }
+}
+
+/**
+ * Push records to an Airtable table.
+ * Batches up to 10 records per request (Airtable limit).
+ */
+async function pushAirtable(records, { apiKey, baseId, tableName, delay = 200 } = {}) {
+    const key      = apiKey    || process.env.AIRTABLE_API_KEY;
+    const base     = baseId    || process.env.AIRTABLE_BASE_ID;
+    const table    = tableName || process.env.AIRTABLE_TABLE_NAME;
+    if (!key)   throw new Error('pushAirtable: apiKey is required (or set AIRTABLE_API_KEY)');
+    if (!base)  throw new Error('pushAirtable: baseId is required (or set AIRTABLE_BASE_ID)');
+    if (!table) throw new Error('pushAirtable: tableName is required (or set AIRTABLE_TABLE_NAME)');
+
+    const encodedTable = encodeURIComponent(table);
+
+    function postBatch(batch) {
+        return new Promise((resolve, reject) => {
+            const payload = { records: batch.map(r => ({ fields: r })) };
+            const body = JSON.stringify(payload);
+            const options = {
+                hostname: 'api.airtable.com',
+                port: 443,
+                path: `/v0/${base}/${encodedTable}`,
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${key}`,
+                    'Content-Type': 'application/json',
+                    'Content-Length': Buffer.byteLength(body),
+                },
+            };
+            const req = https.request(options, res => {
+                const chunks = [];
+                res.on('data', c => chunks.push(c));
+                res.on('end', () => {
+                    if (res.statusCode < 200 || res.statusCode >= 300) {
+                        return reject(new Error(`pushAirtable: HTTP ${res.statusCode}: ${Buffer.concat(chunks).toString('utf8').slice(0, 200)}`));
+                    }
+                    resolve();
+                });
+            });
+            req.on('error', reject);
+            req.write(body);
+            req.end();
+        });
+    }
+
+    const BATCH = 10;
+    const batches = Math.ceil(records.length / BATCH);
+    console.error(`pushAirtable: sending ${records.length} records in ${batches} batch(es) → ${base}/${table}`);
+    for (let i = 0; i < batches; i++) {
+        if (i > 0) await sleep(delay);
+        const chunk = records.slice(i * BATCH, (i + 1) * BATCH);
+        await postBatch(chunk);
+        console.error(`pushAirtable: batch ${i + 1}/${batches} done`);
+    }
+    console.error('pushAirtable: done');
+}
+
+/**
+ * Post a message to a Slack Incoming Webhook.
+ */
+function postSlack(message, { webhookUrl } = {}) {
+    const target = webhookUrl || process.env.SLACK_WEBHOOK_URL;
+    if (!target) throw new Error('postSlack: webhookUrl is required (or set SLACK_WEBHOOK_URL env var)');
+
+    return new Promise((resolve, reject) => {
+        const body = JSON.stringify({ text: message });
+        const parsed = new URL(target);
+        const options = {
+            hostname: parsed.hostname,
+            port: parsed.port || 443,
+            path: parsed.pathname + parsed.search,
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Content-Length': Buffer.byteLength(body),
+            },
+        };
+        const req = https.request(options, res => {
+            const chunks = [];
+            res.on('data', c => chunks.push(c));
+            res.on('end', () => {
+                if (res.statusCode < 200 || res.statusCode >= 300) {
+                    return reject(new Error(`postSlack: HTTP ${res.statusCode}: ${Buffer.concat(chunks).toString('utf8').slice(0, 200)}`));
+                }
+                resolve();
+            });
+        });
+        req.on('error', reject);
+        req.write(body);
+        req.end();
+    });
+}
+
+/**
+ * Format and post a standard scrape-completion summary to Slack.
+ */
+async function slackSummary(records, outputPath, opts = {}) {
+    const lines = [
+        `*Scrape complete*`,
+        `• Records: ${records.length}`,
+        outputPath ? `• Output: \`${outputPath}\`` : '• Output: stdout',
+        `• Finished: ${new Date().toISOString()}`,
+    ];
+    await postSlack(lines.join('\n'), opts);
+}
+
+/**
+ * Upload string content (JSON or CSV) to S3.
+ * Requires: npm install @aws-sdk/client-s3
+ */
+async function pushS3(content, { bucket, key, region, contentType = 'application/json' } = {}) {
+    let S3Client, PutObjectCommand;
+    try {
+        ({ S3Client, PutObjectCommand } = require('@aws-sdk/client-s3'));
+    } catch {
+        throw new Error('pushS3: Run: npm install @aws-sdk/client-s3');
+    }
+
+    const b  = bucket || process.env.S3_BUCKET;
+    const k  = key    || process.env.S3_KEY;
+    const r  = region || process.env.AWS_REGION;
+    if (!b) throw new Error('pushS3: bucket is required (or set S3_BUCKET)');
+    if (!k) throw new Error('pushS3: key is required (or set S3_KEY)');
+    if (!r) throw new Error('pushS3: region is required (or set AWS_REGION)');
+
+    const clientOpts = { region: r };
+    const accessKeyId     = process.env.AWS_ACCESS_KEY_ID;
+    const secretAccessKey = process.env.AWS_SECRET_ACCESS_KEY;
+    if (accessKeyId && secretAccessKey) {
+        clientOpts.credentials = { accessKeyId, secretAccessKey };
+    }
+
+    const client = new S3Client(clientOpts);
+    console.error(`pushS3: uploading to s3://${b}/${k} (${r})`);
+    await client.send(new PutObjectCommand({
+        Bucket: b,
+        Key: k,
+        Body: content,
+        ContentType: contentType,
+    }));
+    console.error('pushS3: done');
+}
+
+/**
+ * Upload a local file to an FTP server.
+ * Requires: npm install basic-ftp
+ */
+async function pushFTP(localFilePath, { host, user, pass, remotePath } = {}) {
+    let ftp;
+    try {
+        ftp = require('basic-ftp');
+    } catch {
+        throw new Error('pushFTP: Run: npm install basic-ftp');
+    }
+
+    const h = host       || process.env.FTP_HOST;
+    const u = user       || process.env.FTP_USER;
+    const p = pass       || process.env.FTP_PASS;
+    const r = remotePath || process.env.FTP_PATH;
+    if (!h) throw new Error('pushFTP: host is required (or set FTP_HOST)');
+    if (!u) throw new Error('pushFTP: user is required (or set FTP_USER)');
+    if (!p) throw new Error('pushFTP: pass is required (or set FTP_PASS)');
+    if (!r) throw new Error('pushFTP: remotePath is required (or set FTP_PATH)');
+
+    const client = new ftp.Client();
+    try {
+        console.error(`pushFTP: connecting to ${h}`);
+        await client.access({ host: h, user: u, password: p, secure: false });
+        console.error(`pushFTP: uploading ${localFilePath} → ${r}`);
+        await client.uploadFrom(localFilePath, r);
+        console.error('pushFTP: done');
+    } finally {
+        client.close();
+    }
+}
+
+/**
+ * Write records to a Google Sheet (clears existing content first).
+ * Requires: npm install googleapis
+ */
+async function pushGoogleSheets(records, { credentialsPath, spreadsheetId, sheetName } = {}) {
+    let google;
+    try {
+        ({ google } = require('googleapis'));
+    } catch {
+        throw new Error('pushGoogleSheets: Run: npm install googleapis');
+    }
+
+    const credsPath = credentialsPath || process.env.GOOGLE_CLIENT_CREDENTIALS;
+    const ssId      = spreadsheetId   || process.env.SPREADSHEET_ID;
+    const sheet     = sheetName       || process.env.SHEET_NAME;
+    if (!credsPath) throw new Error('pushGoogleSheets: credentialsPath is required (or set GOOGLE_CLIENT_CREDENTIALS)');
+    if (!ssId)      throw new Error('pushGoogleSheets: spreadsheetId is required (or set SPREADSHEET_ID)');
+    if (!sheet)     throw new Error('pushGoogleSheets: sheetName is required (or set SHEET_NAME)');
+
+    const credentials = JSON.parse(fs.readFileSync(credsPath, 'utf8'));
+    const auth = new google.auth.GoogleAuth({
+        credentials,
+        scopes: ['https://www.googleapis.com/auth/spreadsheets'],
+    });
+
+    const sheets = google.sheets({ version: 'v4', auth });
+
+    if (!records.length) {
+        console.error('pushGoogleSheets: no records to write');
+        return;
+    }
+
+    const flat = records.map(r => (typeof r === 'object' && r !== null ? flattenRecord(r, '') : { value: r }));
+    const headers = [...new Set(flat.flatMap(r => Object.keys(r)))];
+    const rows = flat.map(r => headers.map(h => {
+        const v = r[h];
+        return (v === null || v === undefined) ? '' : String(v);
+    }));
+    const values = [headers, ...rows];
+
+    const range = `${sheet}!A1`;
+    console.error(`pushGoogleSheets: writing ${records.length} records to "${sheet}" in ${ssId}`);
+    await sheets.spreadsheets.values.update({
+        spreadsheetId: ssId,
+        range,
+        valueInputOption: 'RAW',
+        requestBody: { values },
+    });
+    console.error('pushGoogleSheets: done');
+}
+
 // ─── Exports ──────────────────────────────────────────────────────────────────
 
-module.exports = { getApiKey, loadMeta, apiCall, sleep, getNestedValue, collectRecords, flattenRecord, toCSV, writeOutput, displayQuickAnswer, fetchAll };
+module.exports = { getApiKey, loadMeta, apiCall, sleep, getNestedValue, collectRecords, flattenRecord, toCSV, writeOutput, displayQuickAnswer, fetchAll, pushWebhook, pushAirtable, postSlack, slackSummary, pushS3, pushFTP, pushGoogleSheets };
