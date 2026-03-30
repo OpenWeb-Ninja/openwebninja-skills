@@ -6,6 +6,7 @@ const path = require('path');
 const { URL } = require('url');
 
 const SKILL_ROOT = path.resolve(__dirname, '..');
+const SKILL_VERSION = (() => { try { return require('../package.json').version; } catch { return '1.0.0'; } })();
 
 // ─── Credentials ──────────────────────────────────────────────────────────────
 
@@ -90,7 +91,7 @@ function apiCall(host, endpoint, params, apiKey, method = 'GET', body = null) {
         const headers = useOWN
             ? { 'x-api-key': apiKey }
             : { 'x-rapidapi-host': host, 'x-rapidapi-key': apiKey };
-        headers['X-OWN-Client'] = 'openwebninja-universal-scraper/1.0.0';
+        headers['X-OWN-Client'] = `openwebninja-universal-scraper/${SKILL_VERSION}`;
         if (bodyStr) {
             headers['Content-Type'] = 'application/json';
             headers['Content-Length'] = Buffer.byteLength(bodyStr);
