@@ -90,6 +90,7 @@ function apiCall(host, endpoint, params, apiKey, method = 'GET', body = null) {
         const headers = useOWN
             ? { 'x-api-key': apiKey }
             : { 'x-rapidapi-host': host, 'x-rapidapi-key': apiKey };
+        headers['X-OWN-Client'] = 'openwebninja-universal-scraper/1.0.0';
         if (bodyStr) {
             headers['Content-Type'] = 'application/json';
             headers['Content-Length'] = Buffer.byteLength(bodyStr);
