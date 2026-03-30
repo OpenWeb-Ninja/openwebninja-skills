@@ -224,8 +224,14 @@ Before running, ask:
 **If the API has a `scrape.js`**, use it directly:
 
 ```bash
+# Full export to file
 node --env-file=.env apis/{api_id}/scrape.js --query "search terms" --count 100 --format csv --output output/results.csv
+
+# Quick answer (no file, display top results in chat)
+node --env-file=.env apis/{api_id}/scrape.js --query "search terms" --dry-run
 ```
+
+**Quick answer mode**: For simple lookups (e.g., "what's Nike's rating on Trustpilot?", "find me 3 coffee shops in LA"), use `--dry-run`. It fetches one page of results and prints them to the console without saving a file. Use this when the user just needs a quick answer, not a full data export.
 
 Check `apis/{api_id}/recipes.md` for exact command examples.
 
@@ -234,7 +240,7 @@ Run `node apis/{api_id}/scrape.js --help` to see all available flags for that AP
 **For multi-API workflows or APIs without `scrape.js`**, write a custom script importing from `lib/utils.js`:
 
 ```js
-const { getApiKey, loadMeta, apiCall, fetchAll, toCSV, writeOutput, sleep } = require('lib/utils');
+const { getApiKey, loadMeta, apiCall, fetchAll, toCSV, writeOutput, displayQuickAnswer, sleep } = require('lib/utils');
 ```
 
 `lib/utils.js` exports:
@@ -244,6 +250,7 @@ const { getApiKey, loadMeta, apiCall, fetchAll, toCSV, writeOutput, sleep } = re
 - `fetchAll({ host, endpoint, params, apiKey, count, pagination, ... })` — paginated fetch, returns `{ results, totalCallsMade }`
 - `toCSV(records)` — converts array of objects to CSV string
 - `writeOutput(records, outputPath, format, manifest)` — writes file + `.meta.json`
+- `displayQuickAnswer(records, { limit, fields })` — print top N results to chat (no file)
 - `sleep(ms)` — promise-based delay
 
 ### Step 6: Summarize Results and Offer Follow-ups

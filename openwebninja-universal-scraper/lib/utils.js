@@ -170,6 +170,10 @@ function toCSV(records) {
 }
 
 function writeOutput(records, outputPath, format, manifest) {
+    if (!outputPath) {
+        displayQuickAnswer(records);
+        return;
+    }
     fs.mkdirSync(path.dirname(outputPath), { recursive: true });
     const content = format === 'csv' ? toCSV(records) : JSON.stringify(records, null, 2);
     fs.writeFileSync(outputPath, content);
@@ -251,6 +255,37 @@ async function fetchAll({ host, endpoint, params, apiKey, count, pagination, pag
     return { results: allResults.slice(0, count), totalCallsMade };
 }
 
+// ─── Quick Answer ─────────────────────────────────────────────────────────────
+
+function displayQuickAnswer(records, { limit = 5, fields } = {}) {
+    if (!records.length) { console.log('\nNo results found.'); return; }
+    const top = records.slice(0, limit);
+    const pick = fields || Object.keys(top[0]).filter(k => {
+        const v = top[0][k];
+        return v !== null && v !== undefined && !(Array.isArray(v) && !v.length);
+    }).slice(0, 10);
+
+    console.log(`\n${'='.repeat(60)}`);
+    console.log(`TOP ${top.length} RESULTS (of ${records.length} total)`);
+    console.log('='.repeat(60));
+
+    for (let i = 0; i < top.length; i++) {
+        console.log(`\n--- Result ${i + 1} ---`);
+        for (const key of pick) {
+            let val = top[i][key];
+            if (val === null || val === undefined) continue;
+            if (typeof val === 'string' && val.length > 120) val = val.slice(0, 120) + '...';
+            else if (typeof val === 'object') {
+                const s = JSON.stringify(val);
+                val = s.length > 120 ? s.slice(0, 120) + '...' : s;
+            }
+            console.log(`  ${key}: ${val}`);
+        }
+    }
+    console.log(`\n${'='.repeat(60)}`);
+    if (records.length > limit) console.log(`Showing ${limit} of ${records.length} results. Use --output to save all.`);
+}
+
 // ─── Exports ──────────────────────────────────────────────────────────────────
 
-module.exports = { getApiKey, loadMeta, apiCall, sleep, getNestedValue, collectRecords, flattenRecord, toCSV, writeOutput, fetchAll };
+module.exports = { getApiKey, loadMeta, apiCall, sleep, getNestedValue, collectRecords, flattenRecord, toCSV, writeOutput, displayQuickAnswer, fetchAll };
