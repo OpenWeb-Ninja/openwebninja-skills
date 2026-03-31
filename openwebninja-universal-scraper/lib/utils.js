@@ -284,7 +284,7 @@ function displayQuickAnswer(records, { limit = 5, fields } = {}) {
 
 /**
  * POST records to a webhook URL.
- * batchMode=true  → single POST with { records }
+ * batchMode=true → single POST with { records }
  * batchMode=false → one POST per record, with `delay` ms between requests
  */
 async function pushWebhook(records, { url, batchMode = true, delay = 200 } = {}) {

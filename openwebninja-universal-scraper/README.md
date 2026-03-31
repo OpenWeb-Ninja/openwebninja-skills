@@ -96,14 +96,6 @@ Results can be sent to multiple destinations beyond local files:
 | FTP | `FTP_HOST`, `FTP_USER`, `FTP_PASS`, `FTP_PATH` |
 | Google Sheets | `GOOGLE_CLIENT_CREDENTIALS`, `SPREADSHEET_ID`, `SHEET_NAME` |
 
-## Known limitations
-
-- **`realtime-image-search`** — the upstream API is currently returning malformed responses for all queries. A warning is shown when this happens.
-- **`reverse-image-search`** — requires a separate RapidAPI subscription to `reverse-image-search3.p.rapidapi.com`.
-- **`yelp-business-data`** — geographic coverage may be limited on lower-tier subscriptions.
-- **`trustpilot-company-and-reviews`** — reviews capped at ~200 without authentication.
-- **`realtime-shorts-search`** — may return empty results for some queries depending on the provider's index.
-
 ## Structure
 
 ```
