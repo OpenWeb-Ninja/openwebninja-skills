@@ -7,7 +7,7 @@
 ## Endpoints
 
 ### GET /search
-Product Search — >-
+Product Search
 
 **Required:**
 - `query` (string) Example: `laptop`
@@ -32,7 +32,7 @@ Product Search — >-
 ---
 
 ### GET /products-by-category
-Products By Category — >-
+Products By Category
 
 **Required:**
 - `category_id` (string) Example: `3944`
@@ -57,7 +57,7 @@ Products By Category — >-
 ---
 
 ### GET /product-details
-Product Details — >-
+Product Details
 
 **Required:**
 - `product_id` (string) Example: `609040889`
@@ -72,7 +72,7 @@ Product Details — >-
 ---
 
 ### GET /product-offers
-Product Offers — >-
+Product Offers
 
 **Required:**
 - `product_id` (string) Example: `609040889`
@@ -87,7 +87,7 @@ Product Offers — >-
 ---
 
 ### GET /product-reviews
-Product Reviews — >-
+Product Reviews
 
 **Required:**
 - `product_id` (string) Example: `609040889`

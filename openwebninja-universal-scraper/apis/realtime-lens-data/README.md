@@ -8,7 +8,7 @@
 ## Endpoints
 
 ### GET /search
-Image Search — >-
+Image Search
 
 **Required:**
 - `url` (string) — URL of an image with which to perform the search. Example: `https://i.imgur.com/HBrB8p0.png`

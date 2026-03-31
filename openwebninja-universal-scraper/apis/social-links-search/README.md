@@ -8,7 +8,7 @@
 ## Endpoints
 
 ### GET /search-social-links
-Search Social Links — >-
+Search Social Links
 
 **Required:**
 - `query` (string) — Social links search query. Example: `John Smith`

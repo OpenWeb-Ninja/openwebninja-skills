@@ -37,7 +37,7 @@ Company Details — Get the full details of a specific company by company domain
 ---
 
 ### GET /company-reviews
-Company Reviews — >-
+Company Reviews
 
 **Required:**
 - `company_domain` (string) Example: `gossby.com`
@@ -59,7 +59,7 @@ Company Reviews — >-
 ---
 
 ### GET /category-company-list
-Companies by Category — >-
+Companies by Category
 
 **Required:**
 - `category_id` (string) Example: `software_company`

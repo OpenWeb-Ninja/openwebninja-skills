@@ -8,7 +8,7 @@
 ## Endpoints
 
 ### GET /search
-Search — >-
+Search
 
 **Required:**
 - `query` (string)
@@ -23,7 +23,7 @@ Search — >-
 ---
 
 ### GET /market-trends
-Market Trends — >-
+Market Trends
 
 **Required:**
 - `trend_type` (string) Example: `MARKET_INDEXES`
@@ -39,7 +39,7 @@ Market Trends — >-
 ---
 
 ### GET /stock-quote
-Stock Quote — >-
+Stock Quote
 
 **Required:**
 - `symbol` (string)
@@ -52,7 +52,7 @@ Stock Quote — >-
 ---
 
 ### GET /stock-time-series
-Stock Time Series — >-
+Stock Time Series
 
 **Required:**
 - `symbol` (string)
@@ -66,7 +66,7 @@ Stock Time Series — >-
 ---
 
 ### GET /stock-news
-Stock News — >-
+Stock News
 
 **Required:**
 - `symbol` (string)
@@ -81,7 +81,7 @@ Stock News — >-
 ---
 
 ### GET /stock-overview
-Stock / Company Overview — >-
+Stock / Company Overview
 
 **Required:**
 - `symbol` (string)
@@ -94,7 +94,7 @@ Stock / Company Overview — >-
 ---
 
 ### GET /company-income-statement
-Company Income Statement — >-
+Company Income Statement
 
 **Required:**
 - `symbol` (string)
@@ -110,7 +110,7 @@ Company Income Statement — >-
 ---
 
 ### GET /company-balance-sheet
-Company Balance Sheet — >-
+Company Balance Sheet
 
 **Required:**
 - `symbol` (string)
@@ -126,7 +126,7 @@ Company Balance Sheet — >-
 ---
 
 ### GET /company-cash-flow
-Company Cash Flow — >-
+Company Cash Flow
 
 **Required:**
 - `symbol` (string)
@@ -142,7 +142,7 @@ Company Cash Flow — >-
 ---
 
 ### GET /currency-exchange-rate
-Currency Exchange Rate — >-
+Currency Exchange Rate
 
 **Required:**
 - `from_symbol` (string) Example: `USD`
@@ -156,7 +156,7 @@ Currency Exchange Rate — >-
 ---
 
 ### GET /currency-time-series
-Currency Time Series — >-
+Currency Time Series
 
 **Required:**
 - `from_symbol` (string) Example: `USD`
@@ -171,7 +171,7 @@ Currency Time Series — >-
 ---
 
 ### GET /currency-news
-Currency News — >-
+Currency News
 
 **Required:**
 - `from_symbol` (string) Example: `USD`
@@ -187,7 +187,7 @@ Currency News — >-
 ---
 
 ### GET /stock-quote-yahoo-finance
-Stock Quote (Yahu Finance) — >-
+Stock Quote (Yahu Finance)
 
 **Required:**
 - `symbol` (string) Example: `AAPL`
@@ -199,7 +199,7 @@ Stock Quote (Yahu Finance) — >-
 ---
 
 ### GET /stock-time-series-yahoo-finance
-Stock Time Series (Yahu Finance) — >-
+Stock Time Series (Yahu Finance)
 
 **Required:**
 - `symbol` (string)

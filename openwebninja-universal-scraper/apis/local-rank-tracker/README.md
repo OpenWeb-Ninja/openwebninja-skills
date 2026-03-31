@@ -76,7 +76,7 @@ Ranking at Coordinate Point — Get search results at the specified coordinate p
 ---
 
 ### GET /grid
-Full Grid Search — >-
+Full Grid Search
 
 **Required:**
 - `place_id` (string) — The Google Place ID of the business to match against in results. Example: `ChIJoejvAr3Mj4ARtHrbKxtAHXI`

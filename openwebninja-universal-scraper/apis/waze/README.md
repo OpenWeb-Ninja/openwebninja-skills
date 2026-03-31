@@ -8,7 +8,7 @@
 ## Endpoints
 
 ### GET /alerts-and-jams
-Alerts and Jams — >-
+Alerts and Jams
 
 **Required:**
 - `bottom_left` (string) Example: `40.66615391742187,-74.13732147216798`
@@ -28,7 +28,7 @@ Alerts and Jams — >-
 ---
 
 ### GET /driving-directions
-Driving Directions — >-
+Driving Directions
 
 **Required:**
 - `source_coordinates` (string) — Geographic coordinates (latitude, longitude pair) of the starting point Example: `32.0852999,34.78176759999999`
@@ -43,7 +43,7 @@ Driving Directions — >-
 ---
 
 ### GET /venues
-Venues — >-
+Venues
 
 **Required:**
 - `bottom_left` (string) — Bottomleft corner of the geographic rectangular area for which to get venues. Specified as latitude, longitude pair. Example: `48.85100512509277,2.3341819660651026`
@@ -58,7 +58,7 @@ Venues — >-
 ---
 
 ### GET /autocomplete
-Autocomplete — >-
+Autocomplete
 
 **Required:**
 - `q` (string) — Freetext geographic query. Example: `sunn`

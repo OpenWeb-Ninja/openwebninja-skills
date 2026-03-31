@@ -8,7 +8,7 @@
 ## Endpoints
 
 ### GET /scrape-contacts
-Scrape Contacts from Website — >-
+Scrape Contacts from Website
 
 **Required:**
 - `query` (string) Example: `wsgr.com`
@@ -24,7 +24,7 @@ Scrape Contacts from Website — >-
 ---
 
 ### POST /website-url-by-keyword
-Get Website by Keyword — >-
+Get Website by Keyword
 
 **Pagination:** none
 

@@ -8,7 +8,7 @@
 ## Endpoints
 
 ### GET /search-light-v2
-Search Light — >-
+Search Light
 
 **Required:**
 - `q` (string) — Search query / keyword Example: `Nike shoes`
@@ -37,7 +37,7 @@ Search Light — >-
 ---
 
 ### GET /search-v2
-Search (Full) — >-
+Search (Full)
 
 **Required:**
 - `q` (string) — Search query / keyword Example: `Nike shoes`
@@ -66,7 +66,7 @@ Search (Full) — >-
 ---
 
 ### GET /product-details-v2
-Product Details — >-
+Product Details
 
 **Required:**
 - `product_id` (string) — Product id of the product for which to get full details. Example: `catalogid:15554707778408471208,gpcid:6219277726645206819,headlineOfferDocid:8835386203856143595,rds:PC_15478400683365031707|PROD_PC_15478400683365031707,imageDocid:10653897321817113741,mid:576462815432560445,pvt:hg,pvf:`
@@ -82,7 +82,7 @@ Product Details — >-
 ---
 
 ### GET /product-offers-v2
-Product Offers — >-
+Product Offers
 
 **Required:**
 - `product_id` (string) — Product id of the product for which to fetch offers. Example: `catalogid:15554707778408471208,gpcid:6219277726645206819,headlineOfferDocid:8835386203856143595,rds:PC_15478400683365031707|PROD_PC_15478400683365031707,imageDocid:10653897321817113741,mid:576462815432560445,pvt:hg,pvf:`
@@ -97,7 +97,7 @@ Product Offers — >-
 ---
 
 ### GET /product-reviews-v2
-Product Reviews — >-
+Product Reviews
 
 **Required:**
 - `product_id` (string) — Product id of the product for which to fetch reviews. Example: `catalogid:15554707778408471208,gpcid:6219277726645206819,headlineOfferDocid:8835386203856143595,rds:PC_15478400683365031707|PROD_PC_15478400683365031707,imageDocid:10653897321817113741,mid:576462815432560445,pvt:hg,pvf:`
@@ -116,7 +116,7 @@ Product Reviews — >-
 ---
 
 ### GET /deals-v2
-Deals — >-
+Deals
 
 **Required:**
 - `q` (string) — Search query / keyword Example: `Laptop`

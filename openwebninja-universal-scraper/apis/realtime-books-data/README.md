@@ -8,7 +8,7 @@
 ## Endpoints
 
 ### GET /search
-Search Books — >-
+Search Books
 
 **Required:**
 - `query` (string) Example: `good thriller`

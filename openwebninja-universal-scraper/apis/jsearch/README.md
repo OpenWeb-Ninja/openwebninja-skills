@@ -8,7 +8,7 @@
 ## Endpoints
 
 ### GET /search
-Job Search — >-
+Job Search
 
 **Required:**
 - `query` (string) Example: `developer jobs in chicago`
@@ -32,7 +32,7 @@ Job Search — >-
 ---
 
 ### GET /job-details
-Job Details — >-
+Job Details
 
 **Required:**
 - `job_id` (string) Example: `gcnkkB1_QjIlxbV9AAAAAA==`
@@ -49,7 +49,7 @@ Job Details — >-
 ---
 
 ### GET /estimated-salary
-Job Salary — >-
+Job Salary
 
 **Required:**
 - `job_title` (string) — Job title for which to get salary estimation. Example: `nodejs developer`

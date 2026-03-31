@@ -8,7 +8,7 @@
 ## Endpoints
 
 ### GET /search
-Product Search — >-
+Product Search
 
 **Required:**
 - `query` (string) Example: `Phone`
@@ -37,7 +37,7 @@ Product Search — >-
 ---
 
 ### GET /products-by-category
-Product by Category — >-
+Product by Category
 
 **Required:**
 - `category_id` (string) Example: `https://amazon.com/s?node=2858778013 - the Amazon Category ID is `2858778013`.`
@@ -62,7 +62,7 @@ Product by Category — >-
 ---
 
 ### GET /product-details
-Product Details — >-
+Product Details
 
 **Required:**
 - `asin` (string)
@@ -138,7 +138,7 @@ Top Product Reviews — Get top product reviews by ASIN from the Amazon product 
 ---
 
 ### GET /product-offers
-Product Offers — >-
+Product Offers
 
 **Required:**
 - `asin` (string)
@@ -173,7 +173,7 @@ Seller Profile — Get Amazon Seller profile details from the Amazon Seller prof
 ---
 
 ### GET /seller-reviews
-Seller Reviews — >-
+Seller Reviews
 
 **Required:**
 - `seller_id` (string) — The Amazon Seller ID for which to get seller reviews Example: `A02211013Q5HP3OMSZC7W`
@@ -209,7 +209,7 @@ Seller Products — Get and paginate through the products sold by an Amazon Sell
 ---
 
 ### GET /best-sellers
-Best Sellers — >-
+Best Sellers
 
 **Required:**
 - `category` (string)
@@ -228,7 +228,7 @@ Best Sellers — >-
 ---
 
 ### GET /deals-v2
-Deals — >-
+Deals
 
 **Optional:**
 - `country` (string, default: US) — values: US, AU, BR, CA, CN, FR, DE, IN, IT, MX, NL, SG, ES, TR, AE, GB, JP, SA, PL, SE, BE, EG, ZA, IE
@@ -251,7 +251,7 @@ Deals — >-
 ---
 
 ### GET /deal-products
-Deal Products — >-
+Deal Products
 
 **Required:**
 - `deal_id` (string) — Deal ID of the deal to fetch Example: `B08B477BHS`
@@ -321,7 +321,7 @@ Influencer Posts — Get all Amazon Influencer posts with pagination support.
 ---
 
 ### GET /influencer-post-products
-Influencer Post Products — Get the list of products related to a
+Influencer Post Products — Get products related to an influencer post
 
 **Required:**
 - `influencer_name` (string) Example: `madison.lecroy`
@@ -351,7 +351,7 @@ ASIN to GTIN — Convert an Amazon ASIN to GTIN / EAN / UPS identifiers. Valid v
 ---
 
 ### GET /product-category-list
-Product Category List — Get Amazon product categories per country / Amazon domain (for use with the
+Product Category List — Get Amazon product categories per country (for use with /products-by-category)
 
 **Optional:**
 - `country` (string, default: US) — values: US, AU, BR, CA, CN, FR, DE, IN, IT, MX, NL, SG, ES, TR, AE, GB, JP, SA, PL, SE, BE, EG, ZA, IE

@@ -9,7 +9,7 @@
 ## Endpoints
 
 ### GET /search
-Search — >-
+Search
 
 **Required:**
 - `query` (string) Example: `Hotels in San Francisco, USA`
@@ -35,7 +35,7 @@ Search — >-
 ---
 
 ### GET /search-in-area
-Search In Area — >-
+Search In Area
 
 **Required:**
 - `query` (string) — Search query / keyword Example: `pizza`
@@ -57,7 +57,7 @@ Search In Area — >-
 ---
 
 ### GET /search-nearby
-Search Nearby — >-
+Search Nearby
 
 **Required:**
 - `query` (string) Example: `plumbers`
@@ -78,7 +78,7 @@ Search Nearby — >-
 ---
 
 ### GET /business-details
-Business Details — >-
+Business Details
 
 **Required:**
 - `business_id` (string) Example: `0x880fd393d427a591%3A0x8cba02d713a995ed`
@@ -154,7 +154,7 @@ Business Photos — Get business photos by Business Id.
 ---
 
 ### GET /photo-details
-Business Photo Details — >-
+Business Photo Details
 
 **Required:**
 - `business_id` (string) Example: `0x89c259b5a9bd152b%3A0x31453e62a3be9f76`
@@ -167,7 +167,7 @@ Business Photo Details — >-
 ---
 
 ### GET /business-posts
-Buisness Posts — Get all / paginate Business Owner Posts (
+Business Posts — Get all / paginate Business Owner Posts (
 
 **Required:**
 - `business_id` (string) Example: `0x880fd393d427a591%3A0x8cba02d713a995ed`
@@ -184,7 +184,7 @@ Buisness Posts — Get all / paginate Business Owner Posts (
 ---
 
 ### GET /reverse-geocoding
-Reverse Geocoding — >-
+Reverse Geocoding
 
 **Required:**
 - `lat` (string) Example: `40.6958453`

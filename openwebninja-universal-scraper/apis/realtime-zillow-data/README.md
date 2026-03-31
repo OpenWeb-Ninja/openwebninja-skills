@@ -8,7 +8,7 @@
 ## Endpoints
 
 ### GET /search
-Search — >-
+Search
 
 **Required:**
 - `location` (string) Example: `Los Angeles, CA`
@@ -47,7 +47,7 @@ Search — >-
 ---
 
 ### GET /search-coordinates
-Search by Coordinates — >-
+Search by Coordinates
 
 **Required:**
 - `long` (number) Example: `-118.504744`
@@ -88,7 +88,7 @@ Search by Coordinates — >-
 ---
 
 ### GET /search-polygon
-Search by Polygon — >-
+Search by Polygon
 
 **Required:**
 - `polygon` (string) Example: `>-`
@@ -127,7 +127,7 @@ Search by Polygon — >-
 ---
 
 ### GET /property-details
-Property Details — >-
+Property Details
 
 **Required:**
 - `zpid` (string) Example: `7594920`
@@ -140,7 +140,7 @@ Property Details — >-
 ---
 
 ### GET /property-details-address
-Property by Address — >-
+Property by Address
 
 **Required:**
 - `address` (string) Example: `1161 Natchez Dr College Station Texas 77845`
@@ -150,7 +150,7 @@ Property by Address — >-
 ---
 
 ### GET /zestimate
-Property Zestimate — >-
+Property Zestimate
 
 **Required:**
 - `zpid` (string) Example: `28253016`

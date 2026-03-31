@@ -8,7 +8,7 @@
 ## Endpoints
 
 ### GET /search
-Search — >-
+Search
 
 **Required:**
 - `q` (string) Example: `how to build a website`
@@ -35,7 +35,7 @@ Search — >-
 ---
 
 ### GET /search-light
-Light Search — >-
+Light Search
 
 **Required:**
 - `q` (string) Example: `how to build a website`
@@ -51,7 +51,7 @@ Light Search — >-
 ---
 
 ### GET /ai-mode
-AI Mode — >-
+AI Mode
 
 **Required:**
 - `prompt` (string) Example: `How to make a pizza step by step?`
