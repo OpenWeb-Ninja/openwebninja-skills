@@ -1,5 +1,5 @@
 ---
-name: openwebninja_universal_scraper
+name: openwebninja-universal-scraper
 description: Universal scraper for any OpenWeb Ninja API. Scrape jobs, business listings, products, reviews, news, social profiles, finance data, and more. Use for lead generation, market research, competitor analysis, content monitoring, price tracking, or any structured data extraction task.
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash, WebFetch, WebSearch
 ---
