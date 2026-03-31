@@ -96,11 +96,11 @@ Each API has its own folder at `apis/{api_id}/` containing:
 | `ev-charge-finder` | EV charging stations by location | EV infrastructure research, trip planning |
 | `waze` | Real-time traffic alerts and jams | Traffic monitoring, incident tracking |
 | `web-unblocker` | Fetch any URL with JS rendering + anti-bot bypass | Web scraping, page extraction |
-| `chatgpt` | ChatGPT conversation (POST, stateful) | Data summarization, AI enrichment |
-| `gemini` | Google Gemini conversation (POST, stateful) | Data analysis, AI enrichment |
-| `copilot` | Microsoft Copilot conversation (POST, stateful) | Research, AI enrichment |
-| `ai-overviews` | Google AI Overview with cited sources | Quick research summaries |
-| `google-ai-mode` | Google AI Mode (Gemini 2.5) structured results | AI-augmented research |
+| `chatgpt` | Query ChatGPT and get its response (POST, stateful) | GEO tracking, AI response monitoring |
+| `gemini` | Query Google Gemini and get its response (POST, stateful) | GEO tracking, AI response monitoring |
+| `copilot` | Query Microsoft Copilot and get its response (POST, stateful) | GEO tracking, AI response monitoring |
+| `ai-overviews` | Google AI Overview with cited sources | GEO tracking, AI search monitoring |
+| `google-ai-mode` | Google AI Mode (Gemini 2.5) structured results | GEO tracking, AI search monitoring |
 
 #### API Selection by Use Case
 
@@ -128,7 +128,7 @@ Each API has its own folder at `apis/{api_id}/` containing:
 | **Local SEO & Rank Tracking** | `local-rank-tracker`, `local-business-data`, `realtime-web-search` |
 | **Reputation / Trust Analysis** | `trustpilot-company-and-reviews`, `yelp-business-data`, `realtime-news-data`, `realtime-forums-search` |
 | **Web Scraping (any website)** | `web-unblocker` |
-| **AI-Augmented Enrichment** | `chatgpt`, `gemini`, `copilot`, `google-ai-mode`, `ai-overviews` |
+| **GEO / AI Search Monitoring** | `chatgpt`, `gemini`, `copilot`, `google-ai-mode`, `ai-overviews` |
 
 #### Multi-API Workflows
 
@@ -141,13 +141,10 @@ Each API has its own folder at `apis/{api_id}/` containing:
 | **Product research (multi-store)** | `realtime-product-search /search` → | `realtime-amazon-data /product-details` |
 | **Retail price comparison** | `realtime-product-search /search` → | `realtime-walmart-data /product-details` |
 | **Product + reviews dataset** | `realtime-amazon-data /product-details` → | `realtime-amazon-data /product-reviews` |
-| **Product intelligence report** | `realtime-amazon-data /product-details` → | `chatgpt /chat` |
 | **Visual product discovery** | `realtime-lens-data /search-by-image` → | `realtime-product-search /search` |
 | **Competitor intelligence** | `realtime-web-search /search` → | `local-business-data /search` (with `extract_emails_and_contacts=true`) |
 | **Brand monitoring pipeline** | `realtime-news-data /search` → | `realtime-forums-search /search` |
 | **Content trend discovery** | `web-search-autocomplete /autocomplete` → | `realtime-web-search /search` |
-| **News summarization** | `realtime-news-data /search` → | `gemini /chat` |
-| **Forum discussion analysis** | `realtime-forums-search /search` → | `copilot /chat` |
 | **App market research** | `play-store-apps /search` → | `realtime-forums-search /search` |
 | **App reputation analysis** | `play-store-apps /app-details` → | `realtime-news-data /search` |
 | **Job market research** | `jsearch /search` → | `jsearch /estimated-salary` |
@@ -160,8 +157,7 @@ Each API has its own folder at `apis/{api_id}/` containing:
 | **Event discovery** | `realtime-events-search /search` → | `local-business-data /search` |
 | **Image provenance discovery** | `reverse-image-search /search` → | `realtime-web-search /search` |
 | **Web page extraction workflow** | `realtime-web-search /search` → | `web-unblocker /fetch` |
-| **Knowledge-augmented research** | `realtime-web-search /search` → | `ai-overviews /ai-overviews` |
-| **Dataset summarization** | `realtime-product-search /search` → | `chatgpt /chat` |
+| **GEO tracking** | `realtime-web-search /search` → | `chatgpt /chat` or `gemini /chat` (check how AI models reference the topic) |
 
 ---
 
@@ -262,13 +258,11 @@ After completion, report:
 
 | If the User Retrieved | Suggested Next Workflow |
 |-----------------------|------------------------|
-| **Product listings** | Fetch reviews with `realtime-amazon-data` / `realtime-walmart-data` or generate insights with `chatgpt` |
-| **Reviews or feedback data** | Summarize sentiment with `gemini`, `copilot`, or `chatgpt` |
+| **Product listings** | Fetch reviews with `realtime-amazon-data` / `realtime-walmart-data` |
 | **Job listings** | Enrich compensation with `jsearch /estimated-salary` or company insights with `realtime-glassdoor-data` |
-| **News / forum discussions** | Generate trend analysis using `gemini`, `copilot`, or `ai-overviews` |
 | **Property listings** | Add commute insights with `driving-directions` or traffic context with `waze` |
 | **Search keyword ideas** | Expand with `web-search-autocomplete`, validate with `realtime-web-search` |
-| **App listings** | Analyze reputation with `realtime-forums-search` or summarize feedback with `chatgpt` |
+| **App listings** | Cross-reference with `realtime-forums-search` or `realtime-news-data` |
 
 ---
 
@@ -277,7 +271,7 @@ After completion, report:
 - **Lead generation:** Use `local-business-data` with `extract_emails_and_contacts=true`. For full regional coverage, use `--grid` mode (bounding box, auto-subdivides dense areas). For city-level, use `--zips` mode. `gmb_categories.json` and `us_zipcodes.json` are loaded internally.
 - **Contact enrichment from domains:** `website-contacts-scraper` → `email-search` → `social-links-search`
 - **Multi-store price comparison:** Chain `realtime-amazon-data` + `realtime-walmart-data` + `realtime-product-search`. Note: price formats differ across APIs.
-- **AI enrichment:** `chatgpt`, `gemini`, `copilot` use POST endpoints — use their `scrape.js` or write a custom script.
+- **GEO tracking:** `chatgpt`, `gemini`, `copilot` use POST endpoints — use their `scrape.js` or write a custom script to check how AI models reference a topic or brand.
 - **Known limitations:**
   - Yelp name matching is unreliable for cross-referencing with other APIs
   - Trustpilot reviews capped at ~200 without authentication

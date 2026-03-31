@@ -9,7 +9,7 @@ A Claude Code skill that lets you extract data from 35+ public web APIs using na
 - **Competitor analysis** — Scrape websites, compare pricing, monitor reviews
 - **Job & talent research** — Search job listings, salaries, and company profiles
 - **Finance & real estate** — Stock quotes, property listings, Zillow estimates
-- **AI enrichment** — Chain scraped data into ChatGPT, Gemini, or Copilot for analysis
+- **GEO tracking** — Monitor how AI search engines (ChatGPT, Gemini, Copilot) reference your brand or topic
 
 ## Covered APIs (36)
 
@@ -26,7 +26,7 @@ A Claude Code skill that lets you extract data from 35+ public web APIs using na
 | Finance | realtime-finance-data |
 | Events & Books | realtime-events-search, realtime-books-data |
 | Apps | play-store-apps |
-| AI | chatgpt, gemini, copilot, ai-overviews, google-ai-mode |
+| AI Search / GEO | chatgpt, gemini, copilot, ai-overviews, google-ai-mode |
 | Web | web-unblocker |
 
 ## Requirements
