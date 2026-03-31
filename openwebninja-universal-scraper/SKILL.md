@@ -273,9 +273,7 @@ After completion, report:
 - **Multi-store price comparison:** Chain `realtime-amazon-data` + `realtime-walmart-data` + `realtime-product-search`. Note: price formats differ across APIs.
 - **GEO tracking:** `chatgpt`, `gemini`, `copilot` use POST endpoints — use their `scrape.js` or write a custom script to check how AI models reference a topic or brand.
 - **Known limitations:**
-  - Yelp name matching is unreliable for cross-referencing with other APIs
   - Trustpilot reviews capped at ~200 without authentication
-  - `realtime-shorts-search` may return empty results for some queries
   - Company name searches (Glassdoor, Trustpilot) need exact names — "Disney" ≠ "Walt Disney Company"
 
 ## Error Handling
