@@ -24,15 +24,7 @@ function getApiKey() {
 function loadMeta(apiId) {
     const metaPath = path.join(SKILL_ROOT, 'apis', apiId, 'meta.json');
     try {
-        const meta = JSON.parse(fs.readFileSync(metaPath, 'utf8'));
-        if (meta.last_updated_yaml && meta.update_interval_seconds) {
-            const ageSeconds = (Date.now() - new Date(meta.last_updated_yaml).getTime()) / 1000;
-            if (ageSeconds > meta.update_interval_seconds) {
-                const ageDays = Math.round(ageSeconds / 86400);
-                console.error(`Warning: YAML spec for "${apiId}" is ${ageDays}d old. Run: node scripts/refresh_yamls.js --api ${apiId}`);
-            }
-        }
-        return meta;
+        return JSON.parse(fs.readFileSync(metaPath, 'utf8'));
     } catch (e) {
         return {};
     }
