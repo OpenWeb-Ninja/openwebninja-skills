@@ -1,0 +1,21 @@
+{
+  "name": "openwebninja-universal-scraper",
+  "version": "1.0.0",
+  "description": "Extract data from 36 public web APIs — local businesses, jobs, products, reviews, news, real estate, finance, and more. Output to JSON, CSV, Webhook, S3, FTP, Airtable, Google Sheets, or Slack.",
+  "author": {
+    "name": "OpenWeb Ninja",
+    "url": "https://github.com/OpenWeb-Ninja"
+  },
+  "homepage": "https://www.openwebninja.com",
+  "repository": "https://github.com/OpenWeb-Ninja/openwebninja-skills",
+  "license": "MIT",
+  "keywords": [
+    "scraping",
+    "data-extraction",
+    "lead-generation",
+    "web-data",
+    "api",
+    "market-research"
+  ],
+  "skills": "./openwebninja-universal-scraper/"
+}
