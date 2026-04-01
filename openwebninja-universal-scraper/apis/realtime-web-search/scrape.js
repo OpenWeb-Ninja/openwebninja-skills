@@ -65,7 +65,7 @@ async function main() {
         if (!args.query) { console.error('Error: --query required for /ai-mode'); process.exit(1); }
         const params = { prompt: args.query, gl: args.country || 'us', hl: args.language || 'en' };
         if (args.sessionToken) params.session_token = args.sessionToken;
-        const data = await apiCall(host, '/ai-mode', params, apiKey);
+        const data = await apiCall(host, '/ai-mode', params, apiKey, 'GET', null, 'realtime-web-search');
         const records = data.data ? [data.data] : [data];
         if (dryRun) { console.log(JSON.stringify(records, null, 2)); return; }
         writeOutput(records, outputPath, format, { api: 'realtime-web-search', endpoint: '/ai-mode', totalCalls: 1 });
@@ -76,7 +76,7 @@ async function main() {
     if (endpoint === '/ai-overviews') {
         if (!args.query) { console.error('Error: --query required for /ai-overviews'); process.exit(1); }
         const params = { q: args.query, gl: args.country || 'us', hl: args.language || 'en' };
-        const data = await apiCall(host, '/ai-overviews', params, apiKey);
+        const data = await apiCall(host, '/ai-overviews', params, apiKey, 'GET', null, 'realtime-web-search');
         const records = data.data ? [data.data] : [data];
         if (dryRun) { console.log(JSON.stringify(records, null, 2)); return; }
         writeOutput(records, outputPath, format, { api: 'realtime-web-search', endpoint: '/ai-overviews', query: args.query, totalCalls: 1 });
@@ -87,7 +87,7 @@ async function main() {
     if (endpoint === '/search-light') {
         if (!args.query) { console.error('Error: --query required for /search-light'); process.exit(1); }
         const params = { q: args.query, limit: String(count) };
-        const data = await apiCall(host, '/search-light', params, apiKey);
+        const data = await apiCall(host, '/search-light', params, apiKey, 'GET', null, 'realtime-web-search');
         const records = Array.isArray(data.data) ? data.data : (data.data ? [data.data] : [data]);
         if (dryRun) { console.log(JSON.stringify(records.slice(0, 5), null, 2)); return; }
         writeOutput(records, outputPath, format, { api: 'realtime-web-search', endpoint: '/search-light', query: args.query, totalCalls: 1 });
@@ -106,7 +106,7 @@ async function main() {
     const { results, totalCallsMade } = await fetchAll({
         host, endpoint: '/search', params, apiKey, count,
         pagination: 'offset', offsetParam: 'start', pageSize: numPerPage,
-        resultsPath: 'data', dryRun, delay: 300, maxCalls,
+        resultsPath: 'data', dryRun, delay: 300, maxCalls, apiId: 'realtime-web-search',
     });
 
     console.error(`${results.length} results in ${totalCallsMade} call(s).`);

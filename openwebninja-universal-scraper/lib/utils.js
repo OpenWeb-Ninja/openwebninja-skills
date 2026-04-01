@@ -64,10 +64,10 @@ function resolveOwnSlug(host) {
     return host.replace('.p.rapidapi.com', '');
 }
 
-function apiCall(host, endpoint, params, apiKey, method = 'GET', body = null) {
+function apiCall(host, endpoint, params, apiKey, method = 'GET', body = null, apiId = null) {
     const useOWN = isOpenWebNinjaKey(apiKey);
     const actualHost = useOWN ? 'api.openwebninja.com' : host;
-    const slug = useOWN ? resolveOwnSlug(host) : null;
+    const slug = useOWN ? (apiId || resolveOwnSlug(host)) : null;
     const actualEndpoint = useOWN ? `/${slug}${endpoint}` : endpoint;
 
     const url = new URL(`https://${actualHost}${actualEndpoint}`);
@@ -179,14 +179,14 @@ function writeOutput(records, outputPath, format, manifest) {
 
 // ─── Pagination ───────────────────────────────────────────────────────────────
 
-async function fetchAll({ host, endpoint, params, apiKey, count, pagination, pageSize, pageParam, offsetParam, cursorParam, cursorPath, resultsPath, dryRun, delay, maxCalls }) {
+async function fetchAll({ host, endpoint, params, apiKey, count, pagination, pageSize, pageParam, offsetParam, cursorParam, cursorPath, resultsPath, dryRun, delay, maxCalls, apiId }) {
     const allResults = [];
     let totalCallsMade = 0;
 
     function call(p) {
         totalCallsMade++;
         if (totalCallsMade > maxCalls) throw new Error(`Cost cap exceeded: ${totalCallsMade} calls, limit is ${maxCalls}. Use --max-calls to raise.`);
-        return apiCall(host, endpoint, p, apiKey);
+        return apiCall(host, endpoint, p, apiKey, 'GET', null, apiId);
     }
 
     if (pagination === 'none') {
