@@ -102,9 +102,9 @@ Each API has its own folder at `apis/{api_id}/` containing:
 | `ev-charge-finder` | EV charging stations by location | EV infrastructure research, trip planning |
 | `waze` | Real-time traffic alerts and jams | Traffic monitoring, incident tracking |
 | `web-unblocker` | Fetch any URL with JS rendering + anti-bot bypass | Web scraping, page extraction |
-| `chatgpt` | Query ChatGPT and get its response (POST, stateful) | GEO tracking, AI response monitoring |
-| `gemini` | Query Google Gemini and get its response (POST, stateful) | GEO tracking, AI response monitoring |
-| `copilot` | Query Microsoft Copilot and get its response (POST, stateful) | GEO tracking, AI response monitoring |
+| `chatgpt` | Query ChatGPT and get its response (POST, stateful) | GEO tracking, AI response monitoring, cross-model comparison |
+| `gemini` | Query Google Gemini and get its response (POST, stateful) | GEO tracking, AI response monitoring, cross-model comparison |
+| `copilot` | Query Microsoft Copilot and get its response (POST, stateful) | GEO tracking, AI response monitoring, cross-model comparison |
 | `ai-overviews` | Google AI Overview with cited sources | GEO tracking, AI search monitoring |
 | `google-ai-mode` | Google AI Mode (Gemini 2.5) structured results | GEO tracking, AI search monitoring |
 
@@ -164,6 +164,7 @@ Each API has its own folder at `apis/{api_id}/` containing:
 | **Image provenance discovery** | `reverse-image-search /search` → | `realtime-web-search /search` |
 | **Web page extraction workflow** | `realtime-web-search /search` → | `web-unblocker /fetch` |
 | **GEO tracking** | `realtime-web-search /search` → | `chatgpt /chat` or `gemini /chat` (check how AI models reference the topic) |
+| **AI response comparison** | `chatgpt /chat` + `gemini /chat` + `copilot /chat` | Same query across models — compare brand mentions, product recommendations, or factual accuracy |
 
 ---
 
