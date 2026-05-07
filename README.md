@@ -6,7 +6,7 @@ A collection of Claude Code skills for the [OpenWeb Ninja](https://openwebninja.
 
 | Skill | Description |
 |-------|-------------|
-| [openwebninja-universal-scraper](./openwebninja-universal-scraper) | Extract data from 35+ public web APIs using natural language — lead generation, market research, competitor analysis, finance, real estate, and more |
+| [openwebninja](./openwebninja) | Extract data from 35+ public web APIs using natural language — lead generation, market research, competitor analysis, finance, real estate, and more |
 
 ## What are Claude Code Skills?
 
