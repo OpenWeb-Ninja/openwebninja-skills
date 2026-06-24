@@ -54,7 +54,9 @@ function resolveOwnSlug(host) {
                         const match = yaml.match(/url:\s*https:\/\/api\.openwebninja\.com\/([^\s\n]+)/);
                         if (match) return match[1];
                     }
-                    // Fallback to api_id
+                    // Fallback to the authoritative OWN slug (portal_api_id in hyphen
+                    // form), then api_id / folder name.
+                    if (meta.portal_api_id) return meta.portal_api_id.replace(/_/g, '-');
                     return meta.api_id || dir;
                 }
             }
@@ -64,10 +66,21 @@ function resolveOwnSlug(host) {
     return host.replace('.p.rapidapi.com', '');
 }
 
+// Resolve the OWN URL slug from an api folder id. The slug is the API's portal_api_id in
+// hyphen form (e.g. real_time_walmart_data -> real-time-walmart-data). These slugs are
+// irregular and do NOT always match the folder name, so derive from meta.json's
+// portal_api_id (authoritative). If no meta match (apiId may already be the hyphen slug),
+// use it verbatim.
+function ownSlugForApiId(apiId) {
+    const meta = loadMeta(apiId);
+    if (meta && meta.portal_api_id) return meta.portal_api_id.replace(/_/g, '-');
+    return apiId;
+}
+
 function apiCall(host, endpoint, params, apiKey, method = 'GET', body = null, apiId = null) {
     const useOWN = isOpenWebNinjaKey(apiKey);
     const actualHost = useOWN ? 'api.openwebninja.com' : host;
-    const slug = useOWN ? (apiId || resolveOwnSlug(host)) : null;
+    const slug = useOWN ? (apiId ? ownSlugForApiId(apiId) : resolveOwnSlug(host)) : null;
     const actualEndpoint = useOWN ? `/${slug}${endpoint}` : endpoint;
 
     const url = new URL(`https://${actualHost}${actualEndpoint}`);

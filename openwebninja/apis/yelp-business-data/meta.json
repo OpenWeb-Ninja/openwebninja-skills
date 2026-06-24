@@ -1,5 +1,6 @@
 {
   "api_id": "yelp-business-data",
+  "portal_api_id": "yelp_business_data",
   "rapidapi_host": "red-flower-business-data.p.rapidapi.com",
   "rate_limit_per_second": 5,
   "notes": "Offset-based pagination using 'start' param. Pass limit to control page size.",
