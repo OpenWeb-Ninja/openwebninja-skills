@@ -91,7 +91,7 @@ Search by Coordinates
 Search by Polygon
 
 **Required:**
-- `polygon` (string) Example: `>-`
+- `polygon` (string) Pairs of `longitude latitude` (longitude first), comma-separated. Format: `lng1 lat1,lng2 lat2,lng3 lat3,...`. Closed automatically. Example: `-118.50 34.03,-118.47 34.03,-118.47 34.00,-118.50 34.00`
 
 **Optional:**
 - `page` (number, default: 1) Example: `1`

@@ -15,7 +15,8 @@ Required (varies by endpoint):
   --zpid          Zillow property ID (for /property-details, /zestimate)
   --address       Full property address (for /property-details-address)
   --lat / --long  Coordinates (for /search-coordinates)
-  --polygon       Polygon string (for /search-polygon)
+  --polygon       Polygon as "lng lat" pairs, longitude first (for /search-polygon)
+                  e.g. "-118.50 34.03,-118.47 34.03,-118.47 34.00,-118.50 34.00"
 
 Optional:
   --endpoint      Endpoint: /search (default), /search-coordinates, /search-polygon, /property-details, /property-details-address, /zestimate
