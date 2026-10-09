@@ -74,6 +74,8 @@ Product Details
 - `fields` (string) Example: `product_price,product_url,is_best_seller,sales_volume`
 
 **Pagination:** none
+**Response path:** `data` (a list of products when several ASINs are requested)
+**Key fields:** asin, product_title, product_price, product_price_value, product_original_price, unit_price_value, unit_price_unit, unit_count, maximum_order_quantity, product_star_rating, product_num_ratings, product_num_offers, product_minimum_offer_price, product_offers_link, main_buy_box (with is_fba), buy_boxes, best_sellers_rank, product_information, important_information, product_photos, product_photos_labeled, customers_say, review_aspects, review_aspects_details, customer_review_media, top_reviews, frequently_bought_together, frequently_bought_together_total_price, sponsored_products, carousel_products, landing_asin, is_redirected
 
 ---
 
@@ -116,7 +118,7 @@ Product Review Details — Get the details of a specific product review by id
 
 **Pagination:** none
 **Response path:** `data`
-**Key fields:** Size
+**Key fields:** review_id, review_title, review_comment, review_star_rating, review_link, review_author, review_images, review_date, review_date_iso, is_verified_purchase, helpful_votes, country, review_language, reviewed_product_asin, reviewed_product_variant, is_different_asin, is_vine
 
 ---
 
@@ -133,7 +135,7 @@ Top Product Reviews — Get top product reviews by ASIN from the Amazon product 
 
 **Pagination:** none
 **Response path:** `data`
-**Key fields:** review_id, review_title, review_comment, review_star_rating, review_link, review_author_id, review_author, review_author_url, review_author_avatar, review_images, review_video, review_date, is_verified_purchase, helpful_vote_statement, reviewed_product_asin, reviewed_product_variant, is_vine, Size, Color
+**Key fields:** review_id, review_title, review_comment, review_star_rating, review_link, review_author_id, review_author, review_author_url, review_author_avatar, review_images, review_video, review_date, review_date_iso, is_verified_purchase, helpful_vote_statement, helpful_votes, country, review_language, reviewed_product_asin, reviewed_product_variant, is_different_asin, is_vine
 
 ---
 
@@ -154,6 +156,8 @@ Product Offers
 
 **Pagination:** page_number (param: `page`)
 **Page size param:** `limit` (default: 100)
+**Response path:** `data` (offers in `data.product_offers[]`; a list of products when several ASINs are requested)
+**Key fields:** product_offers (product_price, product_condition, ships_from, is_fba, seller, seller_id, seller_star_rating, seller_num_ratings, seller_positive_ratings_percentage, delivery_price, delivery_time), main_buy_box, buy_boxes
 
 ---
 
