@@ -375,7 +375,7 @@ GTIN to ASIN — Find Amazon products by GTIN, EAN, UPC, or ISBN. Returns the ma
 - `product_identifier` (string) — GTIN, EAN, UPC or ISBN to look up. Example: `9780132350884`
 
 **Optional:**
-- `country` (string, default: US) — values: US, AU, BR, CA, CN, FR, DE, IN, IT, MX, NL, SG, ES, TR, AE, GB, JP, SA, PL, SE, BE, EG, ZA, IE
+- `country` (string, default: US) — values: US, AU, BR, CA, FR, DE, IN, IT, MX, NL, SG, ES, TR, AE, GB, JP, SA, PL, SE, BE, EG, ZA, IE (BE, EG, IE, SA, SE and ZA rarely return matches; CN is not supported)
 
 **Pagination:** none
 **Response path:** `data` (products in `data.products[]`)

@@ -186,11 +186,11 @@ Agent Properties (For Sale) — Get an agent's current active for-sale listings.
 
 **Optional:**
 - `page` (number, default: 1) Example: `1`
-- `include_team` (boolean, default: true) — Include listings from the agent's team members Example: `true`
+- `include_team` (boolean) — accepted for compatibility; it has no effect (Zillow's profile data no longer separates team listings)
 
 **Pagination:** page_number (param: `page`), up to 5 listings per page
-**Response path:** `data` (listings in `data.listings[]`, total in `data.listing_count`)
-**Key fields:** zpid, home_type, address, bedrooms, bathrooms, price, price_currency, status, latitude, longitude, brokerage_name, primary_photo_url, listing_url, hasOpenHouse, has_vr_model
+**Response path:** `data` (listings in `data.listings[]`; `data.listing_count` is always null, Zillow no longer exposes the total: page until a page comes back short)
+**Key fields:** zpid, address, bedrooms, bathrooms, price, brokerage_name, home_marketing_type, primary_photo_url, listing_url (home_type, status, coordinates, currency and open houses are always null now)
 
 ---
 
@@ -204,8 +204,8 @@ Agent Properties (Sold) — Get an agent's past sales history.
 - `page` (number, default: 1) — values: 1-20 Example: `1`
 
 **Pagination:** page_number (param: `page`), up to 5 sales per page
-**Response path:** `data` (sales in `data.sold_properties[]`, total in `data.total_sold_properties`)
-**Key fields:** zpid, represented, sold_date, price, street_address, city, state, city_state_zipcode, bedrooms, bathrooms, livingAreaValue, latitude, longitude, image_url, home_details_url
+**Response path:** `data` (sales in `data.sold_properties[]`; `data.total_sold_properties` is always null, Zillow no longer exposes the total)
+**Key fields:** zpid, represented, sold_date, price, street_address, city, state, city_state_zipcode, bedrooms, bathrooms, livingAreaValue, image_url, home_details_url (coordinates are always null now)
 
 ---
 
@@ -217,10 +217,10 @@ Agent Properties (For Rent) — Get an agent's current rental listings.
 
 **Optional:**
 - `page` (number, default: 1) Example: `1`
-- `include_team` (boolean, default: true) — Include listings from the agent's team members Example: `true`
+- `include_team` (boolean) — accepted for compatibility; it has no effect (Zillow's profile data no longer separates team listings)
 
 **Pagination:** page_number (param: `page`), up to 5 listings per page
-**Response path:** `data` (listings in `data.listings[]`, total in `data.listing_count`)
-**Key fields:** zpid, home_type, address, bedrooms, bathrooms, price, price_currency, latitude, longitude, listing_url
+**Response path:** `data` (listings in `data.listings[]`; `data.listing_count` is always null, Zillow no longer exposes the total: page until a page comes back short)
+**Key fields:** zpid, address, bedrooms, bathrooms, price, brokerage_name, home_marketing_type, primary_photo_url, listing_url (home_type, coordinates and currency are always null now)
 
 ---
