@@ -14,7 +14,7 @@ Required (varies by endpoint):
   --query          Search query (for /search)
   --category-id    Category ID (for /products-by-category)
   --product-id     Product ID / eBay item ID (for /product-details)
-  --seller-id      eBay seller username (for /seller-feedback)
+  --seller-id      eBay seller user ID, e.g. wireless-source (for /seller-feedback)
 
 Optional:
   --endpoint       Endpoint: /search (default), /products-by-category, /product-details, /seller-feedback
@@ -57,7 +57,7 @@ async function main() {
     const endpoint = args.endpoint || '/search';
     const apiKey = getApiKey();
     const meta = loadMeta('realtime-ebay-data');
-    const host = meta.rapidapi_host || 'real-time-ebay-data.p.rapidapi.com';
+    const host = meta.rapidapi_host || 'real-time-ebay-data2.p.rapidapi.com';
     const count = parseInt(args.count, 10) || 120;
     const format = args.format || 'json';
     const dryRun = !!args.dryRun;

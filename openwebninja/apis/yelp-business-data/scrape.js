@@ -83,7 +83,7 @@ async function main() {
         const { results, totalCallsMade } = await fetchAll({
             host, endpoint: '/business-reviews', params, apiKey, count,
             pagination: 'page_number', pageParam: 'page', pageSize: 10,
-            resultsPath: 'data', dryRun, delay: 300, maxCalls,
+            resultsPath: 'data.reviews', dryRun, delay: 300, maxCalls,
         });
         writeOutput(results, outputPath, format, { api: 'yelp-business-data', endpoint: '/business-reviews', businessId: args.businessId, totalCalls: totalCallsMade });
         return;

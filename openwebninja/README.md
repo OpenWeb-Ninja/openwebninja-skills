@@ -1,28 +1,28 @@
 # OpenWeb Ninja Universal Scraper
 
-A Claude Code skill that lets you extract data from 35+ public web APIs using natural language. Just describe what you want — Claude selects the right API, runs the script, and returns results as JSON or CSV.
+A Claude Code skill that lets you extract data from 50 public web APIs using natural language. Just describe what you want — Claude selects the right API, runs the script, and returns results as JSON or CSV.
 
 ## What it can do
 
-- **Lead generation** — Find businesses, emails, phones, and social profiles by location or industry
+- **Lead generation** — Find businesses, emails, phones, and social profiles by location or industry, or pull every business matching a category and area from the Local Business Database
 - **Market research** — Search news, forums, reviews, and product listings
 - **Competitor analysis** — Scrape websites, compare pricing, monitor reviews
-- **Job & talent research** — Search job listings, salaries, and company profiles
+- **Job & talent research** — Search job listings (Google for Jobs, LinkedIn, Indeed, ZipRecruiter, Monster, Bing Jobs), salaries, and company profiles
 - **Finance & real estate** — Stock quotes, property listings, Zillow estimates
 - **GEO tracking** — Monitor how AI search engines (ChatGPT, Gemini, Copilot) reference your brand or topic
 
-## Covered APIs (36)
+## Covered APIs (50)
 
 | Category | APIs |
 |----------|------|
-| Local & Maps | local-business-data, local-rank-tracker, waze, ev-charge-finder, driving-directions |
-| E-commerce | realtime-amazon-data, realtime-product-search, realtime-walmart-data, realtime-costco-data |
-| Jobs & Salaries | jsearch, job-salary-data, realtime-glassdoor-data |
+| Local & Maps | local-business-data, local-business-database, local-rank-tracker, waze, google-maps-traffic-alerts, ev-charge-finder, driving-directions |
+| E-commerce | realtime-amazon-data, realtime-product-search, realtime-walmart-data, realtime-costco-data, realtime-ebay-data, realtime-wayfair-data, realtime-homedepot-data |
+| Jobs & Salaries | jsearch, realtime-linkedin-data, realtime-indeed-data, realtime-ziprecruiter-data, realtime-monster-data, realtime-bing-jobs-data, job-salary-data, realtime-glassdoor-data |
 | Reviews | trustpilot-company-and-reviews, yelp-business-data |
-| News & Forums | realtime-news-data, realtime-forums-search |
-| Search | realtime-web-search, realtime-image-search, realtime-lens-data, realtime-shorts-search, web-search-autocomplete, reverse-image-search |
+| News & Forums | realtime-news-data, realtime-news-search, realtime-forums-search |
+| Search | realtime-web-search, realtime-bing-search, realtime-image-search, realtime-lens-data, realtime-shorts-search, realtime-video-search, web-search-autocomplete, reverse-image-search |
 | Social & Contacts | website-contacts-scraper, social-links-search, email-search |
-| Real Estate | realtime-zillow-data |
+| Real Estate | realtime-zillow-data, realtime-redfin-data |
 | Finance | realtime-finance-data |
 | Events & Books | realtime-events-search, realtime-books-data |
 | Apps | play-store-apps |

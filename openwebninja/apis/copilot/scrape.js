@@ -69,9 +69,9 @@ async function main() {
 
     const record = {
         message: args.message,
-        conversation_id: data.conversation_id || args.conversationId || null,
+        conversation_id: (data.data && data.data.conversation_id) || args.conversationId || null,
         context_file: args.context || null,
-        response: data.response || data.result || data.answer || data.message || JSON.stringify(data),
+        response: (data.data && data.data.message) || JSON.stringify(data),
         raw: data,
     };
 

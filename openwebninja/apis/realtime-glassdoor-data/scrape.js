@@ -85,7 +85,7 @@ async function main() {
         const { results, totalCallsMade } = await fetchAll({
             host, endpoint: '/company-reviews', params, apiKey, count,
             pagination: 'page_number', pageParam: 'page', pageSize: 10,
-            resultsPath: 'data', dryRun, delay: 300, maxCalls,
+            resultsPath: 'data.reviews', dryRun, delay: 300, maxCalls,
         });
         writeOutput(results, outputPath, format, { api: 'realtime-glassdoor-data', endpoint: '/company-reviews', companyId: args.companyId, totalCalls: totalCallsMade });
         return;
@@ -103,7 +103,7 @@ async function main() {
         const { results, totalCallsMade } = await fetchAll({
             host, endpoint: '/company-salaries-v2', params, apiKey, count,
             pagination: 'page_number', pageParam: 'page', pageSize: 10,
-            resultsPath: 'data', dryRun, delay: 300, maxCalls,
+            resultsPath: 'data.salaries', dryRun, delay: 300, maxCalls,
         });
         writeOutput(results, outputPath, format, { api: 'realtime-glassdoor-data', endpoint: '/company-salaries-v2', companyId: args.companyId, totalCalls: totalCallsMade });
         return;
@@ -112,7 +112,7 @@ async function main() {
     // Company search (no pagination — uses limit param)
     if (endpoint === '/company-search') {
         if (!args.query) { console.error('Error: --query required for /company-search. Use --help for usage.'); process.exit(1); }
-        const params = { query: args.query, limit: Math.min(count, 10), domain: glassdoorDomain };
+        const params = { query: args.query, limit: Math.min(count, 100), domain: glassdoorDomain };
 
         const data = await apiCall(host, '/company-search', params, apiKey);
         const records = Array.isArray(data.data) ? data.data : (Array.isArray(data) ? data : [data]);

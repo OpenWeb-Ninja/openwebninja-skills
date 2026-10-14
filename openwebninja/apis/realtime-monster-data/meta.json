@@ -1,0 +1,11 @@
+{
+  "api_id": "realtime-monster-data",
+  "portal_api_id": "realtime_monster_data",
+  "rapidapi_host": "real-time-monster-data.p.rapidapi.com",
+  "spec_url": "https://openwebninja.s3.us-east-1.amazonaws.com/portal/openapi/realtime_monster_data.yaml",
+  "last_updated_yaml": "2026-10-14T00:00:00.000Z",
+  "update_interval_seconds": 86400,
+  "rapidapi_url": "https://rapidapi.com/letscrape-6bRBa3QguO5/api/real-time-monster-data",
+  "openwebninja_url": "https://www.openwebninja.com/api/real-time-monster-data",
+  "notes": "Monster job search (/search), job lookup by id (/job-details, up to 20 ids per call) and every open job at one or more employers (/company-jobs, matched on the employer display name). /search and /company-jobs return a flat array at data, 10 jobs per page via page (1-51) + num_pages (1-20); page + num_pages - 1 must stay within page 51, so at most 510 jobs are retrievable per query. Billing is one request per page of 10, plus ONE extra request for any call whose page is above 1, so fetch several pages per call with num_pages rather than one call per page (scrape.js does this). A search row already carries the full job (description, salary, coordinates, apply link); /job-details is only for re-resolving stored ids and bills one request per id. Short pages occur inside the window, so only an empty page means the end. Countries with jobs: us, gb, ca, ie, fr, be, nl, es, se, ch, at, it, lu; Monster has no jobs for de, au, nz, in, sg, hk, ph, my, mx, br. radius (km, 1-160) requires location."
+}

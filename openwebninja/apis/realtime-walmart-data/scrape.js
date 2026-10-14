@@ -24,13 +24,13 @@ Optional:
   --sort-by       Sort: best_match, price_low, price_high, best_seller, top_rated (search/category)
   --min-price     Min price filter (search/category)
   --max-price     Max price filter (search/category)
-  --store-id      Walmart store ID
-  --state         US state code, e.g. CA
-  --zip           ZIP code, e.g. 90210
+  --store-id      Walmart store ID (applied for domain ca only)
+  --state         US state code, e.g. CA (search/category)
+  --zip           ZIP code, e.g. 90210 (for /products-by-category)
   --facet         Facet filter string
   --rating        Review star filter 1-5 (for /product-reviews)
   --sort          Review sort: relevancy, recent, rating_high_low, rating_low_high
-  --limit         Results per page (default: 40 for search, 10 for reviews)
+  --limit         Reviews per page, 1-50 (for /product-reviews, default: 10). Search/category pages are fixed at 40
   --dry-run       Fetch first page only, print to console
   --max-calls     Safety cap on API calls (default: 50)
   --help          Show this help
@@ -72,6 +72,7 @@ async function main() {
     if (endpoint === '/product-details') {
         if (!args.productId) { console.error('Error: --product-id required for /product-details'); process.exit(1); }
         const params = { product_id: args.productId, domain };
+        if (args.storeId) params.store_id = args.storeId;
         const data = await apiCall(host, '/product-details', params, apiKey);
         const records = data.data ? [data.data] : [data];
         if (dryRun) { console.log(JSON.stringify(records, null, 2)); return; }
@@ -83,8 +84,9 @@ async function main() {
     if (endpoint === '/product-offers') {
         if (!args.productId) { console.error('Error: --product-id required for /product-offers'); process.exit(1); }
         const params = { product_id: args.productId, domain };
+        if (args.storeId) params.store_id = args.storeId;
         const data = await apiCall(host, '/product-offers', params, apiKey);
-        const records = Array.isArray(data.data) ? data.data : (data.data ? [data.data] : [data]);
+        const records = (data.data && Array.isArray(data.data.offers)) ? data.data.offers : (data.data ? [data.data] : [data]);
         if (dryRun) { console.log(JSON.stringify(records, null, 2)); return; }
         writeOutput(records, outputPath, format, { api: 'realtime-walmart-data', endpoint: '/product-offers', totalCalls: 1 });
         return;
@@ -101,7 +103,7 @@ async function main() {
         const { results, totalCallsMade } = await fetchAll({
             host, endpoint: '/product-reviews', params, apiKey, count,
             pagination: 'page_number', pageParam: 'page', pageSize,
-            resultsPath: 'data', dryRun, delay: 300, maxCalls,
+            resultsPath: 'data.reviews', dryRun, delay: 300, maxCalls,
         });
         console.error(`${results.length} reviews in ${totalCallsMade} call(s).`);
         if (dryRun) { console.log(JSON.stringify(results.slice(0, 5), null, 2)); return; }
@@ -112,8 +114,8 @@ async function main() {
     // ── Products by Category (paginated) ──────────────────────────────────────
     if (endpoint === '/products-by-category') {
         if (!args.categoryId) { console.error('Error: --category-id required for /products-by-category'); process.exit(1); }
-        const pageSize = parseInt(args.limit, 10) || 40;
-        const params = { category_id: args.categoryId, domain, limit: pageSize };
+        const pageSize = 40;
+        const params = { category_id: args.categoryId, domain };
         if (args.sortBy) params.sort_by = args.sortBy;
         if (args.minPrice) params.min_price = args.minPrice;
         if (args.maxPrice) params.max_price = args.maxPrice;
@@ -125,7 +127,7 @@ async function main() {
         const { results, totalCallsMade } = await fetchAll({
             host, endpoint: '/products-by-category', params, apiKey, count,
             pagination: 'page_number', pageParam: 'page', pageSize,
-            resultsPath: 'data', dryRun, delay: 300, maxCalls,
+            resultsPath: 'data.products', dryRun, delay: 300, maxCalls,
         });
         console.error(`${results.length} products in ${totalCallsMade} call(s).`);
         if (dryRun) { console.log(JSON.stringify(results.slice(0, 5), null, 2)); return; }
@@ -136,15 +138,14 @@ async function main() {
     // ── Search (default, paginated) ───────────────────────────────────────────
     if (!args.query) { console.error('Error: --query required for /search. Use --help for usage.'); process.exit(1); }
 
-    const pageSize = parseInt(args.limit, 10) || 40;
-    const params = { query: args.query, domain, limit: pageSize };
+    const pageSize = 40;
+    const params = { query: args.query, domain };
     if (args.sortBy) params.sort_by = args.sortBy;
     if (args.minPrice) params.min_price = args.minPrice;
     if (args.maxPrice) params.max_price = args.maxPrice;
     if (args.storeId) params.store_id = args.storeId;
     if (args.facet) params.facet = args.facet;
     if (args.state) params.state = args.state;
-    if (args.zip) params.zip = args.zip;
 
     const { results, totalCallsMade } = await fetchAll({
         host, endpoint: '/search', params, apiKey, count,

@@ -73,7 +73,7 @@ async function main() {
         const params = { query: args.query };
         if (args.near) params.near = args.near;
         const data = await apiCall(host, '/places', params, apiKey);
-        const records = Array.isArray(data.data) ? data.data : (data.data ? [data.data] : [data]);
+        const records = data.data && data.data.results ? data.data.results : (Array.isArray(data.data) ? data.data : [data]);
         console.error(`${records.length} location(s) in 1 call.`);
         if (dryRun) { console.log(JSON.stringify(records.slice(0, 5), null, 2)); return; }
         writeOutput(records, outputPath, format, { api: 'local-rank-tracker', endpoint: '/places', query: args.query, totalCalls: 1 });

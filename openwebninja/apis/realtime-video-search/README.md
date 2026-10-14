@@ -2,7 +2,7 @@
 
 > Full OpenAPI spec: https://openwebninja.s3.us-east-1.amazonaws.com/portal/openapi/realtime_video_search.yaml
 
-**Host:** `real-time-video-search.p.rapidapi.com`
+**Host:** `real-time-video-search2.p.rapidapi.com`
 **Notes:** Page-based pagination — each page returns up to 10 video results.
 
 ## Endpoints

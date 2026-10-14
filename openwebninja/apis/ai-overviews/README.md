@@ -1,31 +1,30 @@
 # ai-overviews
 
-> Full OpenAPI spec: https://openwebninja.s3.us-east-1.amazonaws.com/portal/openapi/realtime_web_search.yaml
+> Full OpenAPI spec: https://openwebninja.s3.us-east-1.amazonaws.com/portal/openapi/ai_overviews.yaml
 
-**Host:** `real-time-web-search.p.rapidapi.com`
-**Notes:** The `/ai-overviews` endpoint is part of the **realtime-web-search** API. This folder documents the endpoint and provides usage recipes. Use `apis/realtime-web-search/scrape.js` with `--endpoint /ai-overviews` to access it — no separate scrape.js is needed.
+**Host:** `ai-overviews.p.rapidapi.com`
+**Notes:** Standalone AI Overviews API (its own RapidAPI listing and OpenWeb Ninja subscription). Single call per query, no pagination. Use `apis/ai-overviews/scrape.js`. To get AI Overviews together with organic results, use realtime-web-search `/search` with `fetch_ai_overviews=true`.
 
 ## Endpoints
 
 ### GET /ai-overviews
-Fetch Google AI Overview content for a search query. Returns the structured AI-generated summary that Google shows at the top of search results for eligible queries.
+AI Overviews — Get Google Search AI Overviews, including text parts (paragraphs and lists) and reference links. Pulled in real-time from Google Search.
 
 **Required:**
-- `q` (string) Example: `what is the speed of light`
+- `q` (string) Example: `How to approach solving a hard math problem?`
 
 **Optional:**
+- `location` (string) — city-level location the search originates from Example: `London, England, United Kingdom`
 - `gl` (string, default: us) — Country code (ISO 3166-1 alpha-2) Example: `us`
 - `hl` (string, default: en) — Language code (ISO 639-1 alpha-2) Example: `en`
 
 **Pagination:** none
 **Response path:** `data`
-**Key fields:** text_parts, reference_links, url, snippet, source, displayed_link, position, rank, answers_count, top_answer, date
+**Key fields:** search_returned_ai_overviews, text_parts (type, text, list), reference_links (title, link, snippet, source, date)
 
 ## Usage
 
-Use the realtime-web-search scrape.js:
-
 ```bash
-node --env-file=.env openwebninja_universal_scraper/apis/realtime-web-search/scrape.js \
-  --endpoint /ai-overviews --query "your question here" --dry-run
+node --env-file=.env openwebninja_universal_scraper/apis/ai-overviews/scrape.js \
+  --query "your question here" --dry-run
 ```

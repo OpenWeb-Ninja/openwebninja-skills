@@ -5,7 +5,7 @@
 > Full OpenAPI spec: https://openwebninja.s3.us-east-1.amazonaws.com/portal/openapi/yelp_business_data.yaml
 
 **Host:** `red-flower-business-data.p.rapidapi.com`
-**Notes:** Offset-based pagination using 'start' param. Pass limit to control page size.
+**Notes:** /business-search is offset-paginated via `start` (number of results to skip). /business-reviews is page-based (`page`, up to 10 reviews per page; `num_pages` fetches several pages in one call), reviews in `data.reviews[]`.
 
 ## Endpoints
 
@@ -55,8 +55,8 @@ Business Reviews — Fetch a single or multiple business review pages from Yelp 
 - `query` (string) — Return reviews matching a text query
 - `language` (string, default: en) Example: `en`
 
-**Pagination:** page_number (param: `page`)
-**Response path:** `data`
-**Key fields:** language, count, useful, funny, cool, helpful, thanks, love_this, oh_no
+**Pagination:** page_number (param: `page`, up to 10 reviews per page)
+**Response path:** `data` (reviews in `data.reviews[]`, plus `data.total`, `data.review_languages`)
+**Key fields:** review_id, review_rating, review_text, review_datetime_utc, review_language, review_photos, review_feedback_counts (useful, funny, cool), review_reaction_counts (helpful, thanks, love_this, oh_no), author_id, author_name, author_location, business_owner_replies
 
 ---

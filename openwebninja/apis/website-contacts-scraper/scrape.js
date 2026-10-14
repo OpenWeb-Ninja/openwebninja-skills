@@ -13,8 +13,11 @@ Scrape contact information (emails, phones, social profiles) from websites.
 Required (one of):
   --domain            Single domain to scrape (e.g. "openwebninja.com")
   --domains           Comma-separated list of domains (max 20 per batch)
+  --keywords          Company names / keywords separated by "|" (for /website-url-by-keyword, max 20 per batch)
 
 Optional:
+  --endpoint          Endpoint: /scrape-contacts (default), /website-url-by-keyword
+  --limit             Website URLs per keyword, 1-50 (for /website-url-by-keyword, default: 1)
   --format            json | csv (default: json)
   --output            Output file path (auto-generated if omitted)
   --match-email       Only return emails matching the domain (default: false)
@@ -52,6 +55,32 @@ async function main() {
 
     const ts = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
     const outputPath = args.output || path.join('output', `website-contacts_${ts}.${format}`);
+
+    // ── Website URL by keyword (POST, up to 20 keywords per call) ─────────────
+    if (args.endpoint === '/website-url-by-keyword') {
+        const keywords = (args.keywords || '').split('|').map(k => k.trim()).filter(Boolean);
+        if (!keywords.length) { console.error('Error: --keywords required for /website-url-by-keyword'); process.exit(1); }
+        const limit = parseInt(args.limit, 10) || 1;
+        const results = [];
+        let calls = 0;
+        for (let i = 0; i < keywords.length; i += 20) {
+            if (i > 0) await sleep(300);
+            calls++;
+            const batch = keywords.slice(i, i + 20);
+            console.error(`  Batch ${calls}: ${batch.length} keyword(s)`);
+            const data = await apiCall(host, '/website-url-by-keyword', {}, apiKey, 'POST', { keywords: batch, limit });
+            // data is keyed by keyword: a URL string when limit=1, an array of URLs when limit>1; no-match keywords are omitted
+            for (const k of batch) {
+                const v = data.data ? data.data[k] : undefined;
+                results.push({ keyword: k, websites: v === undefined ? [] : (Array.isArray(v) ? v : [v]) });
+            }
+            if (dryRun) break;
+        }
+        console.error(`${results.filter(r => r.websites.length).length}/${results.length} keyword(s) matched in ${calls} call(s).`);
+        if (dryRun) { console.log(JSON.stringify(results, null, 2)); return; }
+        writeOutput(results, outputPath, format, { api: 'website-contacts-scraper', endpoint: '/website-url-by-keyword', totalCalls: calls });
+        return;
+    }
 
     // Build domain list
     let domainList = [];

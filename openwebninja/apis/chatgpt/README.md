@@ -8,8 +8,16 @@
 ## Endpoints
 
 ### POST /chat
-ChatGPT — Chat with OpenAI ChatGPT with support for continuous conversation and markdown/plain-text.
+Chat — Chat with OpenAI ChatGPT with support for continuous conversation and markdown/plain-text.
+
+**Required (JSON body):**
+- `message` (string) — Message to send to ChatGPT Example: `Hello`
+
+**Optional (JSON body):**
+- `markdown` (boolean, default: true) — return the reply in markdown
 
 **Pagination:** none
+**Response path:** `data`
+**Key fields:** reply_text, content_references (sources, images, videos)
 
 ---

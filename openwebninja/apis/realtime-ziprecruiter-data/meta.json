@@ -1,0 +1,11 @@
+{
+  "api_id": "realtime-ziprecruiter-data",
+  "portal_api_id": "realtime_ziprecruiter_data",
+  "rapidapi_host": "real-time-ziprecruiter-data.p.rapidapi.com",
+  "spec_url": "https://openwebninja.s3.us-east-1.amazonaws.com/portal/openapi/realtime_ziprecruiter_data.yaml",
+  "last_updated_yaml": "2026-10-14T00:00:00.000Z",
+  "update_interval_seconds": 86400,
+  "rapidapi_url": "https://rapidapi.com/letscrape-6bRBa3QguO5/api/real-time-ziprecruiter-data",
+  "openwebninja_url": "https://www.openwebninja.com/api/real-time-ziprecruiter-data",
+  "notes": "United States and Canada only (country us or ca; anything else is a 400). /search and /job-details return a flat array of JSearch-style job objects at data. /search is page_number paginated (param: page, 1-50) at a fixed 20 jobs per page; num_pages (1-20) concatenates consecutive pages in one call, and a call returning fewer than num_pages x 20 jobs is the end of the result set (largest set observed: 946 jobs). include_details defaults to false: a plain search card carries only a short teaser (ziprecruiter_short_description) and job_description, job_highlights, employer_website and the company fields come back null; include_details=true fills them at one extra billed request per job and caps num_pages at 5. Scope to one company with company_id (the ziprecruiter_company_id on any job) and send location with it; results are always in ZipRecruiter's relevance order (sort params are a 400). /job-details takes up to 20 comma-separated job_id values and always returns full details, billed one request per id. /estimated-salary returns one annual pay row at data[0] for a job title, nationally or for one US state or Canadian province spelled out in full (a city or 2-letter code is a 400); median_salary is the real median, with p25/p75, a histogram, per-state table and top-paying cities in ziprecruiter_* fields."
+}

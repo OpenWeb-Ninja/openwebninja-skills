@@ -4,10 +4,10 @@
 
 ```bash
 node --env-file=.env openwebninja_universal_scraper/apis/realtime-events-search/scrape.js \
-  --query "Concerts in San Francisco" --count 50 --format csv
+  --query "Concerts in San Francisco" --format csv
 ```
 
-Fetches up to 50 concert events with name, date, venue, and description, exported as CSV.
+Fetches the concert events Google shows for the query (up to 10) with name, date, venue, and description, exported as CSV.
 
 ## 2. This week's events (dry run)
 

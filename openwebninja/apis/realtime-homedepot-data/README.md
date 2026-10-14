@@ -2,7 +2,7 @@
 
 > Full OpenAPI spec: https://openwebninja.s3.us-east-1.amazonaws.com/portal/openapi/realtime_homedepot_data.yaml
 
-**Host:** `realtime-homedepot-data.p.rapidapi.com`
+**Host:** `real-time-home-depot-data.p.rapidapi.com`
 
 ## Endpoints
 

@@ -14,9 +14,12 @@ Required (varies by endpoint):
   --query         Search query (for /search)
   --asin          Single ASIN (for /product-details, /product-reviews, /top-product-reviews, /product-offers)
   --asins         Comma-separated ASINs for batch /product-details
+  --product-identifier  GTIN / EAN / UPC / ISBN (for /gtin-to-asin)
+  --url           Full Amazon page URL (for /scrape-by-url)
 
 Optional:
-  --endpoint      Endpoint: /search (default), /product-details, /product-reviews, /top-product-reviews, /product-offers, /best-sellers, /deals-v2
+  --endpoint      Endpoint: /search (default), /product-details, /product-reviews, /top-product-reviews, /product-offers, /best-sellers, /deals-v2,
+                  /gtin-to-asin, /scrape-by-url
   --count         Max results to fetch (default: 50)
   --format        json | csv (default: json)
   --output        Output file path (auto-generated if omitted)
@@ -29,7 +32,7 @@ Optional:
   --brand         Brand filter (search)
   --star-rating   Review star filter: ALL, 5_STARS, 4_STARS, 3_STARS, 2_STARS, 1_STARS, POSITIVE, CRITICAL
   --is-prime      Filter Prime-only (TRUE/FALSE)
-  --cookie        Logged-in Amazon cookie (required for /product-reviews)
+  --cookie        Logged-in Amazon cookie (required for /product-reviews; optional for /scrape-by-url)
   --dry-run       Fetch first page only, print to console
   --max-calls     Safety cap on API calls (default: 50)
   --help          Show this help
@@ -99,13 +102,13 @@ async function main() {
         const params = { asin: args.asin, country };
         if (args.language) params.language = args.language;
         const data = await apiCall(host, '/top-product-reviews', params, apiKey);
-        const records = Array.isArray(data.data) ? data.data : (data.data ? [data.data] : [data]);
+        const records = (data.data && Array.isArray(data.data.reviews)) ? data.data.reviews : (data.data ? [data.data] : [data]);
         if (dryRun) { console.log(JSON.stringify(records.slice(0, 3), null, 2)); return; }
         writeOutput(records, outputPath, format, { api: 'realtime-amazon-data', endpoint: '/top-product-reviews', totalCalls: 1 });
         return;
     }
 
-    // ── Product Reviews (paginated, requires cookie) ─────────────────────────
+    // ── Product Reviews (cursor-paginated, requires cookie) ──────────────────
     if (endpoint === '/product-reviews') {
         if (!args.asin) { console.error('Error: --asin required for /product-reviews'); process.exit(1); }
         if (!args.cookie) { console.error('Error: --cookie required for /product-reviews (logged-in Amazon cookie)'); process.exit(1); }
@@ -116,7 +119,7 @@ async function main() {
 
         const { results, totalCallsMade } = await fetchAll({
             host, endpoint: '/product-reviews', params, apiKey, count,
-            pagination: 'page_number', pageParam: 'page', pageSize: 10,
+            pagination: 'cursor', cursorParam: 'cursor', cursorPath: 'data.cursor',
             resultsPath: 'data.reviews', dryRun, delay: 300, maxCalls,
         });
         if (dryRun) { console.log(JSON.stringify(results.slice(0, 3), null, 2)); return; }
@@ -148,8 +151,8 @@ async function main() {
 
         const { results, totalCallsMade } = await fetchAll({
             host, endpoint: '/best-sellers', params, apiKey, count,
-            pagination: 'page_number', pageParam: 'page', pageSize: 30,
-            resultsPath: 'data', dryRun, delay: 300, maxCalls,
+            pagination: 'page_number', pageParam: 'page', pageSize: 50,
+            resultsPath: 'data.best_sellers', dryRun, delay: 300, maxCalls,
         });
         if (dryRun) { console.log(JSON.stringify(results.slice(0, 3), null, 2)); return; }
         writeOutput(results, outputPath, format, { api: 'realtime-amazon-data', endpoint: '/best-sellers', category: args.category, totalCalls: totalCallsMade });
@@ -168,6 +171,30 @@ async function main() {
         });
         if (dryRun) { console.log(JSON.stringify(results.slice(0, 3), null, 2)); return; }
         writeOutput(results, outputPath, format, { api: 'realtime-amazon-data', endpoint: '/deals-v2', totalCalls: totalCallsMade });
+        return;
+    }
+
+    // ── GTIN to ASIN (single call, no pagination) ────────────────────────────
+    if (endpoint === '/gtin-to-asin') {
+        if (!args.productIdentifier) { console.error('Error: --product-identifier required for /gtin-to-asin'); process.exit(1); }
+        const params = { product_identifier: args.productIdentifier, country };
+        const data = await apiCall(host, '/gtin-to-asin', params, apiKey);
+        const records = (data.data && Array.isArray(data.data.products)) ? data.data.products : (data.data ? [data.data] : [data]);
+        if (dryRun) { console.log(JSON.stringify(records.slice(0, 3), null, 2)); return; }
+        writeOutput(records, outputPath, format, { api: 'realtime-amazon-data', endpoint: '/gtin-to-asin', productIdentifier: args.productIdentifier, totalCalls: 1 });
+        return;
+    }
+
+    // ── Scrape By URL (single call, page type detected by the API) ───────────
+    if (endpoint === '/scrape-by-url') {
+        if (!args.url) { console.error('Error: --url required for /scrape-by-url'); process.exit(1); }
+        const params = { url: args.url, country };
+        if (args.language) params.language = args.language;
+        if (args.cookie) params.cookie = args.cookie;
+        const data = await apiCall(host, '/scrape-by-url', params, apiKey);
+        const records = data.data ? [data.data] : [data];
+        if (dryRun) { console.log(JSON.stringify(records, null, 2).slice(0, 3000)); return; }
+        writeOutput(records, outputPath, format, { api: 'realtime-amazon-data', endpoint: '/scrape-by-url', url: args.url, totalCalls: 1 });
         return;
     }
 

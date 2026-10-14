@@ -26,7 +26,7 @@ Search
 Market Trends
 
 **Required:**
-- `trend_type` (string) Example: `MARKET_INDEXES`
+- `trend_type` (string) — values: MARKET_INDEXES, MOST_ACTIVE, GAINERS, LOSERS, CRYPTO, CURRENCIES, CLIMATE_LEADERS Example: `MARKET_INDEXES`
 
 **Optional:**
 - `country` (string, default: us) Example: `us`

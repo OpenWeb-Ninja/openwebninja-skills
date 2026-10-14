@@ -25,7 +25,7 @@ Search for Wayfair products by keyword or browse by brand/manufacturer. Either `
 - `max_price` (number) — max price filter, USD
 - `color` (string) Example: `Black` (also White, Blue, Gray, Brown, Red, Green, Beige, Gold, Silver, Multi Colored)
 - `in_stock` (boolean, default: false) — only return in-stock products
-- `domain` (string, default: com) — values: com, ca, co.uk, ie, de
+- `domain` (string, default: com) — values: com, ca, co.uk, ie (`de` is no longer supported: wayfair.de has closed)
 
 **Pagination:** page_number (param: `page`)
 **Page size param:** `items_per_page` (default: 48; allowed 24, 48, 96)
@@ -38,17 +38,18 @@ Search for Wayfair products by keyword or browse by brand/manufacturer. Either `
 ### GET /product-details
 Product Details
 
-Get detailed product information by Wayfair SKU, including name, brand, pricing, images, rating, and description.
+Get full product details by Wayfair SKU: name, brand, pricing, every product image, description and feature bullets, the full specifications table, dimensions, stock, delivery, a reviews sample, and all product options (Color, Size, and so on) with their option ids. Pass an option id as `piid` to get that option's pricing, images and details.
 
 **Required:**
 - `sku` (string) Example: `MBYC1330`
 
 **Optional:**
-- `domain` (string, default: com) — values: com, ca, co.uk, ie, de
+- `piid` (string) — Option id(s) to select a specific option (color, size, ...), the same piid Wayfair puts in its product URLs. For several option categories pass one id per category, comma-separated (`124921195,132911014`). The ids are listed in `data.options`; when omitted, Wayfair's default option is returned.
+- `domain` (string, default: com) — values: com, ca, co.uk, ie (`de` is no longer supported: wayfair.de has closed)
 
 **Pagination:** none
 **Response path:** `data`
-**Key fields:** sku, name, brand, url, description, images[], pricing (current_price, currency, original_price, discount_amount, discount_percentage), rating, review_count, reviews[] (review_id, body, date, rating)
+**Key fields:** sku, piid, name, brand, manufacturer, url, description, features, images[], pricing (current_price, currency, original_price, discount_amount, discount_percentage), rating, review_count, in_stock, stock_message, options[] (category_id, category, selected_option_id, options), variants[], specifications[] (section, items), dimensions[], overall_dimensions, part_number, highlights[], whats_included, shipping, return_policy, open_box, breadcrumbs, reviews[] (review_id, body, date, rating)
 
 ---
 
@@ -64,7 +65,7 @@ Get paginated product reviews by Wayfair SKU (10 per page). Returns review text,
 - `page` (integer, default: 1) Example: `1`
 - `sort_by` (string, default: relevance) — values: relevance, helpful, date_ascending, date_descending, rating_ascending, rating_descending
 - `star` (string) — values: 1, 2, 3, 4, 5
-- `domain` (string, default: com) — values: com, ca, co.uk, ie, de
+- `domain` (string, default: com) — values: com, ca, co.uk, ie (`de` is no longer supported: wayfair.de has closed)
 
 **Pagination:** page_number (param: `page`)
 **Page size:** 10 (fixed)

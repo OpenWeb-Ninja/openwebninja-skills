@@ -87,7 +87,7 @@ async function main() {
         const { results, totalCallsMade } = await fetchAll({
             host, endpoint: '/company-reviews', params, apiKey, count: reviewCount,
             pagination: 'page_number', pageParam: 'page', pageSize: 20,
-            resultsPath: 'data', dryRun, delay: 300, maxCalls,
+            resultsPath: 'data.reviews', dryRun, delay: 300, maxCalls,
         });
         writeOutput(results, outputPath, format, { api: 'trustpilot-company-and-reviews', endpoint: '/company-reviews', domain: args.domain, totalCalls: totalCallsMade });
         return;
@@ -102,8 +102,8 @@ async function main() {
 
     const { results, totalCallsMade } = await fetchAll({
         host, endpoint: '/company-search', params, apiKey, count,
-        pagination: 'page_number', pageParam: 'page', pageSize: 20,
-        resultsPath: 'data', dryRun, delay: 300, maxCalls,
+        pagination: 'page_number', pageParam: 'page', pageSize: 10,
+        resultsPath: 'data.companies', dryRun, delay: 300, maxCalls,
     });
 
     console.error(`${results.length} companies in ${totalCallsMade} call(s).`);

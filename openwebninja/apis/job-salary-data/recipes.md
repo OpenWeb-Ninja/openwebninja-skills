@@ -15,8 +15,8 @@ Returns min, median, and max salary estimates for a software engineer role in Sa
 ```bash
 node --env-file=.env openwebninja_universal_scraper/apis/job-salary-data/scrape.js \
   --job-title "data scientist" --location "United States" \
-  --location-type COUNTRY --years-of-experience 3-5 --format csv \
-  --output output/data-scientist-salary-3-5yrs.csv
+  --location-type COUNTRY --years-of-experience FOUR_TO_SIX --format csv \
+  --output output/data-scientist-salary-4-6yrs.csv
 ```
 
 Fetches salary data for a mid-level data scientist nationally and exports to CSV for comparison.
@@ -46,11 +46,11 @@ Pulls salary estimates for registered nurses across the state of Texas and saves
 ```bash
 node --env-file=.env openwebninja_universal_scraper/apis/job-salary-data/scrape.js \
   --job-title "marketing manager" --location "New York" \
-  --location-type STATE --years-of-experience 0-1 --dry-run
+  --location-type STATE --years-of-experience LESS_THAN_ONE --dry-run
 
 node --env-file=.env openwebninja_universal_scraper/apis/job-salary-data/scrape.js \
   --job-title "marketing manager" --location "New York" \
-  --location-type STATE --years-of-experience 10-15 --dry-run
+  --location-type STATE --years-of-experience TEN_TO_FOURTEEN --dry-run
 ```
 
 Run both commands to compare entry-level vs senior marketing manager salaries in New York state.

@@ -3,19 +3,19 @@
 > Full OpenAPI spec: https://openwebninja.s3.us-east-1.amazonaws.com/portal/openapi/jsearch.yaml
 
 **Host:** `jsearch.p.rapidapi.com`
-**Notes:** Fixed 10 results per page. Response includes num_pages (total pages available). Fetching >10 pages costs 3x credits.
+**Notes:** Job search is /search-v2 (the old /search is no longer in the spec). Cursor-based pagination: pass `data.cursor` as `cursor`. Up to 10 jobs per page; `num_pages` (1-20) returns several pages in one call and each page consumes one request credit.
 
 ## Endpoints
 
-### GET /search
-Job Search
+### GET /search-v2
+Job Search — Search jobs posted on any public job site across the web (Google for Jobs), with cursor-based pagination.
 
 **Required:**
-- `query` (string) Example: `developer jobs in chicago`
+- `query` (string) — Free-form query, include job title and location Example: `developer jobs in chicago`
 
 **Optional:**
-- `page` (integer, default: 1) Example: `1`
-- `num_pages` (integer, default: 1) Example: `1`
+- `cursor` (string) — The `data.cursor` value from the previous response (omit for the first page)
+- `num_pages` (integer, default: 1) — Pages to return in one call, values: 1-20 (each page of up to 10 jobs consumes one request credit) Example: `1`
 - `country` (string, default: us) Example: `us`
 - `language` (string) Example: `en`
 - `date_posted` (string, default: all) — values: all, today, 3days, week, month
@@ -26,8 +26,9 @@ Job Search
 - `exclude_job_publishers` (string) Example: `BeeBe,Dice`
 - `fields` (string) Example: `employer_name,job_publisher,job_title,job_country`
 
-**Pagination:** page_number (param: `page`)
-**Response path:** `data` (jobs nested as `data[].jobs[]`)
+**Pagination:** cursor (param: `cursor`, next value in `data.cursor`)
+**Response path:** `data` (jobs in `data.jobs[]`)
+**Key fields:** job_id, job_title, employer_name, employer_website, job_publisher, job_employment_type, job_apply_link, job_apply_is_direct, apply_options, job_description, job_is_remote, job_posted_at_datetime_utc, job_location, job_city, job_state, job_country, job_salary, job_min_salary, job_max_salary, job_salary_period, job_highlights
 
 ---
 

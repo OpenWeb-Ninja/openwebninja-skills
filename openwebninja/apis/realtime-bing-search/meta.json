@@ -1,0 +1,11 @@
+{
+  "api_id": "realtime-bing-search",
+  "portal_api_id": "realtime_bing_search_data",
+  "rapidapi_host": "real-time-bing-search.p.rapidapi.com",
+  "spec_url": "https://openwebninja.s3.us-east-1.amazonaws.com/portal/openapi/realtime_bing_search_data.yaml",
+  "last_updated_yaml": "2026-10-14T00:00:00.000Z",
+  "update_interval_seconds": 86400,
+  "rapidapi_url": "https://rapidapi.com/letscrape-6bRBa3QguO5/api/real-time-bing-search",
+  "openwebninja_url": "https://www.openwebninja.com/api/real-time-bing-search",
+  "notes": "Microsoft Bing SERP: 7 endpoints, one billed request per call. /search returns up to 10 organic results at data.organic_results (no pagination). /news: data.news, 10 per page, page 1-20 (about 190 articles for a broad query). /images: data.images, up to 35 per page, page 1-16 (list ends at about 550). /videos: data.videos, up to 35 per page (page 1 usually 30), page 1-4 (list ends at 140). /shopping: data.products (paid grid separately in data.sponsored_products), 36 per page (20 on Bing's list layout), page 1-9, about 180 products per query; a page past the end is a 200 with empty arrays, and with min_price/max_price a page with nothing in range is a 404. Bing Shopping serves language=en or the market's own language only (other pairs and countries without Bing Shopping are a 400). /product-details takes one product_id from /shopping (single object at data; country defaults to the product's market; a delisted product is a 404). /maps: data.places, limit 1-50 per page and page x limit must stay within 100. News, images, videos and maps pages can share a few results, so scrape.js de-duplicates. OWN ak_ keys route via slug realtime-bing-search-data (from portal_api_id)."
+}

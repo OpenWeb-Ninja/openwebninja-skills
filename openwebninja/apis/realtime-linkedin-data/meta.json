@@ -1,0 +1,11 @@
+{
+  "api_id": "realtime-linkedin-data",
+  "portal_api_id": "realtime_linkedin_data",
+  "rapidapi_host": "real-time-linkedin-data3.p.rapidapi.com",
+  "spec_url": "https://openwebninja.s3.us-east-1.amazonaws.com/portal/openapi/realtime_linkedin_data.yaml",
+  "last_updated_yaml": "2026-10-14T00:00:00.000Z",
+  "update_interval_seconds": 86400,
+  "rapidapi_url": "https://rapidapi.com/letscrape-6bRBa3QguO5/api/real-time-linkedin-data3",
+  "openwebninja_url": "https://www.openwebninja.com/api/real-time-linkedin-data",
+  "notes": "LinkedIn job search (/search), every open job at one or more companies (/company-jobs, by company_id or vanity slug/URL) and full details for up to 20 job ids (/job-details). /search and /company-jobs return a flat array at data, 10 jobs per page via page (1-100) + num_pages (1-20); page + num_pages - 1 must stay within page 100 (1000-result ceiling). A call returning fewer than num_pages x 10 jobs has reached the end (unless a local filter is set). Billing is one request per upstream page of 10; each company slug passed in company costs one extra request per call (scrape.js switches to the resolved ids after the first call). include_details (default true) fills description, employment type, salary, seniority, function, industries, applicant count and company id from each job's detail page, capped at 100 jobs per call, so scrape.js asks for at most 10 pages per call when it is on; set it false for a ~3x faster card-only response. employment_types, seniority_levels and remote_jobs_only are filtered locally: they force include_details on, over-fetch up to 3x the pages (billed) and return fewer jobs. radius (km) requires geo_id. sort_by=date sorts only the returned jobs. job_apply_link is always the LinkedIn posting URL."
+}

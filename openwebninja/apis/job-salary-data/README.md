@@ -8,34 +8,34 @@
 ## Endpoints
 
 ### GET /job-salary
-Retrieve estimated salary ranges for a job title in a specific location, sourced from Glassdoor.
+Job Salary — Get estimated job salaries/pay by job title and location.
 
 **Required:**
-- `job_title` (string) Example: `software engineer`
-- `location` (string) Example: `New York, NY`
+- `job_title` (string) Example: `nodejs developer`
+- `location` (string) — Free-text location/area Example: `New York`
 
 **Optional:**
-- `location_type` (string) — values: `CITY`, `STATE`, `COUNTRY`, `ANY` (default: `ANY`) Example: `CITY`
-- `years_of_experience` (string) — values: `0-1`, `1-3`, `3-5`, `5-10`, `10-15`, `15+` (default: ALL) Example: `3-5`
+- `location_type` (string, default: ANY) — values: ANY, CITY, STATE, COUNTRY Example: `CITY`
+- `years_of_experience` (string, default: ALL) — values: ALL, LESS_THAN_ONE, ONE_TO_THREE, FOUR_TO_SIX, SEVEN_TO_NINE, TEN_TO_FOURTEEN, ABOVE_FIFTEEN Example: `FOUR_TO_SIX`
 
 **Pagination:** none
 **Response path:** `data`
-**Key fields:** job_title, location, min_salary, max_salary, median_salary, salary_period, currency, confidence, publisher_name
+**Key fields:** job_title, location, min_salary, max_salary, median_salary, salary_period, salary_currency, confidence, publisher_name, publisher_link
 
 ---
 
 ### GET /company-job-salary
-Retrieve compensation data for a specific role at a specific company, broken down by base salary and additional compensation (bonuses, etc.).
+Company Job Salary — Get estimated job salaries/pay in a specific company by job title and optionally a location and experience level in years, broken down by base salary and additional pay (bonuses, etc.).
 
 **Required:**
-- `job_title` (string) Example: `software engineer`
-- `company_name` (string) Example: `Google`
+- `company` (string) — Company name Example: `Amazon`
+- `job_title` (string) Example: `software developer`
 
 **Optional:**
 - `location` (string) Example: `San Francisco, CA`
-- `location_type` (string) — values: `CITY`, `STATE`, `COUNTRY`, `ANY` (default: `ANY`) Example: `CITY`
-- `years_of_experience` (string) — values: `0-1`, `1-3`, `3-5`, `5-10`, `10-15`, `15+` Example: `5-10`
+- `location_type` (string, default: ANY) — values: ANY, CITY, STATE, COUNTRY Example: `CITY`
+- `years_of_experience` (string, default: ALL) — values: ALL, LESS_THAN_ONE, ONE_TO_THREE, FOUR_TO_SIX, SEVEN_TO_NINE, TEN_TO_FOURTEEN, ABOVE_FIFTEEN Example: `SEVEN_TO_NINE`
 
 **Pagination:** none
 **Response path:** `data`
-**Key fields:** job_title, company_name, location, min_salary, max_salary, median_salary, additional_pay_min, additional_pay_max, salary_count, salary_period, currency, confidence, publisher_name
+**Key fields:** job_title, company, location, min_salary, max_salary, median_salary, min_base_salary, max_base_salary, median_base_salary, min_additional_pay, max_additional_pay, median_additional_pay, salary_count, salary_period, salary_currency, confidence

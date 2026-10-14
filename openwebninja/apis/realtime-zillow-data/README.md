@@ -127,12 +127,12 @@ Search by Polygon
 ---
 
 ### GET /property-details
-Property Details
+Property Details — Get property details by Zillow property ID (zpid) or Zillow property URL.
 
-**Required:**
-- `zpid` (string) Example: `7594920`
+**Required:** one of `zpid` or `url`
 
 **Optional:**
+- `zpid` (string) Example: `7594920`
 - `url` (string) Example: `https://www.zillow.com/homedetails/15626-Laurel-Heights-Dr-Houston-TX-77084/28253016_zpid/`
 
 **Pagination:** none
@@ -159,5 +159,68 @@ Property Zestimate
 - `url` (string) Example: `https://www.zillow.com/homedetails/15626-Laurel-Heights-Dr-Houston-TX-77084/28253016_zpid/`
 
 **Pagination:** none
+
+---
+
+### GET /agent-search
+Agent Search — Search real estate agents by location and optionally by name. Returns the `encodedZuid` used by the agent listing endpoints.
+
+**Required:**
+- `location` (string) — Location slug in city-state format Example: `new-york-ny`
+
+**Optional:**
+- `name` (string) — Filter agents by name Example: `john`
+- `page` (number, default: 1) Example: `1`
+
+**Pagination:** page_number (param: `page`), up to 15 agents per page
+**Response path:** `data` (agents in `data.agents[]`, total in `data.total_agents`)
+**Key fields:** encodedZuid, cardTitle, cardActionLink, imageUrl, isTopAgent, secondaryCardTitle, profileData, reviewInformation, tags
+
+---
+
+### GET /agent-properties-for-sale
+Agent Properties (For Sale) — Get an agent's current active for-sale listings.
+
+**Required:**
+- `encodedZuid` (string) — From Agent Search Example: `X1-ZUxs6j84n4ak95_3mmvm`
+
+**Optional:**
+- `page` (number, default: 1) Example: `1`
+- `include_team` (boolean, default: true) — Include listings from the agent's team members Example: `true`
+
+**Pagination:** page_number (param: `page`), up to 5 listings per page
+**Response path:** `data` (listings in `data.listings[]`, total in `data.listing_count`)
+**Key fields:** zpid, home_type, address, bedrooms, bathrooms, price, price_currency, status, latitude, longitude, brokerage_name, primary_photo_url, listing_url, hasOpenHouse, has_vr_model
+
+---
+
+### GET /agent-properties-sold
+Agent Properties (Sold) — Get an agent's past sales history.
+
+**Required:**
+- `encodedZuid` (string) — From Agent Search Example: `X1-ZUxs6j84n4ak95_3mmvm`
+
+**Optional:**
+- `page` (number, default: 1) — values: 1-20 Example: `1`
+
+**Pagination:** page_number (param: `page`), up to 5 sales per page
+**Response path:** `data` (sales in `data.sold_properties[]`, total in `data.total_sold_properties`)
+**Key fields:** zpid, represented, sold_date, price, street_address, city, state, city_state_zipcode, bedrooms, bathrooms, livingAreaValue, latitude, longitude, image_url, home_details_url
+
+---
+
+### GET /agent-properties-for-rent
+Agent Properties (For Rent) — Get an agent's current rental listings.
+
+**Required:**
+- `encodedZuid` (string) — From Agent Search Example: `X1-ZU12j0quxoelgjt_uwi3`
+
+**Optional:**
+- `page` (number, default: 1) Example: `1`
+- `include_team` (boolean, default: true) — Include listings from the agent's team members Example: `true`
+
+**Pagination:** page_number (param: `page`), up to 5 listings per page
+**Response path:** `data` (listings in `data.listings[]`, total in `data.listing_count`)
+**Key fields:** zpid, home_type, address, bedrooms, bathrooms, price, price_currency, latitude, longitude, listing_url
 
 ---

@@ -53,7 +53,7 @@ async function main() {
 
     const apiKey = getApiKey();
     const meta = loadMeta('realtime-video-search');
-    const host = meta.rapidapi_host || 'real-time-video-search.p.rapidapi.com';
+    const host = meta.rapidapi_host || 'real-time-video-search2.p.rapidapi.com';
     const count = parseInt(args.count, 10) || 50;
     const format = args.format || 'json';
     const dryRun = !!args.dryRun;

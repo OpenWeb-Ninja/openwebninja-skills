@@ -1,10 +1,11 @@
 {
   "api_id": "realtime-web-search",
   "portal_api_id": "realtime_web_search",
+  "own_slug": "realtime-web-search/v2",
   "rapidapi_host": "real-time-web-search.p.rapidapi.com",
-  "notes": "Offset-based pagination using 'start' param. Use 'num' param to control results per page (default 10).",
-  "spec_url": "https://openwebninja.s3.us-east-1.amazonaws.com/portal/openapi/realtime_web_search.yaml",
-  "last_updated_yaml": "2026-03-26T11:05:03.896Z",
+  "notes": "v2 of the API (OWN gateway base path /realtime-web-search/v2 via own_slug; RapidAPI serves the same routes at the host root). /search: offset pagination via 'start', 'num' 1-10 per call, organic results in data.organic_results. /search-light: one call returns up to 300 results ('num'). AI Mode is POST-only here; AI Overviews is its own API (see ai-overviews).",
+  "spec_url": "https://openwebninja.s3.us-east-1.amazonaws.com/portal/openapi/realtime_web_search-v2.yaml",
+  "last_updated_yaml": "2026-10-09T11:11:54.000Z",
   "update_interval_seconds": 86400,
   "rapidapi_url": "https://rapidapi.com/letscrape-6bRBa3QguO5/api/real-time-web-search",
   "openwebninja_url": "https://www.openwebninja.com/api/real-time-web-search"

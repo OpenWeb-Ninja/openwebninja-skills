@@ -3,7 +3,7 @@
 > Full OpenAPI spec: https://openwebninja.s3.us-east-1.amazonaws.com/portal/openapi/realtime_amazon_data.yaml
 
 **Host:** `real-time-amazon-data.p.rapidapi.com`
-**Notes:** Page-based pagination. Results per page vary by endpoint.
+**Notes:** Page-based pagination (`page`) on most endpoints; results per page vary by endpoint. `/product-reviews`, `/influencer-posts` and `/influencer-post-products` use cursor pagination; `/deals-v2` uses `offset`.
 
 ## Endpoints
 
@@ -16,6 +16,7 @@ Product Search
 **Optional:**
 - `page` (integer, default: 1) Example: `1`
 - `country` (string, default: US) — values: US, AU, BR, CA, CN, FR, DE, IN, IT, MX, NL, SG, ES, TR, AE, GB, JP, SA, PL, SE, BE, EG, ZA, IE
+- `delivery_country` (string) — Delivery destination country (ISO 3166-1 alpha-2). Defaults to the marketplace country. Only `country` = DE, FR, IT or ES with `delivery_country` = NL is supported; other combinations return a 400 error. Example: `NL`
 - `sort_by` (string, default: RELEVANCE) — values: RELEVANCE, LOWEST_PRICE, HIGHEST_PRICE, REVIEWS, NEWEST, BEST_SELLERS
 - `category_id` (string, default: aps (All Departments))
 - `category` (string) Example: `2858778013`
@@ -37,7 +38,7 @@ Product Search
 ---
 
 ### GET /products-by-category
-Product by Category
+Products by Category
 
 **Required:**
 - `category_id` (string) Example: `https://amazon.com/s?node=2858778013 - the Amazon Category ID is `2858778013`.`
@@ -45,6 +46,7 @@ Product by Category
 **Optional:**
 - `page` (integer, default: 1) Example: `1`
 - `country` (string, default: US) — values: US, AU, BR, CA, CN, FR, DE, IN, IT, MX, NL, SG, ES, TR, AE, GB, JP, SA, PL, SE, BE, EG, ZA, IE
+- `delivery_country` (string) — Delivery destination country (ISO 3166-1 alpha-2). Defaults to the marketplace country. Only `country` = DE, FR, IT or ES with `delivery_country` = NL is supported; other combinations return a 400 error. Example: `NL`
 - `sort_by` (string, default: RELEVANCE) — values: RELEVANCE, LOWEST_PRICE, HIGHEST_PRICE, REVIEWS, NEWEST, BEST_SELLERS
 - `min_price` (number) Example: `105`
 - `max_price` (integer) Example: `110`
@@ -58,6 +60,7 @@ Product by Category
 - `fields` (string) Example: `product_price,product_url,is_best_seller,sales_volume`
 
 **Pagination:** page_number (param: `page`)
+**Response path:** `data` (products in `data.products[]`)
 
 ---
 
@@ -69,28 +72,31 @@ Product Details
 
 **Optional:**
 - `country` (string, default: US) — values: US, AU, BR, CA, CN, FR, DE, IN, IT, MX, NL, SG, ES, TR, AE, GB, JP, SA, PL, SE, BE, EG, ZA, IE
+- `delivery_country` (string) — Delivery destination country (ISO 3166-1 alpha-2). Defaults to the marketplace country. Only `country` = DE, FR, IT or ES with `delivery_country` = NL is supported; other combinations return a 400 error. Example: `NL`
+- `delivery_postcode` (string) — Postal / ZIP code within the `country` marketplace, used as the delivery address. `delivery_postcode_applied` in the response confirms it was applied; an invalid postcode returns a 400 error. Cannot be combined with a different `delivery_country`.
 - `more_info_query` (string)
+- `include_offers` (boolean, default: false) — Also return the offers from all sellers as `product_offers` (first page, all conditions). Each ASIN is then billed as 2 requests.
 - `language` (string) Example: `en_US`
 - `fields` (string) Example: `product_price,product_url,is_best_seller,sales_volume`
 
 **Pagination:** none
 **Response path:** `data` (a list of products when several ASINs are requested)
-**Key fields:** asin, product_title, product_price, product_price_value, product_original_price, unit_price_value, unit_price_unit, unit_count, maximum_order_quantity, product_star_rating, product_num_ratings, product_num_offers, product_minimum_offer_price, product_offers_link, main_buy_box (with is_fba), buy_boxes, best_sellers_rank, product_information, important_information, product_photos, product_photos_labeled, customers_say, review_aspects, review_aspects_details, customer_review_media, top_reviews, frequently_bought_together, frequently_bought_together_total_price, sponsored_products, carousel_products, landing_asin, is_redirected
+**Key fields:** asin, product_title, product_price, product_price_value, product_original_price, unit_price_value, unit_price_unit, unit_count, maximum_order_quantity, product_star_rating, product_num_ratings, product_num_offers, product_minimum_offer_price, product_offers_link, main_buy_box (with is_fba), buy_boxes, best_sellers_rank, product_information, important_information, product_photos, product_photos_labeled, customers_say, review_aspects, review_aspects_details, customer_review_media, top_reviews, frequently_bought_together, frequently_bought_together_total_price, sponsored_products, carousel_products, landing_asin, is_redirected, delivery, primary_delivery_time, delivery_location, delivery_postcode_applied, product_offers (with include_offers=true)
 
 ---
 
 ### GET /product-reviews
 Product Reviews — Get and paginate through product reviews on Amazon. Each page contains up to 10 reviews.
 
-> **Note:** The `cookie` parameter (Amazon session cookie) is required for pagination. Without it, requests will fail. If you don't have a cookie, use `/top-product-reviews` instead — it returns only featured reviews but does not require authentication.
+> **Note:** The `cookie` parameter (logged-in Amazon session cookie) is required for pagination. Without it, requests will fail. If you don't have a cookie, use `/top-product-reviews` instead — it returns only featured reviews but does not require authentication.
 
 **Required:**
 - `asin` (string) — Product asin for which to get reviews. Example: `B07ZPKN6YR`
-- `cookie` (string) — A loggedin user cookie to use for fetching product reviews. Include the following cookies for country=US: sessionid, ubi
+- `cookie` (string) — A logged-in user cookie to use for fetching product reviews. Include the following cookies for country=US: session-id, ubid-main, x-main, and at-main. For any other country: session-id, ubid-acb{country code}, x-acb{country code}, at-acb{country code}
 
 **Optional:**
 - `country` (string, default: US) — values: US, AU, BR, CA, CN, FR, DE, IN, IT, MX, NL, SG, ES, TR, AE, GB, JP, SA, PL, SE, BE, EG, ZA, IE
-- `page` (integer, default: 1) Example: `1`
+- `cursor` (string) — Cursor for the next page of reviews; the value for the next page is returned in `data.cursor`.
 - `sort_by` (string, default: TOP_REVIEWS)
 - `star_rating` (string, default: ALL) — values: ALL, 5_STARS, 4_STARS, 3_STARS, 2_STARS, 1_STARS, POSITIVE, CRITICAL
 - `verified_purchases_only` (boolean) — Only return reviews by reviewers who made a verified purchase. Example: `false`
@@ -100,7 +106,9 @@ Product Reviews — Get and paginate through product reviews on Amazon. Each pag
 - `language` (string) Example: `en_US`
 - `fields` (string) Example: `review_title,review_images,review_date,country`
 
-**Pagination:** page_number (param: `page`)
+**Pagination:** cursor (param: `cursor`, next value in `data.cursor`)
+**Response path:** `data` (reviews in `data.reviews[]`)
+**Key fields:** review_id, review_title, review_comment, review_star_rating, review_link, review_author, review_images, review_date, review_date_iso, is_verified_purchase, helpful_votes, country, review_language, reviewed_product_asin, reviewed_product_variant, is_different_asin, is_vine
 
 ---
 
@@ -134,7 +142,7 @@ Top Product Reviews — Get top product reviews by ASIN from the Amazon product 
 - `language` (string) Example: `en_US`
 
 **Pagination:** none
-**Response path:** `data`
+**Response path:** `data` (reviews in `data.reviews[]`)
 **Key fields:** review_id, review_title, review_comment, review_star_rating, review_link, review_author_id, review_author, review_author_url, review_author_avatar, review_images, review_video, review_date, review_date_iso, is_verified_purchase, helpful_vote_statement, helpful_votes, country, review_language, reviewed_product_asin, reviewed_product_variant, is_different_asin, is_vine
 
 ---
@@ -147,6 +155,7 @@ Product Offers
 
 **Optional:**
 - `country` (string, default: US) — values: US, AU, BR, CA, CN, FR, DE, IN, IT, MX, NL, SG, ES, TR, AE, GB, JP, SA, PL, SE, BE, EG, ZA, IE
+- `delivery_country` (string) — Delivery destination country (ISO 3166-1 alpha-2). Defaults to the marketplace country. Only `country` = DE, FR, IT or ES with `delivery_country` = NL is supported; other combinations return a 400 error. Example: `NL`
 - `product_condition` (string, default: NEW, USED_LIKE_NEW, USED_VERY_GOOD, USED_GOOD, USED_ACCEPTABLE)
 - `delivery` (string) — values: PRIME_ELIGIBLE, FREE_DELIVERY
 - `limit` (integer, default: 100) Example: `100`
@@ -190,7 +199,7 @@ Seller Reviews
 - `fields` (string) Example: `review_star_rating,review_date`
 
 **Pagination:** page_number (param: `page`)
-**Response path:** `data`
+**Response path:** `data` (reviews in `data.seller_reviews[]`)
 **Key fields:** review_author, review_comment, review_star_rating, has_response, review_date
 
 ---
@@ -203,6 +212,7 @@ Seller Products — Get and paginate through the products sold by an Amazon Sell
 
 **Optional:**
 - `country` (string, default: US) — values: US, AU, BR, CA, CN, FR, DE, IN, IT, MX, NL, SG, ES, TR, AE, GB, JP, SA, PL, SE, BE, EG, ZA, IE
+- `delivery_country` (string) — Delivery destination country (ISO 3166-1 alpha-2). Defaults to the marketplace country. Only `country` = DE, FR, IT or ES with `delivery_country` = NL is supported; other combinations return a 400 error. Example: `NL`
 - `page` (integer, default: 1) Example: `1`
 - `sort_by` (string, default: RELEVANCE) — values: RELEVANCE, LOWEST_PRICE, HIGHEST_PRICE, REVIEWS, NEWEST, BEST_SELLERS
 - `language` (string) Example: `en_US`
@@ -222,11 +232,12 @@ Best Sellers
 - `type` (string, default: BEST_SELLERS) — values: BEST_SELLERS, GIFT_IDEAS, MOST_WISHED_FOR, MOVERS_AND_SHAKERS, NEW_RELEASES
 - `page` (integer, default: 1) Example: `1`
 - `country` (string, default: US) — values: US, AU, BR, CA, CN, FR, DE, IN, IT, MX, NL, SG, ES, TR, AE, GB, JP, SA, PL, SE, BE, EG, ZA, IE
+- `delivery_country` (string) — Delivery destination country (ISO 3166-1 alpha-2). Defaults to the marketplace country. Only `country` = DE, FR, IT or ES with `delivery_country` = NL is supported; other combinations return a 400 error. Example: `NL`
 - `language` (string) Example: `en_US`
 - `fields` (string) Example: `product_title,product_url,product_photo`
 
 **Pagination:** page_number (param: `page`)
-**Response path:** `data`
+**Response path:** `data` (products in `data.best_sellers[]`)
 **Key fields:** rank, asin, product_title, product_price, product_star_rating, product_num_ratings, product_url, product_photo, rank_change_label
 
 ---
@@ -236,6 +247,7 @@ Deals
 
 **Optional:**
 - `country` (string, default: US) — values: US, AU, BR, CA, CN, FR, DE, IN, IT, MX, NL, SG, ES, TR, AE, GB, JP, SA, PL, SE, BE, EG, ZA, IE
+- `delivery_country` (string) — Delivery destination country (ISO 3166-1 alpha-2). Defaults to the marketplace country. Only `country` = DE, FR, IT or ES with `delivery_country` = NL is supported; other combinations return a 400 error. Example: `NL`
 - `offset` (string) — Number of results to skip / index to start from (for pagination). Works with multiples of 30 (like on Amazons deals page
 - `categories` (string)
 - `min_product_star_rating` (string, default: ALL) — values: ALL, 1, 2, 3, 4
@@ -249,7 +261,7 @@ Deals
 - `fields` (string) Example: `deal_type,deal_title,deal_ends_at,savings_amount`
 
 **Pagination:** offset (param: `offset`)
-**Response path:** `data`
+**Response path:** `data` (deals in `data.deals[]`)
 **Key fields:** deal_id, deal_type, deal_title, deal_photo, deal_state, deal_url, canonical_deal_url, deal_starts_at, deal_ends_at, savings_percentage, deal_badge, type, product_asin, amount, currency
 
 ---
@@ -262,13 +274,14 @@ Deal Products
 
 **Optional:**
 - `country` (string, default: US) — values: US, AU, BR, CA, CN, FR, DE, IN, IT, MX, NL, SG, ES, TR, AE, GB, JP, SA, PL, SE, BE, EG, ZA, IE
+- `delivery_country` (string) — Delivery destination country (ISO 3166-1 alpha-2). Defaults to the marketplace country. Only `country` = DE, FR, IT or ES with `delivery_country` = NL is supported; other combinations return a 400 error. Example: `NL`
 - `sort_by` (string, default: FEATURED) — values: FEATURED, LOWEST_PRICE, HIGHEST_PRICE, REVIEWS, NEWEST, BEST_SELLERS
 - `page` (integer, default: 1) Example: `1`
 - `language` (string) Example: `en_US`
 - `fields` (string) Example: `product_title,deal_price,deal_badge`
 
 **Pagination:** page_number (param: `page`)
-**Response path:** `data`
+**Response path:** `data` (products in `data.products[]`)
 **Key fields:** product_asin, product_title, product_url, product_photo, deal_price, list_price, savings_percentage, deal_badge, additional_info
 
 ---
@@ -281,10 +294,11 @@ Promo Code Details — Get the products offered by an Amazon promo code.
 
 **Optional:**
 - `country` (string, default: US) — values: US, AU, BR, CA, CN, FR, DE, IN, IT, MX, NL, SG, ES, TR, AE, GB, JP, SA, PL, SE, BE, EG, ZA, IE
+- `delivery_country` (string) — Delivery destination country (ISO 3166-1 alpha-2). Defaults to the marketplace country. Only `country` = DE, FR, IT or ES with `delivery_country` = NL is supported; other combinations return a 400 error. Example: `NL`
 - `language` (string) Example: `en_US`
 
 **Pagination:** none
-**Response path:** `data`
+**Response path:** `data` (products in `data.products[]`)
 **Key fields:** asin, product_title, product_price, product_url, product_star_rating, product_num_ratings, product_photo, product_availability
 
 ---
@@ -349,8 +363,23 @@ ASIN to GTIN — Convert an Amazon ASIN to GTIN / EAN / UPS identifiers. Valid v
 - `country` (string, default: US) — values: US, AU, BR, CA, CN, FR, DE, IN, IT, MX, NL, SG, ES, TR, AE, GB, JP, SA, PL, SE, BE, EG, ZA, IE
 
 **Pagination:** none
-**Response path:** `data`
+**Response path:** `data` (identifiers in `data.results[]`)
 **Key fields:** value, type
+
+---
+
+### GET /gtin-to-asin
+GTIN to ASIN — Find Amazon products by GTIN, EAN, UPC, or ISBN. Returns the matching ASINs with key product attributes.
+
+**Required:**
+- `product_identifier` (string) — GTIN, EAN, UPC or ISBN to look up. Example: `9780132350884`
+
+**Optional:**
+- `country` (string, default: US) — values: US, AU, BR, CA, CN, FR, DE, IN, IT, MX, NL, SG, ES, TR, AE, GB, JP, SA, PL, SE, BE, EG, ZA, IE
+
+**Pagination:** none
+**Response path:** `data` (products in `data.products[]`)
+**Key fields:** asin, product_title, product_photo, product_url, product_price, product_star_rating, product_num_ratings, product_rank, rank_category
 
 ---
 
@@ -363,5 +392,24 @@ Product Category List — Get Amazon product categories per country (for use wit
 **Pagination:** none
 **Response path:** `data`
 **Key fields:** id, name
+
+---
+
+### GET /scrape-by-url
+Scrape By URL — Scrape any Amazon page by its full URL. The page type (product details, product reviews, deals, best sellers, seller profile, seller products, search results, Amazon Haul) is detected automatically and the matching structured data is returned.
+
+**Required:**
+- `url` (string) — Full Amazon page URL. Example: `https://www.amazon.com/dp/B0D1XD1ZV3`
+
+**Optional:**
+- `country` (string, default: US) — values: US, AU, BR, CA, CN, FR, DE, IN, IT, MX, NL, SG, ES, TR, AE, GB, JP, SA, PL, SE, BE, EG, ZA, IE
+- `delivery_country` (string) — Delivery destination country (ISO 3166-1 alpha-2). Defaults to the marketplace country. Only `country` = DE, FR, IT or ES with `delivery_country` = NL is supported; other combinations return a 400 error. Example: `NL`
+- `language` (string) Example: `en_US`
+- `cookie` (string) — Custom cookie string to use when scraping the URL.
+- `return_html` (string, default: false) — Include the raw HTML of the scraped page. values: true, false
+
+**Pagination:** none
+**Response path:** `data` (shape depends on `data.page_type`)
+**Key fields:** page_type, asin, product_title, product_price, product_star_rating, product_num_ratings, product_url, product_photo, products, deals, best_sellers, seller_id, html (with return_html=true)
 
 ---

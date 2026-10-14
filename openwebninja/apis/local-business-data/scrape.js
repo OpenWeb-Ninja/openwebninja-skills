@@ -12,9 +12,11 @@ Search Google Maps businesses and export results.
 
 Required:
   --query         Search query (e.g. "Hotels in San Francisco, USA")
+  --queries       Bulk search: up to 20 queries separated by "|" (POST /search, limit applies per query)
 
 Optional:
-  --endpoint      Endpoint: /search (default), /search-in-area, /search-nearby, /business-details, /business-reviews
+  --endpoint      Endpoint: /search (default), /search-in-area, /search-nearby, /area-search-by-bounding-box,
+                  /area-search-by-radius, /business-details, /business-details-plus, /business-reviews-v2
   --count         Max results (default: 100, max per call: 500)
   --format        json | csv (default: json)
   --output        Output file path (auto-generated if omitted)
@@ -25,10 +27,13 @@ Optional:
   --bbox          Bounding box for --grid: "swLat,swLng,neLat,neLng" (e.g. "32.5,-124.5,42.0,-114.0" for CA)
   --lat           Latitude
   --lng           Longitude
+  --bottom-left   South-west corner "lat,lng" (for /area-search-by-bounding-box)
+  --top-right     North-east corner "lat,lng" (for /area-search-by-bounding-box)
+  --radius        Radius in meters, 1-50000 (for /area-search-by-radius)
   --zoom          Starting zoom level (default: 13, for --grid default: 10)
   --region        Region code (default: us)
   --language      Language code (default: en)
-  --business-id   Business ID (for /business-details or /business-reviews)
+  --business-id   Business ID (for /business-details or /business-reviews-v2); up to 20 comma-separated for /business-details-plus
   --sort-by       Review sort: most_relevant, newest, highest_ranking, lowest_ranking
   --dry-run       Fetch first cell only (grid) or first call only, print to console
   --max-calls     Safety cap (default: 50, increase for --grid)
@@ -82,17 +87,44 @@ async function main() {
         return;
     }
 
-    // Business reviews
-    if (endpoint === '/business-reviews') {
+    // Business details plus (business details + keywords_mentioned_in_reviews; 2 credits per business)
+    if (endpoint === '/business-details-plus') {
+        if (!args.businessId) { console.error('Error: --business-id required'); process.exit(1); }
+        const params = { business_id: args.businessId, region: args.region || 'us', language: args.language || 'en' };
+        if (args.contacts) params.extract_emails_and_contacts = true;
+        const data = await apiCall(host, '/business-details-plus', params, apiKey);
+        const records = Array.isArray(data.data) ? data.data : (data.data ? [data.data] : [data]);
+        if (dryRun) { console.log(JSON.stringify(records.slice(0, 3), null, 2)); return; }
+        writeOutput(records, outputPath, format, { api: 'local-business-data', endpoint: '/business-details-plus', totalCalls: 1 });
+        return;
+    }
+
+    // Bulk search (POST /search with a JSON body; up to 20 queries, results flattened across queries)
+    if (endpoint === '/search' && args.queries) {
+        const queries = args.queries.split('|').map(q => q.trim()).filter(Boolean);
+        if (queries.length > 20) { console.error('Error: --queries accepts up to 20 queries'); process.exit(1); }
+        const body = { queries, limit: count, language: args.language || 'en', region: args.region || 'us' };
+        if (args.zoom) body.zoom = parseInt(args.zoom, 10);
+        if (args.lat && args.lng) body.coordinates = `${args.lat},${args.lng}`;
+        const data = await apiCall(host, '/search', {}, apiKey, 'POST', body);
+        const records = Array.isArray(data.data) ? data.data : (data.data ? [data.data] : [data]);
+        console.error(`${records.length} businesses for ${queries.length} queries in 1 call.`);
+        if (dryRun) { console.log(JSON.stringify(records.slice(0, 3), null, 2)); return; }
+        writeOutput(records, outputPath, format, { api: 'local-business-data', endpoint: 'POST /search', queries, totalCalls: 1 });
+        return;
+    }
+
+    // Business reviews (/business-reviews is the old name, kept as an alias)
+    if (endpoint === '/business-reviews-v2' || endpoint === '/business-reviews') {
         if (!args.businessId) { console.error('Error: --business-id required'); process.exit(1); }
         const params = { business_id: args.businessId, limit: Math.min(count, 20), region: args.region || 'us', language: args.language || 'en' };
         if (args.sortBy) params.sort_by = args.sortBy;
         const { results, totalCallsMade } = await fetchAll({
-            host, endpoint: '/business-reviews', params, apiKey, count,
-            pagination: 'cursor', cursorParam: 'cursor', cursorPath: 'cursor',
-            pageSize: 20, resultsPath: 'data', dryRun, delay: 300, maxCalls,
+            host, endpoint: '/business-reviews-v2', params, apiKey, count,
+            pagination: 'cursor', cursorParam: 'cursor', cursorPath: 'data.cursor',
+            pageSize: 20, resultsPath: 'data.reviews', dryRun, delay: 300, maxCalls,
         });
-        writeOutput(results, outputPath, format, { api: 'local-business-data', endpoint: '/business-reviews', totalCalls: totalCallsMade });
+        writeOutput(results, outputPath, format, { api: 'local-business-data', endpoint: '/business-reviews-v2', totalCalls: totalCallsMade });
         return;
     }
 
@@ -105,6 +137,15 @@ async function main() {
     if (args.zoom) params.zoom = args.zoom;
     if (args.contacts) params.extract_emails_and_contacts = true;
     if (args.subtypes) params.subtypes = args.subtypes;
+    if (endpoint === '/area-search-by-bounding-box') {
+        if (!args.bottomLeft || !args.topRight) { console.error('Error: --bottom-left and --top-right required for /area-search-by-bounding-box'); process.exit(1); }
+        params.bottom_left = args.bottomLeft;
+        params.top_right = args.topRight;
+    }
+    if (endpoint === '/area-search-by-radius') {
+        if (!args.lat || !args.lng || !args.radius) { console.error('Error: --lat, --lng and --radius required for /area-search-by-radius'); process.exit(1); }
+        params.radius = args.radius;
+    }
 
     let allResults = [];
     let totalCalls = 0;

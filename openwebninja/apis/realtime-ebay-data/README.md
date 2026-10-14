@@ -2,7 +2,7 @@
 
 > Full OpenAPI spec: https://openwebninja.s3.us-east-1.amazonaws.com/portal/openapi/realtime_ebay_data.yaml
 
-**Host:** `real-time-ebay-data.p.rapidapi.com`
+**Host:** `real-time-ebay-data2.p.rapidapi.com`
 
 Fast, reliable eBay product search, category browsing, product details, and seller feedback across 20 eBay domains worldwide, in real time.
 
@@ -16,14 +16,15 @@ Product Search
 
 **Optional:**
 - `page` (integer, default: 1) — allowed `1-100`, each page up to 60 results
-- `domain` (string, default: us → `com`) — values: com, co.uk, com.au, de, ca, fr, it, es, at, ch, com.sg, com.my, ph, ie, pl, nl, be, com.hk, com.mx, com.br
+- `domain` (string, default: com) — values: com, co.uk, com.au, de, ca, fr, it, es, at, ch, com.sg, com.my, ph, ie, pl, nl, be, com.hk, com.mx, com.br
 - `sort_by` (string, default: BEST_MATCH) — values: BEST_MATCH, ENDING_SOONEST, NEWLY_LISTED, PRICE_LOWEST, PRICE_HIGHEST
 - `condition` (string) — comma-separated: new, used, open_box, refurbished, for_parts. Example: `used,refurbished`
 - `buying_format` (string) — values: buy_it_now, auction, accepts_offers
-- `show_only` (string) — comma-separated: free_returns, deals_and_savings, returns_accepted, authorized_seller, sold_items, completed_items, free_shipping, local_pickup. Example: `sold_items,completed_items`
+- `show_only` (string) — comma-separated: free_returns, deals_and_savings, returns_accepted, authorized_seller, sold_items, completed_items, free_shipping, local_pickup. `sold_items` / `completed_items` work without a cookie. Example: `sold_items,completed_items`
 - `min_price` (number) — price in the domain currency
 - `max_price` (number) — price in the domain currency
 - `aspects` (string) — JSON-encoded array of `{name,value}` aspect filters (Brand, Model, Storage Capacity, Network, Color, etc.), up to 20 entries. `value` may be a string or array of strings. Example: `[{"name":"Brand","value":"Apple"}]`
+- `cookie` (string) — Optional, only used with `show_only=sold_items` / `completed_items` (ignored elsewhere). Sold and completed listings are returned without a cookie; passing your own signed-in eBay cookie header (`name=value; name2=value2`) also fills `seller_name`, `seller_feedback_count` and `seller_feedback_percentage` on those results.
 
 **Pagination:** page_number (param: `page`, up to 60 results/page)
 **Page size:** fixed 60 (no page-size param)
@@ -44,7 +45,7 @@ Works best with a `query` parameter — without it, eBay serves a JavaScript-ren
 **Optional:**
 - `query` (string) — highly recommended. Example: `samsung galaxy`
 - `page` (integer, default: 1) — allowed `1-100`, each page up to 60 results
-- `domain` (string, default: us → `com`) — values: com, co.uk, com.au, de, ca, fr, it, es, at, ch, com.sg, com.my, ph, ie, pl, nl, be, com.hk, com.mx, com.br
+- `domain` (string, default: com) — values: com, co.uk, com.au, de, ca, fr, it, es, at, ch, com.sg, com.my, ph, ie, pl, nl, be, com.hk, com.mx, com.br
 - `sort_by` (string, default: BEST_MATCH) — values: BEST_MATCH, ENDING_SOONEST, NEWLY_LISTED, PRICE_LOWEST, PRICE_HIGHEST
 - `condition` (string) — comma-separated: new, used, open_box, refurbished, for_parts
 - `buying_format` (string) — values: buy_it_now, auction, accepts_offers
@@ -52,6 +53,7 @@ Works best with a `query` parameter — without it, eBay serves a JavaScript-ren
 - `min_price` (number) — price in the domain currency
 - `max_price` (number) — price in the domain currency
 - `aspects` (string) — JSON-encoded array of `{name,value}` aspect filters (scoped to the category), up to 20 entries. Example: `[{"name":"Brand","value":"Samsung"}]`
+- `cookie` (string) — Optional, only used with `show_only=sold_items` / `completed_items` (ignored elsewhere). Sold and completed listings are returned without a cookie; passing your own signed-in eBay cookie header (`name=value; name2=value2`) also fills `seller_name`, `seller_feedback_count` and `seller_feedback_percentage` on those results.
 
 **Pagination:** page_number (param: `page`, up to 60 results/page)
 **Page size:** fixed 60 (no page-size param)
@@ -70,7 +72,7 @@ Full details for a single eBay listing. Primary data source is LD+JSON structure
 - `product_id` (string) — eBay item ID (numeric, found in listing URLs after `/itm/`). Example: `287062440001`
 
 **Optional:**
-- `domain` (string, default: us → `com`) — values: com, co.uk, com.au, de, ca, fr, it, es, at, ch, com.sg, com.my, ph, ie, pl, nl, be, com.hk, com.mx, com.br
+- `domain` (string, default: com) — values: com, co.uk, com.au, de, ca, fr, it, es, at, ch, com.sg, com.my, ph, ie, pl, nl, be, com.hk, com.mx, com.br
 
 **Pagination:** none
 **Response path:** `data` (single object)
@@ -84,12 +86,12 @@ Seller Feedback
 Seller feedback and reviews. Use `seller_id` for all feedback, or combine with `product_id` to filter feedback for a specific item.
 
 **Required:**
-- `seller_id` (string) — eBay seller username. Example: `wirelesssource`, `thrift.books`, `musicmagpie`
+- `seller_id` (string) — eBay seller user ID, not the store name (the store `ebay.com/str/wirelesssource` belongs to user ID `wireless-source`). The `seller_name` returned by /search and /products-by-category is the user ID. Example: `wireless-source`, `thrift.books`, `musicmagpie`
 
 **Optional:**
 - `product_id` (string) — filter feedback to a specific eBay item ID. Example: `287062440001`
 - `page` (integer, default: 1) — allowed `1-100`, each page up to 25 reviews
-- `domain` (string, default: us → `com`) — values: com, co.uk, com.au, de, ca, fr, it, es, at, ch, com.sg, com.my, ph, ie, pl, nl, be, com.hk, com.mx, com.br
+- `domain` (string, default: com) — values: com, co.uk, com.au, de, ca, fr, it, es, at, ch, com.sg, com.my, ph, ie, pl, nl, be, com.hk, com.mx, com.br
 
 **Pagination:** page_number (param: `page`, up to 25 reviews/page)
 **Page size:** fixed 25 (no page-size param)

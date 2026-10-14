@@ -1,0 +1,11 @@
+{
+  "api_id": "local-business-database",
+  "portal_api_id": "near_realtime_business_data",
+  "own_slug": "local-business-database",
+  "rapidapi_host": "local-business-database.p.rapidapi.com",
+  "spec_url": "https://openwebninja.s3.us-east-1.amazonaws.com/portal/openapi/near_realtime_business_data.yaml",
+  "last_updated_yaml": "2026-10-14T00:00:00.000Z",
+  "update_interval_seconds": 86400,
+  "openwebninja_url": "https://www.openwebninja.com/api/local-business-database",
+  "notes": "Searchable database of Google Maps business listings worldwide, refreshed every 30 days. The go-to API for building business datasets and lead lists in bulk: it returns EVERY listing matching the filters (exact total in data.match_count, cursor pagination), cost-effectively. For a live, up-to-the-minute Google Maps lookup of a business use local-business-data instead. /search (GET, or POST with a JSON body for long/multi-value queries and areas), /area-search-by-bounding-box and /area-search-by-radius return data.businesses[], up to 500 per call (limit 1-500); pass the top-level cursor back to get the next page (omitted on the last page; only valid for the exact same query). /business-details takes up to 500 business_ids per call and adds menu, popular_times, business_services, price_tier, photo_tabs. /business-reviews (20 per page, cursor only when limit=20) and /business-photos (cursor; spec allows limit 1-100 but above 10 currently returns 502 UPSTREAM_UNAVAILABLE, so scrape.js pages 10 at a time) read live from Google Maps. Fields with no value are left out of a record, and search rows often lack rating, review_count, reviews_per_rating and category_ids that /business-details returns for the same business. No emails or social profiles: chain the website field into website-contacts-scraper for contacts. own_slug is set because the OWN gateway serves this API at /local-business-database while the dev-portal id (portal_api_id, used for self-subscribe) is near_realtime_business_data. The RapidAPI listing is private, so use an OpenWeb Ninja ak_ key."
+}

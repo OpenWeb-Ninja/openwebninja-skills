@@ -123,8 +123,8 @@ async function main() {
 
         const { results, totalCallsMade } = await fetchAll({
             host, endpoint: '/app-reviews', params, apiKey, count,
-            pagination: 'cursor', cursorParam: 'cursor', cursorPath: 'cursor',
-            resultsPath: 'data', dryRun, delay: 300, maxCalls,
+            pagination: 'cursor', cursorParam: 'cursor', cursorPath: 'data.cursor',
+            resultsPath: 'data.reviews', dryRun, delay: 300, maxCalls,
         });
 
         console.error(`${results.length} review(s) in ${totalCallsMade} call(s).`);

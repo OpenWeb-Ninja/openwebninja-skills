@@ -24,6 +24,6 @@ Get Directions — Get driving directions from an origin to a destination.
 
 **Pagination:** none
 **Response path:** `data` (routes in `data.best_routes[]`)
-**Key fields:** route_name, distance_meters, distance_label, duration_seconds, duration_label, min_duration_seconds, max_duration_seconds, departure_timestamp, departure_datetime_utc, arrival_timestamp, arrival_datetime_utc, route_parts, type, description, example
+**Key fields:** route_name, distance_meters, distance_label, duration_seconds, duration_label, min_duration_seconds, max_duration_seconds, departure_timestamp, departure_datetime_utc, arrival_timestamp, arrival_datetime_utc, route_parts, origin, destination, directions_link
 
 ---

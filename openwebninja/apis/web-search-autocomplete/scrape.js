@@ -15,6 +15,8 @@ Required:
 
 Optional:
   --queries       Comma-separated queries for batch mode (e.g. "how to,what is,best")
+  --bulk          With --queries: send them through POST /autocomplete (Bulk), up to 50 queries per call
+                  (each query is charged as one request), instead of one GET call per query
   --format        json | csv (default: json)
   --output        Output file path (auto-generated if omitted)
   --language      Language code (default: en)
@@ -37,6 +39,7 @@ function parseArgs(argv) {
         const arg = argv[i];
         if (arg === '--help') { args.help = true; continue; }
         if (arg === '--dry-run') { args.dryRun = true; continue; }
+        if (arg === '--bulk') { args.bulk = true; continue; }
         if (arg.startsWith('--') && i + 1 < argv.length) {
             const key = arg.slice(2).replace(/-([a-z])/g, (_, c) => c.toUpperCase());
             args[key] = argv[++i];
@@ -68,6 +71,32 @@ async function main() {
 
     const allResults = [];
     let totalCalls = 0;
+
+    // ── Bulk mode: POST /autocomplete, up to 50 queries per call ─────────────
+    if (args.bulk) {
+        for (let i = 0; i < queries.length; i += 50) {
+            if (i > 0) await sleep(300);
+            totalCalls++;
+            if (totalCalls > maxCalls) { console.error(`Cost cap (${maxCalls}). Use --max-calls to raise.`); break; }
+            const chunk = queries.slice(i, i + 50);
+            console.error(`  Bulk call ${totalCalls}: ${chunk.length} queries`);
+            const body = { queries: chunk };
+            if (args.language) body.language = args.language;
+            if (args.region) body.region = args.region;
+            if (args.userAgent) body.user_agent = args.userAgent;
+            if (args.cursor) body.cursor_pointer = parseInt(args.cursor, 10);
+            const data = await apiCall(host, '/autocomplete', {}, apiKey, 'POST', body);
+            // data[] has one group per query: { query, results[] }
+            for (const group of (Array.isArray(data.data) ? data.data : [])) {
+                for (const s of (group.results || [])) allResults.push({ source_query: group.query, ...s });
+            }
+            if (dryRun) break;
+        }
+        console.error(`${allResults.length} suggestions in ${totalCalls} call(s).`);
+        if (dryRun) { console.log(JSON.stringify(allResults.slice(0, 10), null, 2)); return; }
+        writeOutput(allResults, outputPath, format, { api: 'web-search-autocomplete', endpoint: 'POST /autocomplete', totalCalls });
+        return;
+    }
 
     for (let i = 0; i < queries.length; i++) {
         if (i > 0) await sleep(300);

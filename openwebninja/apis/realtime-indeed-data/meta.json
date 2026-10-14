@@ -1,0 +1,11 @@
+{
+  "api_id": "realtime-indeed-data",
+  "portal_api_id": "realtime_indeed_data",
+  "rapidapi_host": "real-time-indeed-data.p.rapidapi.com",
+  "spec_url": "https://openwebninja.s3.us-east-1.amazonaws.com/portal/openapi/realtime_indeed_data.yaml",
+  "last_updated_yaml": "2026-10-14T00:00:00.000Z",
+  "update_interval_seconds": 86400,
+  "rapidapi_url": "https://rapidapi.com/letscrape-6bRBa3QguO5/api/real-time-indeed-data",
+  "openwebninja_url": "https://www.openwebninja.com/api/real-time-indeed-data",
+  "notes": "/search and /job-details return a flat array of JSearch-style job objects at data (job_description is already filled on /search). /search is page_number paginated (param: page, 1-50) at a fixed 10 jobs per page; num_pages (1-50) concatenates consecutive pages in one call and is billed per page returned. A broad query runs out around 850-965 unique jobs, page + num_pages reach at most job 990, and a short page means the end. Beyond roughly 450 jobs in one response the payload is trimmed and parameters.response_truncated is set (pass fields to avoid it). /job-details takes up to 20 comma-separated job_id values in one call. /company-reviews returns an object at data (company rating, category ratings, star distribution, topics) with reviews in data.reviews[] at 20 per page (page 1-100, num_pages 1-10); a page past the last returns an empty reviews array with parameters.page_past_last=true. Pass a job's job_indeed_company_page_url as company to go from a job to its employer's reviews. radius requires location; min_salary/max_salary are annual and drop jobs with no stated salary; date_posted combined with another filter can return fewer jobs than qualify."
+}

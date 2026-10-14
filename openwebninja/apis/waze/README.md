@@ -24,6 +24,8 @@ Alerts and Jams
 - `alert_subtypes` (string)
 
 **Pagination:** none
+**Response path:** `data` (`data.alerts[]` and `data.jams[]`)
+**Key fields:** alerts (alert_id, type, subtype, description, publish_datetime_utc, city, street, latitude, longitude, num_thumbs_up, alert_reliability, alert_confidence), jams (jam_id, type, level, severity, speed_kmh, length_meters, driving_time_seconds, line_coordinates, block_alert_type, update_datetime_utc, city, street; `delay_seconds` is no longer provided by Waze and is always null)
 
 ---
 

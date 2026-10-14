@@ -13,7 +13,7 @@ Exports up to 50 laptops priced under $500 sorted by lowest price to CSV.
 
 ```bash
 node --env-file=.env openwebninja_universal_scraper/apis/realtime-product-search/scrape.js \
-  --endpoint /deals-v2 --query "wireless headphones" --condition REFURBISHED --count 30
+  --endpoint /deals --query "wireless headphones" --condition REFURBISHED --count 30
 ```
 
 Fetches up to 30 current deals on refurbished wireless headphones as JSON.
@@ -22,7 +22,7 @@ Fetches up to 30 current deals on refurbished wireless headphones as JSON.
 
 ```bash
 node --env-file=.env openwebninja_universal_scraper/apis/realtime-product-search/scrape.js \
-  --endpoint /product-reviews-v2 --product-id "YOUR_PRODUCT_ID" --sort-by MOST_RECENT --count 50
+  --endpoint /product-reviews --product-id "YOUR_PRODUCT_ID" --sort-by MOST_RECENT --count 50
 ```
 
 Fetches the 50 most recent reviews for a product (replace YOUR_PRODUCT_ID with an actual ID from a search result).

@@ -65,7 +65,7 @@ Object Detection — Detect landmarks, places, plants, animals, products, and ot
 ---
 
 ### GET /ocr
-Image to Text (OCR) — Extract text from an image and get paragraph, sentence and word level text detections from Google Lens.
+Image to Text — Extract text from an image and get paragraph, sentence and word level text detections from Google Lens.
 
 **Required:**
 - `url` (string) — URL of an image from which to extract text. Example: `https://s3-us-west-2.amazonaws.com/courses-images/wp-content/uploads/sites/1844/2017/06/15213029/images-textwrap-topbottom.png`

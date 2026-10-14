@@ -24,7 +24,7 @@ See `gmb_categories.json` for 4,039 available subtypes.
 ## 4. Business reviews
 ```bash
 node --env-file=.env apis/local-business-data/scrape.js \
-  --endpoint /business-reviews --business-id "0x89c259b5a9bd152b:0x31453e62a3be9f76" \
+  --endpoint /business-reviews-v2 --business-id "0x89c259b5a9bd152b:0x31453e62a3be9f76" \
   --count 100 --sort-by newest --format json
 ```
 Cursor-paginated, 20 reviews per call.

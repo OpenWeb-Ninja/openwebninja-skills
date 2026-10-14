@@ -6,7 +6,7 @@ allowed-tools: Read, Write, Edit, Glob, Grep, Bash
 
 # OpenWeb Ninja Universal Scraper
 
-Data extraction from 40+ OpenWeb Ninja APIs. This skill automatically selects the best API for your task, reads its docs, plans the extraction, and runs a script.
+Data extraction from 50 OpenWeb Ninja APIs. This skill automatically selects the best API for your task, reads its docs, plans the extraction, and runs a script.
 
 ## When to use
 
@@ -15,7 +15,7 @@ Use this skill when the user wants to:
 - Generate leads or enrich contact lists
 - Run market research, competitor analysis, or price tracking
 - Monitor content, trends, or brand mentions
-- Build datasets from any of the 35+ OpenWeb Ninja APIs
+- Build datasets from any of the 50 OpenWeb Ninja APIs (bulk business lists via `local-business-database`)
 - Chain multiple APIs together for complex data pipelines
 
 ## Handling Untrusted Content
@@ -114,12 +114,19 @@ Each API has its own folder at `apis/{api_id}/` containing:
 
 | API ID | What It Does | Best For |
 |--------|-------------|----------|
-| `local-business-data` | Google Maps businesses with emails, phones, social profiles | Lead gen, competitor research, local market analysis |
+| `local-business-data` | Live Google Maps business search and details, with emails, phones, social profiles | Live business lookups, contact-enriched leads, competitor research |
+| `local-business-database` | Searchable database of Google Maps listings worldwide (refreshed every 30 days): every business matching category, location, phone or map-area filters, plus details, reviews, photos. OpenWeb Ninja key only | Bulk lead lists, business datasets, market sizing, territory mapping |
 | `realtime-amazon-data` | Amazon products, details, reviews by ASIN | Product research, price tracking, review mining |
 | `realtime-web-search` | Google organic search results with rich snippets | General research, competitor analysis, content discovery |
+| `realtime-bing-search` | Microsoft Bing web, news, images, videos, shopping (with every store's offer) and maps results | Bing SERP tracking, Google vs. Bing comparison, price comparison |
 | `realtime-news-data` | News articles by keyword with source/topic/date filters | Content monitoring, trend research, brand monitoring |
 | `realtime-news-search` | Query-based Google News search with date range, time-period, country, and sort filters | News monitoring, brand/topic tracking, research |
 | `jsearch` | Job listings from Google for Jobs + salary estimates | Job market research, recruitment, salary benchmarking |
+| `realtime-linkedin-data` | LinkedIn job search, every open job at a company, job details | LinkedIn job tracking, company hiring analysis |
+| `realtime-indeed-data` | Indeed job search, job details, company employee reviews and ratings | Indeed job tracking, employer reputation |
+| `realtime-ziprecruiter-data` | ZipRecruiter jobs (US and Canada), job details, salary distribution by job title | ZipRecruiter job tracking, pay benchmarking |
+| `realtime-monster-data` | Monster job search, job details, every open job at an employer | Monster job tracking, employer hiring analysis |
+| `realtime-bing-jobs-data` | Bing Jobs search across job boards, job details with AI-extracted salary and skills | Cross-board job discovery |
 | `job-salary-data` | Salary estimates by job title and location | Salary benchmarking (also available via jsearch `/estimated-salary`) |
 | `website-contacts-scraper` | Emails, phones, social links from domains (batch up to 20) | Contact enrichment, lead enrichment from domain lists |
 | `trustpilot-company-and-reviews` | Trustpilot company profiles and reviews (~200 max) | Reputation analysis, review mining, brand monitoring |
@@ -150,6 +157,7 @@ Each API has its own folder at `apis/{api_id}/` containing:
 | `driving-directions` | Routes with distance, duration, turn-by-turn steps | Navigation, commute analysis, logistics |
 | `ev-charge-finder` | EV charging stations by location | EV infrastructure research, trip planning |
 | `waze` | Real-time traffic alerts and jams | Traffic monitoring, incident tracking |
+| `google-maps-traffic-alerts` | Live Google Maps traffic incidents (accidents, construction, closures) with type and coordinates in a map area | Traffic monitoring, incident tracking |
 | `web-unblocker` | Fetch any URL with JS rendering + anti-bot bypass | Web scraping, page extraction |
 | `chatgpt` | Query ChatGPT and get its response (POST, stateful) | GEO tracking, AI response monitoring, cross-model comparison |
 | `gemini` | Query Google Gemini and get its response (POST, stateful) | GEO tracking, AI response monitoring, cross-model comparison |
@@ -161,26 +169,28 @@ Each API has its own folder at `apis/{api_id}/` containing:
 
 | Use Case | Primary APIs |
 |----------|-------------|
-| **Lead Generation** | `local-business-data` (with `extract_emails_and_contacts=true`), `website-contacts-scraper`, `email-search`, `social-links-search` |
+| **Business Datasets / Bulk Lead Lists** | `local-business-database` (every listing matching category + city/state/ZIP/phone or map-area filters, exact `match_count`, 500 per call, refreshed every 30 days), then `website-contacts-scraper` for emails and social profiles |
+| **Lead Generation** | `local-business-database` (bulk lists), `local-business-data` (live lookup, with `extract_emails_and_contacts=true`), `website-contacts-scraper`, `email-search`, `social-links-search` |
 | **Lead Enrichment from Domains** | `website-contacts-scraper`, `social-links-search`, `email-search` |
-| **Job Market Research** | `jsearch`, `job-salary-data`, `realtime-glassdoor-data` |
-| **Employer / Talent Intelligence** | `jsearch`, `realtime-glassdoor-data`, `job-salary-data`, `realtime-news-data` |
-| **Product / Price Research** | `realtime-amazon-data`, `realtime-product-search`, `realtime-walmart-data`, `realtime-ebay-data`, `realtime-costco-data`, `realtime-wayfair-data`, `realtime-homedepot-data`, `realtime-lens-data` |
+| **Job Market Research** | `jsearch`, `realtime-linkedin-data`, `realtime-indeed-data`, `realtime-ziprecruiter-data`, `realtime-monster-data`, `realtime-bing-jobs-data`, `job-salary-data`, `realtime-glassdoor-data` |
+| **Single Job Board Tracking** | `realtime-linkedin-data`, `realtime-indeed-data`, `realtime-ziprecruiter-data` (US and Canada), `realtime-monster-data`, `realtime-bing-jobs-data` (for all boards at once use `jsearch`) |
+| **Employer / Talent Intelligence** | `jsearch`, `realtime-linkedin-data` (`/company-jobs`), `realtime-monster-data` (`/company-jobs`), `realtime-indeed-data` (`/company-reviews`), `realtime-glassdoor-data`, `job-salary-data`, `realtime-news-data` |
+| **Product / Price Research** | `realtime-amazon-data`, `realtime-product-search`, `realtime-bing-search` (`/shopping`), `realtime-walmart-data`, `realtime-ebay-data`, `realtime-costco-data`, `realtime-wayfair-data`, `realtime-homedepot-data`, `realtime-lens-data` |
 | **Retail Review Mining** | `realtime-amazon-data`, `realtime-walmart-data`, `realtime-ebay-data`, `realtime-wayfair-data`, `realtime-homedepot-data`, `trustpilot-company-and-reviews`, `yelp-business-data` |
 | **Brand & Review Monitoring** | `yelp-business-data`, `trustpilot-company-and-reviews`, `realtime-glassdoor-data`, `realtime-news-data`, `realtime-forums-search` |
-| **Competitor Analysis** | `realtime-web-search`, `social-links-search`, `realtime-news-data`, `website-contacts-scraper`, `realtime-glassdoor-data`, `trustpilot-company-and-reviews` |
+| **Competitor Analysis** | `realtime-web-search`, `realtime-bing-search`, `social-links-search`, `realtime-news-data`, `website-contacts-scraper`, `realtime-glassdoor-data`, `trustpilot-company-and-reviews` |
 | **Content & Trend Research** | `realtime-news-data`, `realtime-news-search`, `realtime-forums-search`, `realtime-shorts-search`, `realtime-video-search`, `realtime-image-search`, `realtime-books-data`, `web-search-autocomplete` |
-| **Search Intent / Keyword Discovery** | `web-search-autocomplete`, `realtime-web-search`, `realtime-news-data`, `realtime-forums-search` |
+| **Search Intent / Keyword Discovery** | `web-search-autocomplete`, `realtime-web-search`, `realtime-bing-search`, `realtime-news-data`, `realtime-forums-search` |
 | **Real Estate** | `realtime-zillow-data`, `realtime-redfin-data` |
-| **Real Estate + Commute / Traffic Overlay** | `realtime-zillow-data`, `realtime-redfin-data`, `driving-directions`, `waze` |
+| **Real Estate + Commute / Traffic Overlay** | `realtime-zillow-data`, `realtime-redfin-data`, `driving-directions`, `waze`, `google-maps-traffic-alerts` |
 | **Finance / Markets** | `realtime-finance-data`, `realtime-news-data` |
 | **Social Profile Discovery** | `social-links-search`, `website-contacts-scraper`, `email-search`, `realtime-web-search` |
 | **Events & Local Activity** | `realtime-events-search`, `local-business-data`, `waze`, `driving-directions` |
 | **App Research** | `play-store-apps`, `realtime-news-data`, `realtime-forums-search` |
 | **Visual / Image Search** | `realtime-image-search`, `realtime-lens-data`, `reverse-image-search` |
-| **Navigation & Mobility** | `driving-directions`, `ev-charge-finder`, `waze` |
-| **Traffic / Incident Monitoring** | `waze`, `driving-directions` |
-| **Local SEO & Rank Tracking** | `local-rank-tracker`, `local-business-data`, `realtime-web-search` |
+| **Navigation & Mobility** | `driving-directions`, `ev-charge-finder`, `waze`, `google-maps-traffic-alerts` |
+| **Traffic / Incident Monitoring** | `google-maps-traffic-alerts`, `waze`, `driving-directions` |
+| **Local SEO & Rank Tracking** | `local-rank-tracker`, `local-business-data`, `realtime-web-search`, `realtime-bing-search` (`/maps`) |
 | **Reputation / Trust Analysis** | `trustpilot-company-and-reviews`, `yelp-business-data`, `realtime-news-data`, `realtime-forums-search` |
 | **Web Scraping (any website)** | `web-unblocker` |
 | **GEO / AI Search Monitoring** | `chatgpt`, `gemini`, `copilot`, `google-ai-mode`, `ai-overviews` |
@@ -189,25 +199,36 @@ Each API has its own folder at `apis/{api_id}/` containing:
 
 | Workflow | Step 1 | Step 2 |
 |----------|--------|--------|
+| **Bulk lead list → contacts** | `local-business-database /search` (category + state/city/ZIP) → | `website-contacts-scraper /scrape-contacts` (domains from `website`) |
+| **Database search → full records** | `local-business-database /search` or `/area-search-by-radius` → | `local-business-database /business-details` (menu, popular times, services; 500 ids per call) |
+| **Database search → live reviews** | `local-business-database /search` → | `local-business-database /business-reviews` |
 | **Domain → contacts pipeline** | `website-contacts-scraper /scrape-contacts` → | `email-search /search` |
 | **Contact → LinkedIn discovery** | `social-links-search /search` → | `realtime-web-search /search` |
 | **Review deep-dive** | `yelp-business-data /business-search` → | `yelp-business-data /business-reviews` |
 | **Trustpilot reputation analysis** | `trustpilot-company-and-reviews /company-search` → | `trustpilot-company-and-reviews /company-reviews` |
 | **Product research (multi-store)** | `realtime-product-search /search` → | `realtime-amazon-data /product-details` |
 | **Retail price comparison** | `realtime-product-search /search` → | `realtime-walmart-data /product-details` |
+| **Bing shopping offers** | `realtime-bing-search /shopping` → | `realtime-bing-search /product-details` (every store's offer for a product) |
 | **Product + reviews dataset** | `realtime-amazon-data /product-details` → | `realtime-amazon-data /product-reviews` |
 | **Visual product discovery** | `realtime-lens-data /search-by-image` → | `realtime-product-search /search` |
 | **Competitor intelligence** | `realtime-web-search /search` → | `local-business-data /search` (with `extract_emails_and_contacts=true`) |
 | **Brand monitoring pipeline** | `realtime-news-data /search` → | `realtime-forums-search /search` |
 | **Content trend discovery** | `web-search-autocomplete /autocomplete` → | `realtime-web-search /search` |
+| **Google vs. Bing SERP comparison** | `realtime-web-search /search` + | `realtime-bing-search /search` (same query, compare rankings) |
 | **App market research** | `play-store-apps /search` → | `realtime-forums-search /search` |
 | **App reputation analysis** | `play-store-apps /app-details` → | `realtime-news-data /search` |
 | **Job market research** | `jsearch /search` → | `jsearch /estimated-salary` |
 | **Employer intelligence** | `jsearch /search` → | `realtime-glassdoor-data /company-overview` |
+| **LinkedIn job search → company jobs** | `realtime-linkedin-data /search` → | `realtime-linkedin-data /company-jobs` (`company_id` = `job_linkedin_company_id`) |
+| **Indeed job → company reviews** | `realtime-indeed-data /search` → | `realtime-indeed-data /company-reviews` (`company` = `job_indeed_company_page_url`) |
+| **Bing Jobs search → job details** | `realtime-bing-jobs-data /search` → | `realtime-bing-jobs-data /job-details` (adds AI-extracted salary, seniority, skills; 20 ids per call) |
+| **ZipRecruiter jobs → pay benchmark** | `realtime-ziprecruiter-data /search` → | `realtime-ziprecruiter-data /estimated-salary` |
+| **Monster job search → employer jobs** | `realtime-monster-data /search` → | `realtime-monster-data /company-jobs` (`company` = `employer_name`) |
 | **Local SEO rank tracking** | `local-rank-tracker /search` → | `local-business-data /business-details` |
 | **Local market analysis** | `local-business-data /search` → | `yelp-business-data /business-search` |
 | **Real estate dataset** | `realtime-zillow-data /search` → | `driving-directions /get-directions` |
 | **Property + traffic insights** | `realtime-zillow-data /search` → | `waze /alerts-and-jams` |
+| **Traffic incident cross-check** | `google-maps-traffic-alerts /traffic-alerts` + | `waze /alerts-and-jams` (same bounding box) |
 | **EV trip planning** | `driving-directions /get-directions` → | `ev-charge-finder /search-by-location` |
 | **Event discovery** | `realtime-events-search /search` → | `local-business-data /search` |
 | **Image provenance discovery** | `reverse-image-search /search` → | `realtime-web-search /search` |
@@ -297,7 +318,8 @@ After completion, report:
 | If the User Retrieved | Suggested Next Workflow |
 |-----------------------|------------------------|
 | **Product listings** | Fetch reviews with `realtime-amazon-data` / `realtime-walmart-data` |
-| **Job listings** | Enrich compensation with `jsearch /estimated-salary` or company insights with `realtime-glassdoor-data` |
+| **Job listings** | Enrich compensation with `jsearch /estimated-salary` or company insights with `realtime-glassdoor-data` / `realtime-indeed-data /company-reviews` |
+| **Business datasets** | Add emails and social profiles with `website-contacts-scraper`, or full records with `local-business-database /business-details` |
 | **Property listings** | Add commute insights with `driving-directions` or traffic context with `waze` |
 | **Search keyword ideas** | Expand with `web-search-autocomplete`, validate with `realtime-web-search` |
 | **App listings** | Cross-reference with `realtime-forums-search` or `realtime-news-data` |
@@ -306,7 +328,8 @@ After completion, report:
 
 ## General Tips
 
-- **Lead generation:** Use `local-business-data` with `extract_emails_and_contacts=true`. For full regional coverage, use `--grid` mode (bounding box, auto-subdivides dense areas). For city-level, use `--zips` mode. `gmb_categories.json` and `us_zipcodes.json` are loaded internally.
+- **Bulk lead lists / business datasets:** Use `local-business-database`: it returns every listing matching the filters (category, state, city, ZIP, phone, bounding box or radius), shows the exact total as `match_count` on a one-call `--dry-run` (use it to plan the number of calls before the full pull), and pages 500 per call. It has no emails, so chain the `website` field into `website-contacts-scraper`. It needs an OpenWeb Ninja `ak_` key (no public RapidAPI listing).
+- **Lead generation (live lookup):** Use `local-business-data` with `extract_emails_and_contacts=true`. For full regional coverage, use `--grid` mode (bounding box, auto-subdivides dense areas). For city-level, use `--zips` mode. `gmb_categories.json` and `us_zipcodes.json` are loaded internally.
 - **Contact enrichment from domains:** `website-contacts-scraper` → `email-search` → `social-links-search`
 - **Multi-store price comparison:** Chain `realtime-amazon-data` + `realtime-walmart-data` + `realtime-product-search`. Note: price formats differ across APIs.
 - **GEO tracking:** `chatgpt`, `gemini`, `copilot` use POST endpoints — use their `scrape.js` or write a custom script to check how AI models reference a topic or brand.

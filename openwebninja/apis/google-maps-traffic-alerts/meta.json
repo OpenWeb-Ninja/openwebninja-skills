@@ -1,0 +1,11 @@
+{
+  "api_id": "google-maps-traffic-alerts",
+  "portal_api_id": "google_maps_traffic_alerts",
+  "rapidapi_host": "google-maps-traffic-alerts.p.rapidapi.com",
+  "spec_url": "https://openwebninja.s3.us-east-1.amazonaws.com/portal/openapi/google_maps_traffic_alerts.yaml",
+  "last_updated_yaml": "2026-10-14T00:00:00.000Z",
+  "update_interval_seconds": 86400,
+  "rapidapi_url": "https://rapidapi.com/letscrape-6bRBa3QguO5/api/google-maps-traffic-alerts",
+  "openwebninja_url": "https://www.openwebninja.com/api/google-maps-traffic-alerts",
+  "notes": "Single endpoint /traffic-alerts: live Google Maps traffic incidents (accidents, construction, road closures, slowdowns) inside a bounding box (bottom_left / top_right as lat,lng). Returns every alert in the box in one call (no pagination) at data.alerts[] (type, latitude, longitude) with data.count. The box area is capped per zoom (11: 8000 km2, 12: 2000, 13: 500 default, 14: 125, 15: 30, 16: 8); use a lower zoom to cover a larger area, or tile a large region into several boxes. For Waze driver-reported alerts and jams use the waze API."
+}

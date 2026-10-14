@@ -2,9 +2,9 @@
   "api_id": "realtime-glassdoor-data",
   "portal_api_id": "realtime_glassdoor_data",
   "rapidapi_host": "real-time-glassdoor-data.p.rapidapi.com",
-  "notes": "Page-based pagination across company search, reviews, and salary endpoints.",
+  "notes": "Page-based pagination on /company-reviews (data.reviews), /company-jobs, /company-salaries-v2 (data.salaries) and /company-interviews (data.interviews, page_size up to 100). /job-search is cursor-based (data.cursor). /company-search returns up to limit (max 100) in one call.",
   "spec_url": "https://openwebninja.s3.us-east-1.amazonaws.com/portal/openapi/realtime_glassdoor_data.yaml",
-  "last_updated_yaml": "2026-03-14T22:49:40.453Z",
+  "last_updated_yaml": "2026-08-14T11:19:05.000Z",
   "update_interval_seconds": 86400,
   "rapidapi_url": "https://rapidapi.com/letscrape-6bRBa3QguO5/api/real-time-glassdoor-data",
   "openwebninja_url": "https://www.openwebninja.com/api/real-time-glassdoor-data"

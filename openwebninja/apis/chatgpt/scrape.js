@@ -67,7 +67,7 @@ async function main() {
     const record = {
         message: args.message,
         context_file: args.context || null,
-        response: data.response || data.result || data.answer || data.message || JSON.stringify(data),
+        response: (data.data && data.data.reply_text) || JSON.stringify(data),
         raw: data,
     };
 

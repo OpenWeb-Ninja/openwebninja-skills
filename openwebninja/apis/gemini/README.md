@@ -10,6 +10,15 @@
 ### POST /chat
 Chat — Chat with Google Gemini with web access and continuous conversation support.
 
+**Required (JSON body):**
+- `message` (string) — Message to send to Google Gemini Example: `Hello`
+
+**Optional (JSON body):**
+- `conversation_id` (string) — continue a conversation; a new one is created when omitted
+- `markdown` (boolean, default: true) — return the reply in markdown
+
 **Pagination:** none
+**Response path:** `data`
+**Key fields:** reply_text, reference_links (title, link, snippet, source, favicon), conversation_id
 
 ---

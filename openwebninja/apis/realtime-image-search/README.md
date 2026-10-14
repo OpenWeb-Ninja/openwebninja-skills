@@ -14,7 +14,7 @@ Search Images — Get real-time image search results from across the web. Suppor
 - `query` (string) — Search query / keyword Example: `beach`
 
 **Optional:**
-- `limit` (integer, default: 10) Example: `10`
+- `limit` (integer, default: 10) — values: 1-100 Example: `10`
 - `size` (string, default: any) — values: any, large, medium, icon, 400x300_and_more, 640x480_and_more, 800x600_and_more, 1024x768_and_more, 2mp_and_more, 4mp_and_more, 6mp_and_more, 8mp_and_more, 10mp_and_more, 12mp_and_more, 15mp_and_more, 20mp_and_more, 40mp_and_more, 70mp_and_more
 - `color` (string, default: any) — values: any, red, orange, yellow, green, teal, blue, purple, pink, white, gray, black, brown, full, transparent, grayscale
 - `type` (string, default: any) — values: any, face, photo, clipart, lineart, animated
@@ -30,6 +30,6 @@ Search Images — Get real-time image search results from across the web. Suppor
 **Pagination:** none
 **Page size param:** `limit` (default: 10)
 **Response path:** `data`
-**Key fields:** id, title, url, width, height, size, background_color, thumbnail_url, thumbnail_width, thumbnail_height, source, source_url, source_domain, position, rank, copyright, credits, license_link
+**Key fields:** id, title, url, width, height, size, background_color, thumbnail_url, thumbnail_width, thumbnail_height, source, source_url, source_domain, position, rank
 
 ---

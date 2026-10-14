@@ -3,7 +3,7 @@
 > Full OpenAPI spec: https://openwebninja.s3.us-east-1.amazonaws.com/portal/openapi/realtime_news_data.yaml
 
 **Host:** `real-time-news-data.p.rapidapi.com`
-**Notes:** Offset-based pagination using 'start' param. Use 'limit' param to control page size.
+**Notes:** No pagination: each endpoint returns up to `limit` articles (1-500) in one call.
 
 ## Endpoints
 
@@ -42,7 +42,7 @@ Top Headlines — Get the latest news headlines/top stories for a country.
 Topic Headlines — Get the latest news headlines for a topic (World,  Sports, Technology, etc) or publication (e.g. CNN, BBC, etc).
 
 **Required:**
-- `topic` (string) Example: `WORLD`
+- `topic` (string) — values: WORLD, NATIONAL, BUSINESS, TECHNOLOGY, ENTERTAINMENT, SPORTS, SCIENCE, HEALTH (or a Google News topic / publication ID) Example: `WORLD`
 
 **Optional:**
 - `limit` (integer, default: 500) Example: `500`
@@ -58,7 +58,7 @@ Topic Headlines — Get the latest news headlines for a topic (World,  Sports, T
 Topic News By Section — Get news article in a specific section of a topic (World,  Sports, Technology, etc) or publication (CNN, BBC, etc).
 
 **Required:**
-- `topic` (string) Example: `WORLD`
+- `topic` (string) — values: WORLD, NATIONAL, BUSINESS, TECHNOLOGY, ENTERTAINMENT, SPORTS, SCIENCE, HEALTH (or a Google News topic / publication ID) Example: `WORLD`
 
 **Optional:**
 - `section` (string) Example: `CAQiSkNCQVNNUW9JTDIwdk1EZGpNWFlTQldWdUxVZENHZ0pKVENJT0NBUWFDZ29JTDIwdk1ETnliSFFxQ2hJSUwyMHZNRE55YkhRb0FBKi4IACoqCAoiJENCQVNGUW9JTDIwdk1EZGpNWFlTQldWdUxVZENHZ0pKVENnQVABUAE`

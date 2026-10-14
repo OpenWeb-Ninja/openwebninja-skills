@@ -15,7 +15,7 @@ Required:
 
 Optional:
   --limit         Number of results to return (1–500, default: 500)
-  --safe-search   Content filtering: off | blur (default: off)
+  --safe-search   Content filtering: off | blur (default: blur)
   --format        json | csv (default: json)
   --output        Output file path (auto-generated if omitted)
   --dry-run       Fetch data and print to console without saving
@@ -44,7 +44,7 @@ async function main() {
 
     const apiKey = getApiKey();
     const meta = loadMeta('reverse-image-search');
-    const host = meta.rapidapi_host || 'reverse-image-search3.p.rapidapi.com';
+    const host = meta.rapidapi_host || 'reverse-image-search1.p.rapidapi.com';
     const format = args.format || 'json';
     const dryRun = !!args.dryRun;
     const limit = parseInt(args.limit, 10) || 500;

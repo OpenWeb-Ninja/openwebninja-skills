@@ -12,16 +12,16 @@ Search products across stores and export results.
 
 Required:
   --query           Search query (e.g. "Nike shoes")
-                    For /product-details-v2, /product-offers-v2, /product-reviews-v2: use --product-id instead
+                    For /product-details, /product-offers, /product-reviews, /product-price-history-v2: use --product-id instead
                     For /store-reviews: use --store-domain instead
 
 Optional:
-  --endpoint        Endpoint: /search-v2 (default), /search-light-v2, /deals-v2,
-                    /product-details-v2, /product-offers-v2, /product-reviews-v2, /store-reviews
+  --endpoint        Endpoint: /search (default), /deals, /product-details, /product-offers,
+                    /product-reviews, /product-price-history-v2, /store-reviews
   --count           Max results (default: 100)
   --format          json | csv (default: json)
   --output          Output file path (auto-generated if omitted)
-  --product-id      Product ID (for /product-details-v2, /product-offers-v2, /product-reviews-v2)
+  --product-id      Product ID (for /product-details, /product-offers, /product-reviews, /product-price-history-v2)
   --store-domain    Store domain (for /store-reviews, e.g. "amazon.com")
   --min-price       Minimum price filter
   --max-price       Maximum price filter
@@ -62,7 +62,11 @@ async function main() {
     const args = parseArgs(process.argv);
     if (args.help) { printHelp(); process.exit(0); }
 
-    const endpoint = args.endpoint || '/search-v2';
+    // v2 of the API (OWN base path /realtime-product-search/v2 via meta.json own_slug). The old
+    // RapidAPI route names (/search-v2, /product-details-v2, ...) are accepted as aliases.
+    const aliases = { '/search-v2': '/search', '/deals-v2': '/deals', '/product-details-v2': '/product-details', '/product-offers-v2': '/product-offers', '/product-reviews-v2': '/product-reviews' };
+    const endpoint = aliases[args.endpoint] || args.endpoint || '/search';
+    if (endpoint === '/search-light-v2') { console.error('Error: /search-light-v2 is not part of the API anymore. Use /search.'); process.exit(1); }
     const apiKey = getApiKey();
     const meta = loadMeta('realtime-product-search');
     const host = meta.rapidapi_host || 'real-time-product-search.p.rapidapi.com';
@@ -70,43 +74,43 @@ async function main() {
     const format = args.format || 'json';
     const dryRun = !!args.dryRun;
     const maxCalls = parseInt(args.maxCalls, 10) || 50;
-    const pageSize = 10;
+    const pageSize = 40; // /search and /deals pages hold up to 40 products; limit only truncates a page
 
     const ts = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
     const outputPath = args.output || path.join('output', `realtime-product-search_${ts}.${format}`);
 
     // ── Product Details (no pagination) ──
-    if (endpoint === '/product-details-v2') {
-        if (!args.productId) { console.error('Error: --product-id required for /product-details-v2'); process.exit(1); }
+    if (endpoint === '/product-details') {
+        if (!args.productId) { console.error('Error: --product-id required for /product-details'); process.exit(1); }
         const params = { product_id: args.productId, country: args.country || 'us', language: args.language || 'en' };
-        const data = await apiCall(host, '/product-details-v2', params, apiKey);
+        const data = await apiCall(host, '/product-details', params, apiKey);
         const records = data.data ? [data.data] : [data];
         writeOutput(records, outputPath, format, { api: 'realtime-product-search', endpoint, totalCalls: 1 });
         return;
     }
 
-    // ── Product Offers (page-based, no limit param) ──
-    if (endpoint === '/product-offers-v2') {
-        if (!args.productId) { console.error('Error: --product-id required for /product-offers-v2'); process.exit(1); }
+    // ── Product Offers / Price History (page-based, no limit param) ──
+    if (endpoint === '/product-offers' || endpoint === '/product-price-history-v2') {
+        if (!args.productId) { console.error(`Error: --product-id required for ${endpoint}`); process.exit(1); }
         const params = { product_id: args.productId, country: args.country || 'us', language: args.language || 'en' };
         const { results, totalCallsMade } = await fetchAll({
-            host, endpoint: '/product-offers-v2', params, apiKey, count,
+            host, endpoint, params, apiKey, count,
             pagination: 'page_number', pageParam: 'page', pageSize: 10,
-            resultsPath: 'data', dryRun, delay: 300, maxCalls,
+            resultsPath: 'data.offers', dryRun, delay: 300, maxCalls,
         });
         writeOutput(results, outputPath, format, { api: 'realtime-product-search', endpoint, totalCalls: totalCallsMade });
         return;
     }
 
     // ── Product Reviews (cursor-based) ──
-    if (endpoint === '/product-reviews-v2') {
-        if (!args.productId) { console.error('Error: --product-id required for /product-reviews-v2'); process.exit(1); }
+    if (endpoint === '/product-reviews') {
+        if (!args.productId) { console.error('Error: --product-id required for /product-reviews'); process.exit(1); }
         const params = { product_id: args.productId, limit: Math.min(count, 10), country: args.country || 'us', language: args.language || 'en' };
         if (args.sortBy) params.sort_by = args.sortBy;
         const { results, totalCallsMade } = await fetchAll({
-            host, endpoint: '/product-reviews-v2', params, apiKey, count,
-            pagination: 'cursor', cursorParam: 'cursor', cursorPath: 'cursor',
-            pageSize: 10, resultsPath: 'data', dryRun, delay: 300, maxCalls,
+            host, endpoint: '/product-reviews', params, apiKey, count,
+            pagination: 'cursor', cursorParam: 'cursor', cursorPath: 'data.cursor',
+            pageSize: 10, resultsPath: 'data.reviews', dryRun, delay: 300, maxCalls,
         });
         writeOutput(results, outputPath, format, { api: 'realtime-product-search', endpoint, totalCalls: totalCallsMade });
         return;
@@ -119,8 +123,8 @@ async function main() {
         if (args.sortBy) params.sort_by = args.sortBy;
         const { results, totalCallsMade } = await fetchAll({
             host, endpoint: '/store-reviews', params, apiKey, count,
-            pagination: 'cursor', cursorParam: 'cursor', cursorPath: 'cursor',
-            pageSize: 10, resultsPath: 'data', dryRun, delay: 300, maxCalls,
+            pagination: 'cursor', cursorParam: 'cursor', cursorPath: 'data.cursor',
+            pageSize: 10, resultsPath: 'data.reviews', dryRun, delay: 300, maxCalls,
         });
         writeOutput(results, outputPath, format, { api: 'realtime-product-search', endpoint, totalCalls: totalCallsMade });
         return;
@@ -130,7 +134,7 @@ async function main() {
     if (!args.query) { console.error('Error: --query required. Use --help for usage.'); process.exit(1); }
 
     const params = {
-        q: args.query, limit: pageSize,
+        q: args.query, limit: Math.min(count, pageSize),
         country: args.country || 'us', language: args.language || 'en',
     };
     if (args.sortBy) params.sort_by = args.sortBy;

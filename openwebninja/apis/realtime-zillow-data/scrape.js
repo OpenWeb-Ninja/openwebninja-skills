@@ -11,15 +11,17 @@ Usage: node scrape.js --location <place> [options]
 Search Zillow real estate listings, get property details, and Zestimates.
 
 Required (varies by endpoint):
-  --location      Location string (for /search, e.g. "Los Angeles, CA")
-  --zpid          Zillow property ID (for /property-details, /zestimate)
+  --location      Location string (for /search, e.g. "Los Angeles, CA"; for /agent-search a city-state slug, e.g. "new-york-ny")
+  --encoded-zuid  Agent encodedZuid from /agent-search (for /agent-properties-for-sale, -sold, -for-rent)
+  --zpid          Zillow property ID (for /zestimate; for /property-details pass --zpid or --url)
   --address       Full property address (for /property-details-address)
   --lat / --long  Coordinates (for /search-coordinates)
   --polygon       Polygon as "lng lat" pairs, longitude first (for /search-polygon)
                   e.g. "-118.50 34.03,-118.47 34.03,-118.47 34.00,-118.50 34.00"
 
 Optional:
-  --endpoint      Endpoint: /search (default), /search-coordinates, /search-polygon, /property-details, /property-details-address, /zestimate
+  --endpoint      Endpoint: /search (default), /search-coordinates, /search-polygon, /property-details, /property-details-address, /zestimate,
+                  /agent-search, /agent-properties-for-sale, /agent-properties-sold, /agent-properties-for-rent
   --count         Max results to fetch (default: 82)
   --format        json | csv (default: json)
   --output        Output file path (auto-generated if omitted)
@@ -39,7 +41,9 @@ Optional:
   --listing-type  BY_AGENT (default), BY_OWNER
   --max-hoa-fee   Max HOA fee
   --diameter      Search radius in miles (for /search-coordinates, default: 1)
-  --url           Zillow property URL (optional for /property-details)
+  --name          Filter agents by name (for /agent-search)
+  --include-team  true | false: include the agent's team listings (for /agent-properties-for-sale, -for-rent; default: true)
+  --url           Zillow property URL (for /property-details instead of --zpid, optional for /zestimate)
   --dry-run       Fetch first page only, print to console
   --max-calls     Safety cap on API calls (default: 50)
   --help          Show this help
@@ -96,10 +100,11 @@ async function main() {
     const ts = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
     const outputPath = args.output || path.join('output', `realtime-zillow-data_${ts}.${format}`);
 
-    // ── Property Details by ZPID (single call) ────────────────────────────────
+    // ── Property Details by ZPID or URL (single call) ─────────────────────────
     if (endpoint === '/property-details') {
-        if (!args.zpid) { console.error('Error: --zpid required for /property-details'); process.exit(1); }
-        const params = { zpid: args.zpid };
+        if (!args.zpid && !args.url) { console.error('Error: --zpid or --url required for /property-details'); process.exit(1); }
+        const params = {};
+        if (args.zpid) params.zpid = args.zpid;
         if (args.url) params.url = args.url;
         const data = await apiCall(host, '/property-details', params, apiKey);
         const records = data.data ? [data.data] : [data];
@@ -128,6 +133,43 @@ async function main() {
         const records = data.data ? [data.data] : [data];
         if (dryRun) { console.log(JSON.stringify(records, null, 2)); return; }
         writeOutput(records, outputPath, format, { api: 'realtime-zillow-data', endpoint: '/zestimate', totalCalls: 1 });
+        return;
+    }
+
+    // ── Agent Search (paginated, up to 15 agents per page) ────────────────────
+    if (endpoint === '/agent-search') {
+        if (!args.location) { console.error('Error: --location required for /agent-search (e.g. "new-york-ny")'); process.exit(1); }
+        const params = { location: args.location };
+        if (args.name) params.name = args.name;
+        const { results, totalCallsMade } = await fetchAll({
+            host, endpoint: '/agent-search', params, apiKey, count,
+            pagination: 'page_number', pageParam: 'page', pageSize: 15,
+            resultsPath: 'data.agents', dryRun, delay: 300, maxCalls,
+        });
+        console.error(`${results.length} agents in ${totalCallsMade} call(s).`);
+        if (dryRun) { console.log(JSON.stringify(results.slice(0, 3), null, 2)); return; }
+        writeOutput(results, outputPath, format, { api: 'realtime-zillow-data', endpoint: '/agent-search', location: args.location, totalCalls: totalCallsMade });
+        return;
+    }
+
+    // ── Agent Properties: for sale / sold / for rent (paginated, up to 5 per page) ──
+    const agentResultsPath = {
+        '/agent-properties-for-sale': 'data.listings',
+        '/agent-properties-for-rent': 'data.listings',
+        '/agent-properties-sold': 'data.sold_properties',
+    };
+    if (agentResultsPath[endpoint]) {
+        if (!args.encodedZuid) { console.error(`Error: --encoded-zuid required for ${endpoint} (from /agent-search)`); process.exit(1); }
+        const params = { encodedZuid: args.encodedZuid };
+        if (args.includeTeam && endpoint !== '/agent-properties-sold') params.include_team = args.includeTeam;
+        const { results, totalCallsMade } = await fetchAll({
+            host, endpoint, params, apiKey, count,
+            pagination: 'page_number', pageParam: 'page', pageSize: 5,
+            resultsPath: agentResultsPath[endpoint], dryRun, delay: 300, maxCalls,
+        });
+        console.error(`${results.length} properties in ${totalCallsMade} call(s).`);
+        if (dryRun) { console.log(JSON.stringify(results.slice(0, 3), null, 2)); return; }
+        writeOutput(results, outputPath, format, { api: 'realtime-zillow-data', endpoint, encodedZuid: args.encodedZuid, totalCalls: totalCallsMade });
         return;
     }
 

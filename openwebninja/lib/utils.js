@@ -54,8 +54,9 @@ function resolveOwnSlug(host) {
                         const match = yaml.match(/url:\s*https:\/\/api\.openwebninja\.com\/([^\s\n]+)/);
                         if (match) return match[1];
                     }
-                    // Fallback to the authoritative OWN slug (portal_api_id in hyphen
-                    // form), then api_id / folder name.
+                    // Fallback to the authoritative OWN slug (own_slug override, else
+                    // portal_api_id in hyphen form), then api_id / folder name.
+                    if (meta.own_slug) return meta.own_slug;
                     if (meta.portal_api_id) return meta.portal_api_id.replace(/_/g, '-');
                     return meta.api_id || dir;
                 }
@@ -69,10 +70,13 @@ function resolveOwnSlug(host) {
 // Resolve the OWN URL slug from an api folder id. The slug is the API's portal_api_id in
 // hyphen form (e.g. real_time_walmart_data -> real-time-walmart-data). These slugs are
 // irregular and do NOT always match the folder name, so derive from meta.json's
-// portal_api_id (authoritative). If no meta match (apiId may already be the hyphen slug),
-// use it verbatim.
+// portal_api_id (authoritative). A few gateway slugs do not follow the portal_api_id at all
+// (e.g. near_realtime_business_data is served at /local-business-database); those carry an
+// explicit `own_slug` in meta.json, which wins. If no meta match (apiId may already be the
+// hyphen slug), use it verbatim.
 function ownSlugForApiId(apiId) {
     const meta = loadMeta(apiId);
+    if (meta && meta.own_slug) return meta.own_slug;
     if (meta && meta.portal_api_id) return meta.portal_api_id.replace(/_/g, '-');
     return apiId;
 }

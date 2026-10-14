@@ -1,7 +1,7 @@
 {
   "name": "openwebninja",
   "version": "1.0.0",
-  "description": "Claude Code skill — extract data from 35+ public web APIs using natural language",
+  "description": "Claude Code skill — extract data from 50 public web APIs using natural language",
   "keywords": [
     "claude-code",
     "skill",

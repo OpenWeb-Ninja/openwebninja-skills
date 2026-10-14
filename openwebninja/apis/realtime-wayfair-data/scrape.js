@@ -20,7 +20,7 @@ Optional:
   --count           Max results to fetch (default: 96)
   --format          json | csv (default: json)
   --output          Output file path (auto-generated if omitted)
-  --domain          com | ca | co.uk | ie | de (default: com)
+  --domain          com | ca | co.uk | ie (default: com)
   --sort-by         Search sort: recommended, customer_rating, price_low_to_high, price_high_to_low
                     Reviews sort: relevance, helpful, date_ascending, date_descending, rating_ascending, rating_descending
   --category-id     Wayfair category ID (search)

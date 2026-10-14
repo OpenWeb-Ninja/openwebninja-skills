@@ -63,7 +63,7 @@ async function main() {
     const endpoint = args.endpoint || '/search';
     const apiKey = getApiKey();
     const meta = loadMeta('realtime-homedepot-data');
-    const host = meta.rapidapi_host || 'realtime-homedepot-data.p.rapidapi.com';
+    const host = meta.rapidapi_host || 'real-time-home-depot-data.p.rapidapi.com';
     const count = parseInt(args.count, 10) || 72;
     const format = args.format || 'json';
     const dryRun = !!args.dryRun;

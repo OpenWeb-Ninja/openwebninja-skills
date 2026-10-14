@@ -1,0 +1,11 @@
+{
+  "api_id": "realtime-bing-jobs-data",
+  "portal_api_id": "realtime_bing_jobs_data",
+  "rapidapi_host": "real-time-bing-jobs-data.p.rapidapi.com",
+  "spec_url": "https://openwebninja.s3.us-east-1.amazonaws.com/portal/openapi/realtime_bing_jobs_data.yaml",
+  "last_updated_yaml": "2026-10-14T00:00:00.000Z",
+  "update_interval_seconds": 86400,
+  "rapidapi_url": "https://rapidapi.com/letscrape-6bRBa3QguO5/api/real-time-bing-jobs-data",
+  "openwebninja_url": "https://www.openwebninja.com/api/real-time-bing-jobs-data",
+  "notes": "Bing Jobs search aggregating public job boards (LinkedIn, ZipRecruiter, Monster and others); every job names the boards carrying it (job_publishers). /search returns a flat array at data, 10 jobs per page via page (1-50) + num_pages (1-20); page + num_pages - 1 must stay within page 50. Billing is one request per page of 10 returned, with no extra cost for deep pages, but every call walks Bing's results from the start (deeper is slower) and ranking drifts slightly between calls, so fetch several pages per call and dedupe by job_id (scrape.js does both). include_descriptions (default true) fills job_description and apply links from each job's detail page, unbilled, capped at 100 jobs per call, so scrape.js asks for at most 10 pages per call when it is on. A call returning fewer than num_pages x 10 jobs has reached the end (unless exclude_job_publishers removed some). Put role and location in query (\"developer jobs in new york\"); country selects Bing's national job index. /job-details takes up to 20 ids, adds AI-extracted fields (salary range, seniority, skills, education, work arrangement) and bills one request per id. Salary is never on /search."
+}

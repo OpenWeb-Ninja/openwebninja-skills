@@ -18,7 +18,7 @@ Optional:
   --endpoint          /job-salary (default) or /company-job-salary
   --company           Company name — required for /company-job-salary (e.g. "Google")
   --location-type     CITY | STATE | COUNTRY | ANY (default: ANY)
-  --years-of-experience  Experience range: 0-1, 1-3, 3-5, 5-10, 10-15, 15+ (default: ALL)
+  --years-of-experience  ALL (default), LESS_THAN_ONE, ONE_TO_THREE, FOUR_TO_SIX, SEVEN_TO_NINE, TEN_TO_FOURTEEN, ABOVE_FIFTEEN
   --format            json | csv (default: json)
   --output            Output file path (auto-generated if omitted)
   --dry-run           Fetch data and print to console without saving
@@ -66,7 +66,7 @@ async function main() {
         if (args.locationType) params.location_type = args.locationType;
         if (args.yearsOfExperience) params.years_of_experience = args.yearsOfExperience;
     } else {
-        params.company_name = args.company;
+        params.company = args.company;
         if (args.location) params.location = args.location;
         if (args.locationType) params.location_type = args.locationType;
         if (args.yearsOfExperience) params.years_of_experience = args.yearsOfExperience;

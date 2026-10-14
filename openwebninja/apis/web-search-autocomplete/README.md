@@ -20,7 +20,25 @@ Autocomplete — Get query suggestions from Google Search, including Knowledge G
 - `cursor_pointer` (string)
 
 **Pagination:** none
-**Response path:** `data`
-**Key fields:** queries, language, region, cursor_pointer, user_agent, type, status, request_id, parameters, data
+**Response path:** `data` (array of suggestions)
+**Key fields:** query, highlights (offset, length), entity_title, entity_subtitle, entity_image, entity_images
+
+---
+
+### POST /autocomplete
+Autocomplete (Bulk) — Get query suggestions for multiple queries in a single request (up to 50 queries). Returns autocomplete suggestions grouped per input query. Each query is charged as one request.
+
+**Required (JSON body):**
+- `queries` (array of strings, max 50) Example: `["to", "new y"]`
+
+**Optional (JSON body):**
+- `language` (string, default: en) Example: `en`
+- `region` (string, default: us) Example: `us`
+- `user_agent` (string, default: desktop) — values: desktop, mobile
+- `cursor_pointer` (integer) — character position; defaults to the number of queries when omitted
+
+**Pagination:** none
+**Response path:** `data` (one entry per query)
+**Key fields:** query, results (query, highlights, entity_title, entity_subtitle, entity_image, entity_images)
 
 ---

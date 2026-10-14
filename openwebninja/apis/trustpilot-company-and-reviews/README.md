@@ -19,7 +19,8 @@ Company Search — Search for companies / businesses on Trustpilot. Supports pag
 - `min_review_count` (string) — values: any, 25, 50, 100, 250, 500
 - `locale` (string, default: en-US) — values: da-DK, de-AT, de-CH, de-DE, en-AU, en-CA, en-GB, en-IE, en-NZ, en-US, es-ES, fi-FI, fr-BE, nl-BE, fr-FR, it-IT, ja-JP, nb-NO, nl-NL, pl-PL, pt-BR, pt-PT, sv-SE
 
-**Pagination:** page_number (param: `page`)
+**Pagination:** page_number (param: `page`, up to 10 companies per page)
+**Response path:** `data` (companies in `data.companies[]`, plus `data.total_companies`)
 
 ---
 
@@ -53,8 +54,8 @@ Company Reviews
 - `rating` (string) — values: 1, 2, 3, 4, 5
 - `locale` (string, default: en-US) — values: da-DK, de-AT, de-CH, de-DE, en-AU, en-CA, en-GB, en-IE, en-NZ, en-US, es-ES, fi-FI, fr-BE, nl-BE, fr-FR, it-IT, ja-JP, nb-NO, nl-NL, pl-PL, pt-BR, pt-PT, sv-SE
 
-**Pagination:** page_number (param: `page`)
-**Response path:** `data` (reviews in `data.reviews[]`)
+**Pagination:** page_number (param: `page`, up to 20 reviews per page; pages beyond 10 need `cookie`)
+**Response path:** `data` (reviews in `data.reviews[]`, plus `data.total_reviews`, `data.rating_distribution`)
 
 ---
 
@@ -88,8 +89,8 @@ Recently Reviewed Companies in Category — Get the list of recently reviewed co
 - `locale` (string, default: en-US) — values: da-DK, de-AT, de-CH, de-DE, en-AU, en-CA, en-GB, en-IE, en-NZ, en-US, es-ES, fi-FI, fr-BE, nl-BE, fr-FR, it-IT, ja-JP, nb-NO, nl-NL, pl-PL, pt-BR, pt-PT, sv-SE
 
 **Pagination:** none
-**Response path:** `data`
-**Key fields:** company_id, name, domain, review_count, trust_score, rating, type, description, example
+**Response path:** `data` (companies in `data.companies[]`)
+**Key fields:** category, companies (company_id, name, domain, review_count, trust_score, rating)
 
 ---
 
@@ -134,7 +135,7 @@ Category Details — Get the full details of a category, including subcategories
 
 **Pagination:** none
 **Response path:** `data`
-**Key fields:** id, name, parent_id, company_count, level, type, description, example
+**Key fields:** category, subcategories, parent_category, sibling_categories (id, name, parent_id, company_count, level)
 
 ---
 

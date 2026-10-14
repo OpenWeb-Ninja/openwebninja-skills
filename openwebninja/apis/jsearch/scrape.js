@@ -15,7 +15,7 @@ Required:
                       For /estimated-salary this maps to --job-title
 
 Optional:
-  --endpoint          Endpoint: /search (default), /estimated-salary, /job-details
+  --endpoint          Endpoint: /search-v2 (default), /estimated-salary, /job-details
   --count             Max results (default: 50, page size fixed at 10)
   --format            json | csv (default: json)
   --output            Output file path (auto-generated if omitted)
@@ -56,7 +56,7 @@ async function main() {
     const args = parseArgs(process.argv);
     if (args.help) { printHelp(); process.exit(0); }
 
-    const endpoint = args.endpoint || '/search';
+    const endpoint = args.endpoint || '/search-v2';
     const apiKey = getApiKey();
     const meta = loadMeta('jsearch');
     const host = meta.rapidapi_host || 'jsearch.p.rapidapi.com';
@@ -97,7 +97,7 @@ async function main() {
         return;
     }
 
-    // Search
+    // Search (/search-v2; /search is the old name, kept as an alias)
     if (!args.query) { console.error('Error: --query required. Use --help for usage.'); process.exit(1); }
 
     const params = {
@@ -114,19 +114,16 @@ async function main() {
     if (args.excludePublishers) params.exclude_job_publishers = args.excludePublishers;
     if (args.fields) params.fields = args.fields;
 
-    // jsearch uses page-number pagination with fixed 10 results per page
-    const { results: rawResults, totalCallsMade } = await fetchAll({
-        host, endpoint: '/search', params, apiKey, count,
-        pagination: 'page_number', pageParam: 'page', pageSize: 10,
-        resultsPath: 'data', dryRun, delay: 300, maxCalls,
+    // /search-v2 uses cursor pagination (up to 10 jobs per page): jobs in data.jobs, next cursor in data.cursor
+    const { results, totalCallsMade } = await fetchAll({
+        host, endpoint: '/search-v2', params, apiKey, count,
+        pagination: 'cursor', cursorParam: 'cursor', cursorPath: 'data.cursor',
+        resultsPath: 'data.jobs', dryRun, delay: 300, maxCalls,
     });
-
-    // jsearch nests jobs as data[].jobs[] — flatten page objects into individual job records
-    const results = rawResults.flatMap(page => page.jobs || [page]);
 
     console.error(`${results.length} jobs in ${totalCallsMade} call(s).`);
     if (dryRun) { console.log(JSON.stringify(results.slice(0, 3), null, 2)); return; }
-    writeOutput(results, outputPath, format, { api: 'jsearch', endpoint: '/search', query: args.query, totalCalls: totalCallsMade });
+    writeOutput(results, outputPath, format, { api: 'jsearch', endpoint: '/search-v2', query: args.query, totalCalls: totalCallsMade });
 }
 
 main().catch(e => { console.error(`Fatal: ${e.message}`); process.exit(1); });

@@ -20,12 +20,12 @@ Required (varies by endpoint):
 
 Optional:
   --endpoint        Endpoint (default: /search-events)
-  --count           Max results to fetch (default: 30)
+  --count           Max results to keep (default: 30; one call returns up to 10 events)
   --date            Date filter: any, today, tomorrow, week, weekend, next_week, month, next_month
   --is-virtual      true | false — filter for virtual events (default: false)
   --format          json | csv (default: json)
   --output          Output file path (auto-generated if omitted)
-  --dry-run         Fetch first page only, print to console
+  --dry-run         Fetch and print to console only
   --max-calls       Safety cap on API calls (default: 50)
   --help            Show this help
 `);
@@ -72,7 +72,7 @@ async function main() {
         return;
     }
 
-    // ── /search-events (offset-based pagination via 'start') ─────────────────
+    // ── /search-events (single call: Google shows a fixed set of up to 10 events per query) ──
     if (!args.query) { console.error('Error: --query required. Use --help for usage.'); process.exit(1); }
 
     const params = { query: args.query };
@@ -81,7 +81,7 @@ async function main() {
 
     const { results, totalCallsMade } = await fetchAll({
         host, endpoint: '/search-events', params, apiKey, count,
-        pagination: 'offset', offsetParam: 'start', pageSize: 10,
+        pagination: 'none', pageSize: 10,
         resultsPath: 'data', dryRun, delay: 300, maxCalls,
     });
 
