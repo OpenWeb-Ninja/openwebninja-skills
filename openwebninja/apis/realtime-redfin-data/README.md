@@ -14,7 +14,7 @@ Search
 - `location` (string) — 5-digit US zip, Canadian postal-code area, or Redfin region URL. Example: `90210`
 
 **Optional:**
-- `status` (string, default: for_sale) — values: for_sale, sold, for_rent, coming_soon
+- `status` (string, default: for_sale) — values: for_sale, sold, for_rent, coming_soon, pending (under contract: pending or contingent)
 - `property_types` (string) — comma-separated: HOUSE, CONDO, TOWNHOUSE, MULTI_FAMILY, LAND, OTHER, MANUFACTURED, CO_OP. Example: `HOUSE,CONDO`
 - `sort` (string, default: redfin_recommended) — values: redfin_recommended, newest, oldest, price_low_high, price_high_low, beds, baths, sqft, lot_size
 - `page` (integer, default: 1) — values: 1 to 100

@@ -23,7 +23,7 @@ Optional:
   --count             Max results to fetch (default: 80)
   --format            json | csv (default: json)
   --output            Output file path (auto-generated if omitted)
-  --status            for_sale (default), sold, for_rent, coming_soon
+  --status            for_sale (default), sold, for_rent, coming_soon, pending
   --property-types    Comma-separated: HOUSE,CONDO,TOWNHOUSE,MULTI_FAMILY,LAND,OTHER,MANUFACTURED,CO_OP
   --sort              redfin_recommended (default), newest, oldest, price_low_high, price_high_low, beds, baths, sqft, lot_size
   --num-homes         Results per page (default: 40, up to 350)
