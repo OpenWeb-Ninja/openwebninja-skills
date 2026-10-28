@@ -6,7 +6,7 @@
 
 Fast and Reliable Job Search, Full Job Details, Salary Estimates, Job Descriptions, Salaries, Benefits, Employer Ratings, Pay Distributions, and More on ZipRecruiter in Real-Time (US and Canada).
 
-Coverage is the United States and Canada only: `country` accepts `us` and `ca`, anything else is a 400.
+Coverage is the United States and Canada. Use `location` to target a city, state or province, for example `Toronto, ON`.
 
 ## Endpoints
 
@@ -19,10 +19,9 @@ Returns a flat array of job objects (the same envelope as JSearch `/search`). **
 - `query` (string) — exactly one query per request. Example: `software engineer`
 
 **Optional:**
-- `location` (string) — free-text location; drives geography. Omit to search the whole country. Example: `New York, NY`
+- `location` (string) — free-text location; drives geography. Omit to search without a location. Example: `New York, NY`
 - `page` (integer, default: 1) — range: 1-50, 20 jobs per page (the real ceiling is ceil(total matches / 20))
 - `num_pages` (integer, default: 1) — range: 1-20 (max 5 with `include_details=true`). Consecutive pages to fetch starting at `page`.
-- `country` (string, default: us) — values: us, ca
 - `date_posted` (string, default: all) — values: all, today, 3days, week, month (1, 3, 7 and 30 days, applied by ZipRecruiter)
 - `employment_types` (string) — comma-separated, OR-ed: FULLTIME, PARTTIME, CONTRACTOR, TEMPORARY, CONTRACT_TO_HIRE, AS_NEEDED, OTHER. Example: `FULLTIME,CONTRACTOR`
 - `experience_level` (string) — one value: no_experience, junior, mid, senior (a comma-separated list is a 400)
@@ -53,7 +52,6 @@ Full details for up to 20 ZipRecruiter job postings in one call. Always reads th
 - `job_id` (string) — comma-separated job ids from a `/search` response, up to 20 per request; the raw `job_uid` is also accepted. Example: `emlwcmVjcnVpdGVyOjkzNjIxNWNiNTAzZDhiZTI`
 
 **Optional:**
-- `country` (string, default: us) — values: us, ca
 - `fields` (string) — comma-separated projection, as on `/search`
 
 **Pagination:** none (up to 20 ids per call)
@@ -72,7 +70,6 @@ The pay distribution ZipRecruiter publishes for a job title, nationally or in on
 
 **Optional:**
 - `location` (string, default: nationwide) — US state, Canadian province or country, spelled out in full. Example: `New York`, `Alberta`
-- `country` (string, default: us) — values: us, ca
 - `fields` (string) — comma-separated projection over the salary row; `job_title` and `location` are always included. Example: `median_salary,salary_period`
 
 **Pagination:** none

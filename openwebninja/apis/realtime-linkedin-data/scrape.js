@@ -34,7 +34,6 @@ Optional:
   --location          Free-text location, e.g. "Berlin, Germany"
   --geo-id            LinkedIn numeric geo id, e.g. 102571732 (New York City). Required by --radius
   --radius            Radius in km (requires --geo-id)
-  --country           2-letter country code (default: us)
   --sort-by           relevance | date (date sorts the returned jobs newest first)
   --date-posted       all | today | 3days | week | month (default: all)
   --employment-types  Comma-separated: FULLTIME, PARTTIME, CONTRACTOR, INTERN (filtered locally)
@@ -137,7 +136,6 @@ async function main() {
             if (b > 0) await sleep(delay);
             console.error(`  Batch ${b + 1}/${batches.length} (${batches[b].length} ids)`);
             const params = { job_id: batches[b].join(',') };
-            if (args.country) params.country = args.country;
             if (args.fields) params.fields = args.fields;
             const data = await apiCall(host, '/job-details', params, apiKey, 'GET', null, API_ID);
             records.push(...(Array.isArray(data.data) ? data.data : []));
@@ -166,7 +164,6 @@ async function main() {
     if (args.location) params.location = args.location;
     if (args.geoId) params.geo_id = args.geoId;
     if (args.radius) params.radius = args.radius;
-    if (args.country) params.country = args.country;
     if (args.sortBy) params.sort_by = args.sortBy;
     if (args.datePosted) params.date_posted = args.datePosted;
     if (args.employmentTypes) params.employment_types = args.employmentTypes;

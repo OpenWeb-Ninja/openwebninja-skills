@@ -22,7 +22,6 @@ Optional:
   --count             Max jobs to fetch (default: 40, 20 per page)
   --format            json | csv (default: json)
   --output            Output file path (auto-generated if omitted)
-  --country           us (default) | ca
   --fields            Comma-separated fields to return (all endpoints)
 
 /search filters:
@@ -96,7 +95,6 @@ async function main() {
     if (endpoint === '/job-details') {
         if (!args.jobId) { console.error('Error: --job-id required for /job-details (comma-separated, up to 20)'); process.exit(1); }
         const params = { job_id: args.jobId };
-        if (args.country) params.country = args.country;
         if (args.fields) params.fields = args.fields;
         const data = await call('/job-details', params);
         const records = Array.isArray(data.data) ? data.data : (data.data ? [data.data] : []);
@@ -112,7 +110,6 @@ async function main() {
         if (!jobTitle) { console.error('Error: --job-title required for /estimated-salary'); process.exit(1); }
         const params = { job_title: jobTitle };
         if (args.location) params.location = args.location;
-        if (args.country) params.country = args.country;
         if (args.fields) params.fields = args.fields;
         const data = await call('/estimated-salary', params);
         const records = Array.isArray(data.data) ? data.data : (data.data ? [data.data] : []);
@@ -134,7 +131,6 @@ async function main() {
     const perCall = Math.min(Math.max(parseInt(args.numPages, 10) || 1, 1), maxPerCall);
     const base = { query: args.query };
     if (args.location) base.location = args.location;
-    if (args.country) base.country = args.country;
     if (args.datePosted) base.date_posted = args.datePosted;
     if (args.employmentTypes) base.employment_types = args.employmentTypes;
     if (args.experienceLevel) base.experience_level = args.experienceLevel;

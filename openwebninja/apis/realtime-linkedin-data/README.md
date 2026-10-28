@@ -38,7 +38,7 @@ Search Jobs
 **Page size:** fixed 10 per page
 **Response path:** `data` (flat array of jobs)
 **Key fields:** job_id, job_title, employer_name, employer_logo, employer_website, job_publisher (always `LinkedIn`), job_employment_type, job_employment_types, job_apply_link (the LinkedIn posting URL), job_apply_is_direct (always false), apply_options (apply_link, is_direct, publisher), job_description, job_is_remote (true or null), job_posted_at, job_posted_at_timestamp, job_posted_at_datetime_utc, job_location, job_city, job_state, job_country, job_latitude, job_longitude, job_benefits, job_benefits_strings, job_google_link, job_salary, job_salary_string, job_min_salary, job_max_salary, job_salary_period, job_highlights, job_onet_soc, job_onet_job_zone, employer_reviews, job_uid, employer_linkedin_url, job_linkedin_company_id, job_seniority_level, job_function, job_industries, job_applicants_count, job_applicants_label, job_salary_currency, job_posted_at_date, job_posted_at_linkedin_label, job_linkedin_badges, job_position
-**Also in `parameters`:** the echoed request (query, page, num_pages, location, geo_id, radius, date_posted, company_id, employment_types, seniority_levels, remote_jobs_only, sort_by, include_details, country, fields)
+**Also in `parameters`:** the echoed request (query, page, num_pages, location, geo_id, radius, date_posted, company_id, employment_types, seniority_levels, remote_jobs_only, sort_by, include_details, fields)
 
 ---
 
@@ -51,7 +51,6 @@ Full details for up to 20 LinkedIn jobs in one call, with the same job object as
 - `job_id` (string) — comma-separated, up to 20 `job_id` values from `/search` (the numeric `job_uid` is also accepted). Example: `bGlua2VkaW46NDQ1MzY3MDk3Mw`
 
 **Optional:**
-- `country` (string, default: us) — 2-letter code
 - `fields` (string) — comma-separated projection over the job object (`job_id` and `job_title` always included)
 
 **Pagination:** none
@@ -85,7 +84,6 @@ Every open LinkedIn job at one or more companies, with the same job object, filt
 - `page` (integer, default: 1) — range: 1-100, 10 jobs per page
 - `num_pages` (integer, default: 1) — range: 1-20
 - `include_details` (boolean, default: true) — as on `/search`
-- `country` (string, default: us) — 2-letter code
 - `fields` (string) — comma-separated projection over the job object
 
 **Pagination:** page_number (param: `page`, max 100) with `num_pages` (max 20) pages per call

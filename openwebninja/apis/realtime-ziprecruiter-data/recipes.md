@@ -13,7 +13,7 @@ Exports up to 60 nurse jobs in Houston posted in the last 7 days (3 pages of 20)
 
 ```bash
 node --env-file=.env apis/realtime-ziprecruiter-data/scrape.js \
-  --query "software engineer" --country ca --location "Toronto, ON" --remote-jobs-only \
+  --query "software engineer" --location "Toronto, ON" --remote-jobs-only \
   --salary-min 90000 --include-details --count 20 --format json
 ```
 
