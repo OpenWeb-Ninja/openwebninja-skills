@@ -4,7 +4,7 @@
 
 **Host:** `real-time-linkedin-data3.p.rapidapi.com`
 
-Fast and reliable LinkedIn job search, company job listings, and full job details in real-time - titles, employers, locations, exact posting dates, salaries, seniority, and more.
+Fast and reliable LinkedIn job search, company job listings, full job details, and company details in real-time - titles, employers, locations, exact posting dates, salaries, seniority, company profiles, and more.
 
 ## Endpoints
 
@@ -91,5 +91,21 @@ Every open LinkedIn job at one or more companies, with the same job object, filt
 **Response path:** `data` (flat array of jobs)
 **Key fields:** same job object as `/search`
 **Also in `parameters`:** company, company_ids_resolved (the union of ids actually searched), plus the echoed `/search` parameters
+
+---
+
+### GET /company-details
+Company Details
+
+Public LinkedIn company page data for one company. Identify it by `company` (vanity slug or company page URL). Every field is always present, `null` (or `[]`) when the company has not filled it in on LinkedIn. The response carries `company_id`, the numeric id `/company-jobs` takes. An unknown slug is a 404; school (university) pages are login-walled on LinkedIn and return a 400.
+
+**Billing:** one request per call.
+
+**Required:**
+- `company` (string) — LinkedIn company vanity slug or company page URL (`stripe`, `https://www.linkedin.com/company/stripe/`). Example: `stripe`
+
+**Response path:** `data` (one company object)
+**Key fields:** company_id, company_slug, company_name, company_linkedin_url, company_description, company_slogan, company_website, company_industry, company_type, company_size, company_employees_on_linkedin, company_followers, company_founded_year, company_headquarters, company_address_street, company_address_city, company_address_region, company_address_postal_code, company_address_country, company_specialties, company_logo, company_cover_image, company_locations (address, is_primary), company_affiliated_pages and company_similar_pages (name, slug, linkedin_url, industry, location, logo)
+**Also in `parameters`:** company
 
 ---

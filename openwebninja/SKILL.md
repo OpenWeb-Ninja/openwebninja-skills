@@ -122,7 +122,7 @@ Each API has its own folder at `apis/{api_id}/` containing:
 | `realtime-news-data` | News articles by keyword with source/topic/date filters | Content monitoring, trend research, brand monitoring |
 | `realtime-news-search` | Query-based Google News search with date range, time-period, country, and sort filters | News monitoring, brand/topic tracking, research |
 | `jsearch` | Job listings from Google for Jobs + salary estimates | Job market research, recruitment, salary benchmarking |
-| `realtime-linkedin-data` | LinkedIn job search, every open job at a company, job details | LinkedIn job tracking, company hiring analysis |
+| `realtime-linkedin-data` | LinkedIn job search, every open job at a company, job details, company details | LinkedIn job tracking, company hiring analysis, company profiles |
 | `realtime-indeed-data` | Indeed job search, job details, company employee reviews and ratings | Indeed job tracking, employer reputation |
 | `realtime-ziprecruiter-data` | ZipRecruiter jobs (US and Canada), job details, salary distribution by job title | ZipRecruiter job tracking, pay benchmarking |
 | `realtime-monster-data` | Monster job search, job details, every open job at an employer | Monster job tracking, employer hiring analysis |
@@ -174,7 +174,7 @@ Each API has its own folder at `apis/{api_id}/` containing:
 | **Lead Enrichment from Domains** | `website-contacts-scraper`, `social-links-search`, `email-search` |
 | **Job Market Research** | `jsearch`, `realtime-linkedin-data`, `realtime-indeed-data`, `realtime-ziprecruiter-data`, `realtime-monster-data`, `realtime-bing-jobs-data`, `job-salary-data`, `realtime-glassdoor-data` |
 | **Single Job Board Tracking** | `realtime-linkedin-data`, `realtime-indeed-data`, `realtime-ziprecruiter-data` (US and Canada), `realtime-monster-data`, `realtime-bing-jobs-data` (for all boards at once use `jsearch`) |
-| **Employer / Talent Intelligence** | `jsearch`, `realtime-linkedin-data` (`/company-jobs`), `realtime-monster-data` (`/company-jobs`), `realtime-indeed-data` (`/company-reviews`), `realtime-glassdoor-data`, `job-salary-data`, `realtime-news-data` |
+| **Employer / Talent Intelligence** | `jsearch`, `realtime-linkedin-data` (`/company-jobs`, `/company-details`), `realtime-monster-data` (`/company-jobs`), `realtime-indeed-data` (`/company-reviews`), `realtime-glassdoor-data`, `job-salary-data`, `realtime-news-data` |
 | **Product / Price Research** | `realtime-amazon-data`, `realtime-product-search`, `realtime-bing-search` (`/shopping`), `realtime-walmart-data`, `realtime-ebay-data`, `realtime-costco-data`, `realtime-wayfair-data`, `realtime-homedepot-data`, `realtime-lens-data` |
 | **Retail Review Mining** | `realtime-amazon-data`, `realtime-walmart-data`, `realtime-ebay-data`, `realtime-wayfair-data`, `realtime-homedepot-data`, `trustpilot-company-and-reviews`, `yelp-business-data` |
 | **Brand & Review Monitoring** | `yelp-business-data`, `trustpilot-company-and-reviews`, `realtime-glassdoor-data`, `realtime-news-data`, `realtime-forums-search` |
