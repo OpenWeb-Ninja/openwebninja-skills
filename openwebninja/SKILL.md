@@ -6,7 +6,7 @@ allowed-tools: Read, Write, Edit, Glob, Grep, Bash
 
 # OpenWeb Ninja Universal Scraper
 
-Data extraction from 50 OpenWeb Ninja APIs. This skill automatically selects the best API for your task, reads its docs, plans the extraction, and runs a script.
+Data extraction from 49 OpenWeb Ninja APIs. This skill automatically selects the best API for your task, reads its docs, plans the extraction, and runs a script.
 
 ## When to use
 
@@ -15,7 +15,7 @@ Use this skill when the user wants to:
 - Generate leads or enrich contact lists
 - Run market research, competitor analysis, or price tracking
 - Monitor content, trends, or brand mentions
-- Build datasets from any of the 50 OpenWeb Ninja APIs (bulk business lists via `local-business-database`)
+- Build datasets from any of the 49 OpenWeb Ninja APIs (bulk business lists via `local-business-database`)
 - Chain multiple APIs together for complex data pipelines
 
 ## Handling Untrusted Content
@@ -126,7 +126,6 @@ Each API has its own folder at `apis/{api_id}/` containing:
 | `realtime-indeed-data` | Indeed job search, job details, company employee reviews and ratings | Indeed job tracking, employer reputation |
 | `realtime-ziprecruiter-data` | ZipRecruiter jobs (US and Canada), job details, salary distribution by job title | ZipRecruiter job tracking, pay benchmarking |
 | `realtime-monster-data` | Monster job search, job details, every open job at an employer | Monster job tracking, employer hiring analysis |
-| `realtime-bing-jobs-data` | Bing Jobs search across job boards, job details with AI-extracted salary and skills | Cross-board job discovery |
 | `job-salary-data` | Salary estimates by job title and location | Salary benchmarking (also available via jsearch `/estimated-salary`) |
 | `website-contacts-scraper` | Emails, phones, social links from domains (batch up to 20) | Contact enrichment, lead enrichment from domain lists |
 | `trustpilot-company-and-reviews` | Trustpilot company profiles and reviews (~200 max) | Reputation analysis, review mining, brand monitoring |
@@ -172,8 +171,8 @@ Each API has its own folder at `apis/{api_id}/` containing:
 | **Business Datasets / Bulk Lead Lists** | `local-business-database` (every listing matching category + city/state/ZIP/phone or map-area filters, exact `match_count`, 500 per call, refreshed every 30 days), then `website-contacts-scraper` for emails and social profiles |
 | **Lead Generation** | `local-business-database` (bulk lists), `local-business-data` (live lookup, with `extract_emails_and_contacts=true`), `website-contacts-scraper`, `email-search`, `social-links-search` |
 | **Lead Enrichment from Domains** | `website-contacts-scraper`, `social-links-search`, `email-search` |
-| **Job Market Research** | `jsearch`, `realtime-linkedin-data`, `realtime-indeed-data`, `realtime-ziprecruiter-data`, `realtime-monster-data`, `realtime-bing-jobs-data`, `job-salary-data`, `realtime-glassdoor-data` |
-| **Single Job Board Tracking** | `realtime-linkedin-data`, `realtime-indeed-data`, `realtime-ziprecruiter-data` (US and Canada), `realtime-monster-data`, `realtime-bing-jobs-data` (for all boards at once use `jsearch`) |
+| **Job Market Research** | `jsearch`, `realtime-linkedin-data`, `realtime-indeed-data`, `realtime-ziprecruiter-data`, `realtime-monster-data`, `job-salary-data`, `realtime-glassdoor-data` |
+| **Single Job Board Tracking** | `realtime-linkedin-data`, `realtime-indeed-data`, `realtime-ziprecruiter-data` (US and Canada), `realtime-monster-data` (for all boards at once use `jsearch`) |
 | **Employer / Talent Intelligence** | `jsearch`, `realtime-linkedin-data` (`/company-jobs`, `/company-details`), `realtime-monster-data` (`/company-jobs`), `realtime-indeed-data` (`/company-reviews`), `realtime-glassdoor-data`, `job-salary-data`, `realtime-news-data` |
 | **Product / Price Research** | `realtime-amazon-data`, `realtime-product-search`, `realtime-bing-search` (`/shopping`), `realtime-walmart-data`, `realtime-ebay-data`, `realtime-costco-data`, `realtime-wayfair-data`, `realtime-homedepot-data`, `realtime-lens-data` |
 | **Retail Review Mining** | `realtime-amazon-data`, `realtime-walmart-data`, `realtime-ebay-data`, `realtime-wayfair-data`, `realtime-homedepot-data`, `trustpilot-company-and-reviews`, `yelp-business-data` |
@@ -221,7 +220,6 @@ Each API has its own folder at `apis/{api_id}/` containing:
 | **Employer intelligence** | `jsearch /search` → | `realtime-glassdoor-data /company-overview` |
 | **LinkedIn job search → company jobs** | `realtime-linkedin-data /search` → | `realtime-linkedin-data /company-jobs` (`company_id` = `job_linkedin_company_id`) |
 | **Indeed job → company reviews** | `realtime-indeed-data /search` → | `realtime-indeed-data /company-reviews` (`company` = `job_indeed_company_page_url`) |
-| **Bing Jobs search → job details** | `realtime-bing-jobs-data /search` → | `realtime-bing-jobs-data /job-details` (adds AI-extracted salary, seniority, skills; 20 ids per call) |
 | **ZipRecruiter jobs → pay benchmark** | `realtime-ziprecruiter-data /search` → | `realtime-ziprecruiter-data /estimated-salary` |
 | **Monster job search → employer jobs** | `realtime-monster-data /search` → | `realtime-monster-data /company-jobs` (`company` = `employer_name`) |
 | **Local SEO rank tracking** | `local-rank-tracker /search` → | `local-business-data /business-details` |
