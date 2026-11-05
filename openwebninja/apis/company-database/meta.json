@@ -1,0 +1,10 @@
+{
+  "api_id": "company-database",
+  "portal_api_id": "company_database",
+  "own_slug": "company-database",
+  "spec_url": "https://openwebninja.s3.us-east-1.amazonaws.com/portal/openapi/company_data.yaml",
+  "last_updated_yaml": "2026-11-04T10:25:12.000Z",
+  "update_interval_seconds": 86400,
+  "openwebninja_url": "https://www.openwebninja.com/api/company-database",
+  "notes": "Glassdoor Company Data: a searchable database of Glassdoor company profiles. One endpoint, /search (GET, or POST with a JSON body for long or multi-value queries). At least one field filter is required (name, employer_id, website_domain, industry, industry_id, sector_id, company_type, size_category, size_category_min/max, year_founded_min/max, stock_ticker, hq_country, description); filters combine with AND, the values of one filter with OR (up to 20). Returns data.companies[], up to 500 per call (limit 1-500, default 20), with the exact total in data.match_count. Pass the top-level cursor back to get the next page; it is omitted on the last page, valid for 15 minutes and only for the same query. Billed one Companies unit per record returned. Keys with no value are left out of a record; only employer_id is on every record. Different API from realtime-glassdoor-data (live Glassdoor reviews, salaries, interviews and jobs). No RapidAPI listing: use an OpenWeb Ninja ak_ key, served at api.openwebninja.com/company-database."
+}

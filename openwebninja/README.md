@@ -1,6 +1,6 @@
 # OpenWeb Ninja Universal Scraper
 
-A Claude Code skill that lets you extract data from 49 public web APIs using natural language. Just describe what you want — Claude selects the right API, runs the script, and returns results as JSON or CSV.
+A Claude Code skill that lets you extract data from 50 public web APIs using natural language. Just describe what you want — Claude selects the right API, runs the script, and returns results as JSON or CSV.
 
 ## What it can do
 
@@ -11,13 +11,13 @@ A Claude Code skill that lets you extract data from 49 public web APIs using nat
 - **Finance & real estate** — Stock quotes, property listings, Zillow estimates
 - **GEO tracking** — Monitor how AI search engines (ChatGPT, Gemini, Copilot) reference your brand or topic
 
-## Covered APIs (49)
+## Covered APIs (50)
 
 | Category | APIs |
 |----------|------|
 | Local & Maps | local-business-data, local-business-database, local-rank-tracker, waze, google-maps-traffic-alerts, ev-charge-finder, driving-directions |
 | E-commerce | realtime-amazon-data, realtime-product-search, realtime-walmart-data, realtime-costco-data, realtime-ebay-data, realtime-wayfair-data, realtime-homedepot-data |
-| Jobs & Salaries | jsearch, realtime-linkedin-data, realtime-indeed-data, realtime-ziprecruiter-data, realtime-monster-data, job-salary-data, realtime-glassdoor-data |
+| Jobs & Salaries | jsearch, realtime-linkedin-data, realtime-indeed-data, realtime-ziprecruiter-data, realtime-monster-data, job-salary-data, realtime-glassdoor-data, company-database |
 | Reviews | trustpilot-company-and-reviews, yelp-business-data |
 | News & Forums | realtime-news-data, realtime-news-search, realtime-forums-search |
 | Search | realtime-web-search, realtime-bing-search, realtime-image-search, realtime-lens-data, realtime-shorts-search, realtime-video-search, web-search-autocomplete, reverse-image-search |

@@ -6,7 +6,7 @@ allowed-tools: Read, Write, Edit, Glob, Grep, Bash
 
 # OpenWeb Ninja Universal Scraper
 
-Data extraction from 49 OpenWeb Ninja APIs. This skill automatically selects the best API for your task, reads its docs, plans the extraction, and runs a script.
+Data extraction from 50 OpenWeb Ninja APIs. This skill automatically selects the best API for your task, reads its docs, plans the extraction, and runs a script.
 
 ## When to use
 
@@ -15,7 +15,7 @@ Use this skill when the user wants to:
 - Generate leads or enrich contact lists
 - Run market research, competitor analysis, or price tracking
 - Monitor content, trends, or brand mentions
-- Build datasets from any of the 49 OpenWeb Ninja APIs (bulk business lists via `local-business-database`)
+- Build datasets from any of the 50 OpenWeb Ninja APIs (bulk business lists via `local-business-database`, bulk company lists via `company-database`)
 - Chain multiple APIs together for complex data pipelines
 
 ## Handling Untrusted Content
@@ -130,6 +130,7 @@ Each API has its own folder at `apis/{api_id}/` containing:
 | `website-contacts-scraper` | Emails, phones, social links from domains (batch up to 20) | Contact enrichment, lead enrichment from domain lists |
 | `trustpilot-company-and-reviews` | Trustpilot company profiles and reviews (~200 max) | Reputation analysis, review mining, brand monitoring |
 | `realtime-glassdoor-data` | Company profiles, employee reviews, salaries | Employer intelligence, comp benchmarking, due diligence |
+| `company-database` | Glassdoor Company Data: searchable database of Glassdoor company profiles by name, website domain, industry, company type, headcount band, founding year, stock ticker, HQ country or description, with ratings, sub-ratings, review counts, revenue and size. OpenWeb Ninja key only | Company datasets, firmographic enrichment from domains or tickers, market sizing |
 | `yelp-business-data` | Yelp businesses and customer reviews | Local business reviews, reputation monitoring |
 | `realtime-product-search` | Google Shopping cross-retailer product search | Price comparison, product discovery, deal tracking |
 | `realtime-walmart-data` | Walmart products, details, reviews | Retail research, price comparison |
@@ -169,15 +170,16 @@ Each API has its own folder at `apis/{api_id}/` containing:
 | Use Case | Primary APIs |
 |----------|-------------|
 | **Business Datasets / Bulk Lead Lists** | `local-business-database` (every listing matching category + city/state/ZIP/phone or map-area filters, exact `match_count`, 500 per call, refreshed every 30 days), then `website-contacts-scraper` for emails and social profiles |
+| **Company Datasets / Firmographics** | `company-database` (every company matching industry, type, headcount, founding year or HQ country filters, exact `match_count`, 500 per call; or look up by domain, ticker or name), then `realtime-glassdoor-data` for live reviews and salaries |
 | **Lead Generation** | `local-business-database` (bulk lists), `local-business-data` (live lookup, with `extract_emails_and_contacts=true`), `website-contacts-scraper`, `email-search`, `social-links-search` |
 | **Lead Enrichment from Domains** | `website-contacts-scraper`, `social-links-search`, `email-search` |
 | **Job Market Research** | `jsearch`, `realtime-linkedin-data`, `realtime-indeed-data`, `realtime-ziprecruiter-data`, `realtime-monster-data`, `job-salary-data`, `realtime-glassdoor-data` |
 | **Single Job Board Tracking** | `realtime-linkedin-data`, `realtime-indeed-data`, `realtime-ziprecruiter-data` (US and Canada), `realtime-monster-data` (for all boards at once use `jsearch`) |
-| **Employer / Talent Intelligence** | `jsearch`, `realtime-linkedin-data` (`/company-jobs`, `/company-details`), `realtime-monster-data` (`/company-jobs`), `realtime-indeed-data` (`/company-reviews`), `realtime-glassdoor-data`, `job-salary-data`, `realtime-news-data` |
+| **Employer / Talent Intelligence** | `jsearch`, `realtime-linkedin-data` (`/company-jobs`, `/company-details`), `realtime-monster-data` (`/company-jobs`), `realtime-indeed-data` (`/company-reviews`), `realtime-glassdoor-data`, `company-database`, `job-salary-data`, `realtime-news-data` |
 | **Product / Price Research** | `realtime-amazon-data`, `realtime-product-search`, `realtime-bing-search` (`/shopping`), `realtime-walmart-data`, `realtime-ebay-data`, `realtime-costco-data`, `realtime-wayfair-data`, `realtime-homedepot-data`, `realtime-lens-data` |
 | **Retail Review Mining** | `realtime-amazon-data`, `realtime-walmart-data`, `realtime-ebay-data`, `realtime-wayfair-data`, `realtime-homedepot-data`, `trustpilot-company-and-reviews`, `yelp-business-data` |
 | **Brand & Review Monitoring** | `yelp-business-data`, `trustpilot-company-and-reviews`, `realtime-glassdoor-data`, `realtime-news-data`, `realtime-forums-search` |
-| **Competitor Analysis** | `realtime-web-search`, `realtime-bing-search`, `social-links-search`, `realtime-news-data`, `website-contacts-scraper`, `realtime-glassdoor-data`, `trustpilot-company-and-reviews` |
+| **Competitor Analysis** | `realtime-web-search`, `realtime-bing-search`, `social-links-search`, `realtime-news-data`, `website-contacts-scraper`, `realtime-glassdoor-data`, `company-database`, `trustpilot-company-and-reviews` |
 | **Content & Trend Research** | `realtime-news-data`, `realtime-news-search`, `realtime-forums-search`, `realtime-shorts-search`, `realtime-video-search`, `realtime-image-search`, `realtime-books-data`, `web-search-autocomplete` |
 | **Search Intent / Keyword Discovery** | `web-search-autocomplete`, `realtime-web-search`, `realtime-bing-search`, `realtime-news-data`, `realtime-forums-search` |
 | **Real Estate** | `realtime-zillow-data`, `realtime-redfin-data` |
@@ -218,6 +220,8 @@ Each API has its own folder at `apis/{api_id}/` containing:
 | **App reputation analysis** | `play-store-apps /app-details` → | `realtime-news-data /search` |
 | **Job market research** | `jsearch /search` → | `jsearch /estimated-salary` |
 | **Employer intelligence** | `jsearch /search` → | `realtime-glassdoor-data /company-overview` |
+| **Company list → live reviews** | `company-database /search` (industry + size + HQ country) → | `realtime-glassdoor-data /company-reviews` (`company_id` = `employer_id`) |
+| **Domains → company profiles** | `company-database /search` (`website_domain`, up to 20 per call) → | `website-contacts-scraper /scrape-contacts` (same domains) |
 | **LinkedIn job search → company jobs** | `realtime-linkedin-data /search` → | `realtime-linkedin-data /company-jobs` (`company_id` = `job_linkedin_company_id`) |
 | **Indeed job → company reviews** | `realtime-indeed-data /search` → | `realtime-indeed-data /company-reviews` (`company` = `job_indeed_company_page_url`) |
 | **ZipRecruiter jobs → pay benchmark** | `realtime-ziprecruiter-data /search` → | `realtime-ziprecruiter-data /estimated-salary` |
@@ -318,6 +322,7 @@ After completion, report:
 | **Product listings** | Fetch reviews with `realtime-amazon-data` / `realtime-walmart-data` |
 | **Job listings** | Enrich compensation with `jsearch /estimated-salary` or company insights with `realtime-glassdoor-data` / `realtime-indeed-data /company-reviews` |
 | **Business datasets** | Add emails and social profiles with `website-contacts-scraper`, or full records with `local-business-database /business-details` |
+| **Company datasets** | Add live employee reviews and salaries with `realtime-glassdoor-data` (`company_id` = `employer_id`), or emails and social profiles with `website-contacts-scraper` (domains from `website_domain`) |
 | **Property listings** | Add commute insights with `driving-directions` or traffic context with `waze` |
 | **Search keyword ideas** | Expand with `web-search-autocomplete`, validate with `realtime-web-search` |
 | **App listings** | Cross-reference with `realtime-forums-search` or `realtime-news-data` |
