@@ -4,7 +4,7 @@
   "rapidapi_host": "ai-overviews.p.rapidapi.com",
   "notes": "Standalone AI Overviews API (own RapidAPI listing and OpenWeb Ninja subscription; OWN slug ai-overviews). Single call per query, no pagination; use apis/ai-overviews/scrape.js. data.search_returned_ai_overviews is false when Google shows no AI Overview for the query.",
   "spec_url": "https://openwebninja.s3.us-east-1.amazonaws.com/portal/openapi/ai_overviews.yaml",
-  "last_updated_yaml": "2026-08-14T11:19:05.000Z",
+  "last_updated_yaml": "2026-11-09T12:46:17.000Z",
   "update_interval_seconds": 86400,
   "rapidapi_url": "https://rapidapi.com/letscrape-6bRBa3QguO5/api/ai-overviews",
   "openwebninja_url": "https://www.openwebninja.com/api/ai-overviews"

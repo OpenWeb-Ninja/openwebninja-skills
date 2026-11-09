@@ -8,7 +8,7 @@
 ## Endpoints
 
 ### GET /ai-overviews
-AI Overviews — Get Google Search AI Overviews, including text parts (paragraphs and lists) and reference links. Pulled in real-time from Google Search.
+AI Overviews — Get Google Search AI Overviews, including text parts (paragraphs, headings and lists, with nested list items) and reference links. Pulled in real-time from Google Search.
 
 **Required:**
 - `q` (string) Example: `How to approach solving a hard math problem?`
@@ -20,7 +20,7 @@ AI Overviews — Get Google Search AI Overviews, including text parts (paragraph
 
 **Pagination:** none
 **Response path:** `data`
-**Key fields:** search_returned_ai_overviews, text_parts (type, text, list), reference_links (title, link, snippet, source, date)
+**Key fields:** search_returned_ai_overviews, text_parts (type, text, ordered, list: title, text, sub_items), reference_links (title, link, snippet, source, date)
 
 ## Usage
 
