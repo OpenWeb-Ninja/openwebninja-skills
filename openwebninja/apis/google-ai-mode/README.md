@@ -25,7 +25,7 @@ AI Mode — Send a prompt/query and get structured results and reference links f
 
 **Pagination:** none
 **Response path:** `data`
-**Key fields:** reply_parts (type, text, ordered, list, images), reference_links (title, link, snippet, source, favicon, date), session_token, raw_html (when return_raw_html=true)
+**Key fields:** reply_parts (type, text, ordered, list: title, text, sub_items; images), reference_links (title, link, snippet, source, favicon, date), session_token, raw_html (when return_raw_html=true)
 
 ---
 

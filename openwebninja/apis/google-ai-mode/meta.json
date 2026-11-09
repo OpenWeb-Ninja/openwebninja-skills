@@ -4,7 +4,7 @@
   "rapidapi_host": "google-ai-mode.p.rapidapi.com",
   "notes": "Standalone Google AI Mode API (own RapidAPI listing and OpenWeb Ninja subscription; OWN slug google-ai-mode). GET /ai-mode and POST /ai-mode (same params in a JSON body, no URL length limit; attachments as a JSON array). Single response per call, no pagination; use apis/google-ai-mode/scrape.js. Pass data.session_token back as session_token to continue a multi-turn conversation.",
   "spec_url": "https://openwebninja.s3.us-east-1.amazonaws.com/portal/openapi/google_ai_mode.yaml",
-  "last_updated_yaml": "2026-10-14T00:00:00.000Z",
+  "last_updated_yaml": "2026-11-09T00:00:00.000Z",
   "update_interval_seconds": 86400,
   "rapidapi_url": "https://rapidapi.com/letscrape-6bRBa3QguO5/api/google-ai-mode",
   "openwebninja_url": "https://www.openwebninja.com/api/google-ai-mode"
