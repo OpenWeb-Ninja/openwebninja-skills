@@ -10,6 +10,7 @@ const MAX_PAGE = 100;            // 1000-result ceiling
 const MAX_NUM_PAGES = 20;        // pages per call
 const MAX_NUM_PAGES_DETAILS = 10; // include_details fills at most 100 jobs per call
 const MAX_IDS = 20;              // ids per /job-details call
+const MAX_QUERY_TITLES = 10;     // titles one query may combine with OR
 
 function printHelp() {
     console.log(`
@@ -18,7 +19,10 @@ Usage: node scrape.js --query <search> [options]
 Search LinkedIn jobs, list every open job at a company, and look up jobs by id.
 
 Required (varies by endpoint):
-  --query             Job search query (for /search; optional keyword filter on /company-jobs)
+  --query             Job search query (for /search; optional keyword filter on /company-jobs).
+                      Combine up to 10 job titles with a capital OR, e.g.
+                      '"registered nurse" OR "travel nurse" OR icu nurse': each title is
+                      searched and billed on its own, results merged and deduplicated
   --company-id        LinkedIn numeric company id(s), comma-separated, up to 10
                       (for /company-jobs; on /search restricts to one company)
   --company           Company vanity slug(s) or page URL(s), comma-separated, up to 10
@@ -45,11 +49,12 @@ Optional:
   --dry-run           Fetch one page only, print to console
   --delay             Delay between calls in ms (default: 300)
   --max-calls         Safety cap on HTTP calls (default: 10). Each call fetches up to 10 pages
-                      (20 with --no-details).
+                      (20 with --no-details), divided between the titles of an OR query.
   --help              Show this help
 
 Billing: one request per page of 10. Local filters (--employment-types, --seniority-levels,
---remote-jobs-only) over-fetch up to 3x the pages, and those pages are billed.
+--remote-jobs-only) over-fetch up to 3x the pages, and those pages are billed. A query that
+combines titles with OR bills each title's pages: one page of a 3-title query is 3 requests.
 `);
 }
 
@@ -69,19 +74,65 @@ function parseArgs(argv) {
     return args;
 }
 
+// The titles of a query that combines them with OR, or null for a plain query. Copied from the
+// API's own parser (linkedin_jobs_api splitQueryTitles) so the page budget below matches what
+// the API counts: OR separates titles only outside double quotes, as a standalone word in
+// capitals; an OR with no title on one side is text ("OR nurse" is one title); repeats that
+// differ only in case or spacing count once.
+function splitQueryTitles(query) {
+    const s = String(query);
+    const tokens = [];
+    let i = 0;
+    while (i < s.length) {
+        if (/\s/.test(s[i])) { i++; continue; }
+        const start = i;
+        if (s[i] === '"') {
+            const close = s.indexOf('"', i + 1);
+            i = close === -1 ? s.length : close + 1;
+            tokens.push({ start, end: i, isOr: false });
+            continue;
+        }
+        while (i < s.length && !/\s/.test(s[i]) && s[i] !== '"') i++;
+        tokens.push({ start, end: i, isOr: s.slice(start, i) === 'OR' });
+    }
+    const titles = [];
+    let current = [];
+    tokens.forEach((token, k) => {
+        const separates = token.isOr && current.length > 0 && tokens.slice(k + 1).some(t => !t.isOr);
+        if (separates) { titles.push(current); current = []; }
+        else current.push(token);
+    });
+    if (current.length > 0) titles.push(current);
+    if (titles.length < 2) return null;
+    const seen = new Set();
+    const out = [];
+    for (const t of titles) {
+        const title = s.slice(t[0].start, t[t.length - 1].end);
+        const key = title.toLowerCase().replace(/\s+/g, ' ');
+        if (!seen.has(key)) { seen.add(key); out.push(title); }
+    }
+    return out;
+}
+
 // Walks page/num_pages windows, asking for as many pages per call as still needed (up to 20,
 // or 10 while include_details is on). Without a local filter, a call returning fewer than
 // num_pages x 10 jobs is the last one; with one, only an empty response ends the walk.
 // After the first /company-jobs call, slugs are swapped for the resolved ids so the slug
 // lookup is not billed again on every page.
-async function fetchPages({ host, endpoint, params, apiKey, count, startPage, localFilter, dryRun, delay, maxCalls }) {
+// A query with N titles combined with OR fetches num_pages pages for EVERY title, and the API
+// caps titles x num_pages at 20 (10 with a local filter), so the pages per call are divided by
+// N and each page brings up to N x 10 jobs. Its results are merged and deduplicated across
+// titles, so a short call does not mean the end: only an empty response ends the walk.
+async function fetchPages({ host, endpoint, params, apiKey, count, startPage, localFilter, titleCount, dryRun, delay, maxCalls }) {
     const results = [];
     const seen = new Set();
-    const perCall = params.include_details === false && !localFilter ? MAX_NUM_PAGES : MAX_NUM_PAGES_DETAILS;
+    const basePerCall = params.include_details === false && !localFilter ? MAX_NUM_PAGES : MAX_NUM_PAGES_DETAILS;
+    const perCall = Math.max(1, Math.floor(basePerCall / titleCount));
+    const jobsPerPage = PAGE_SIZE * titleCount;
     let page = startPage, totalCallsMade = 0;
-    console.error(`Fetching up to ${count} jobs from page ${page}...`);
+    console.error(`Fetching up to ${count} jobs from page ${page}${titleCount > 1 ? ` for ${titleCount} titles` : ''}...`);
     while (results.length < count && page <= MAX_PAGE) {
-        const numPages = dryRun ? 1 : Math.min(perCall, Math.ceil((count - results.length) / PAGE_SIZE), MAX_PAGE - page + 1);
+        const numPages = dryRun ? 1 : Math.min(perCall, Math.ceil((count - results.length) / jobsPerPage), MAX_PAGE - page + 1);
         if (totalCallsMade > 0) await sleep(delay);
         totalCallsMade++;
         if (totalCallsMade > maxCalls) throw new Error(`Cost cap exceeded: ${totalCallsMade} calls, limit is ${maxCalls}. Use --max-calls to raise.`);
@@ -101,7 +152,7 @@ async function fetchPages({ host, endpoint, params, apiKey, count, startPage, lo
         }
         page += numPages;
         if (dryRun) break;
-        if (!localFilter && jobs.length < numPages * PAGE_SIZE) { console.error('  Short page, end of results.'); break; }
+        if (!localFilter && titleCount === 1 && jobs.length < numPages * PAGE_SIZE) { console.error('  Short page, end of results.'); break; }
     }
     return { results: results.slice(0, count), totalCallsMade };
 }
@@ -172,9 +223,15 @@ async function main() {
     if (args.noDetails) params.include_details = false;
     if (args.fields) params.fields = args.fields;
     const localFilter = !!(args.employmentTypes || args.seniorityLevels || args.remoteJobsOnly);
+    const titles = params.query ? splitQueryTitles(params.query) : null;
+    if (titles && titles.length > MAX_QUERY_TITLES) {
+        console.error(`Error: a query may combine at most ${MAX_QUERY_TITLES} titles with OR (got ${titles.length}).`);
+        process.exit(1);
+    }
+    if (titles) console.error(`OR query: ${titles.length} titles, each searched and billed on its own: ${titles.join(' | ')}`);
 
     const { results, totalCallsMade } = await fetchPages({
-        host, endpoint, params, apiKey, count, startPage, localFilter, dryRun, delay, maxCalls,
+        host, endpoint, params, apiKey, count, startPage, localFilter, titleCount: titles ? titles.length : 1, dryRun, delay, maxCalls,
     });
 
     console.error(`${results.length} jobs in ${totalCallsMade} call(s).`);

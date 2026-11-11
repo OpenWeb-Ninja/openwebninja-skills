@@ -13,15 +13,17 @@ Search Jobs
 
 10 jobs per page, with no posting repeated across pages, so `num_pages=N` returns `N x 10` jobs until the result set runs out. At most 1000 jobs are retrievable per query: `page` is capped at 100 and `page` + `num_pages` - 1 may not pass page 100. A call returning fewer than `num_pages x 10` jobs is the last one. `include_details` (default `true`) fills the fields a search card cannot carry, for up to 100 jobs per call.
 
-**Billing:** one request per upstream page of 10 actually fetched. `employment_types`, `seniority_levels` and `remote_jobs_only` over-fetch up to 3x the requested pages (capped at 10) to refill the page after filtering, and those extra pages are billed.
+**Several job titles in one search:** combine up to 10 titles in `query` with `OR` (500 characters at most), e.g. `"registered nurse" OR "travel nurse" OR icu nurse`. Quotes around a title are optional, `OR` must be in capitals (a lowercase `or` is plain text), and an `OR` with no title on one side is plain text (`OR nurse` is one title). Each title is searched on its own, exactly as if it were the whole query, with every other parameter applied to it; the results are merged rank by rank (title 1's first job, title 2's first job, and so on) and a job several titles return is listed once. The titles searched are echoed as `parameters.query_titles`. Each page is that page of every title (`page=2` continues every title where `page=1` stopped, and `job_position` is the job's rank within its own title), so one call returns up to `titles x num_pages x 10` jobs, and `titles x num_pages` may be at most 20 (at most 10 with `employment_types`, `seniority_levels` or `remote_jobs_only`). A job two titles rank on different pages can come back on a later page: deduplicate on `job_id`. A query without `OR` works exactly as before.
+
+**Billing:** one request per upstream page of 10 actually fetched. `employment_types`, `seniority_levels` and `remote_jobs_only` over-fetch up to 3x the requested pages (capped at 10) to refill the page after filtering, and those extra pages are billed. Billing is per title: a page for 3 titles counts 3 requests.
 
 **Required:**
-- `query` (string) — free-form job search query (one per request). Example: `software engineer`
+- `query` (string) — free-form job search query. Combine up to 10 job titles with `OR` (see above), each searched and billed on its own. Send one `query`; a repeated `query` parameter is a 400. Example: `software engineer`
 
 **Optional:**
 - `location` (string) — free-text location, works internationally, e.g. `London, United Kingdom`. `radius` does not apply to it.
 - `page` (integer, default: 1) — range: 1-100, 10 jobs per page
-- `num_pages` (integer, default: 1) — range: 1-20, consecutive pages fetched and concatenated starting at `page` (above 20 is a 400)
+- `num_pages` (integer, default: 1) — range: 1-20, consecutive pages fetched and concatenated starting at `page` (above 20 is a 400). With `OR`, `titles x num_pages` may be at most 20 (10 with a local filter).
 - `geo_id` (string) — LinkedIn numeric geo id, e.g. `102571732` (New York City), `103644278` (United States). Take it from a `geoId=` parameter on a linkedin.com/jobs URL. Required by `radius`.
 - `country` (string, default: us) — 2-letter code; fallback for `job_country` when the posting's location names no country. Geography is driven by `location` / `geo_id`.
 - `sort_by` (string, default: relevance) — values: relevance, date (date sorts the jobs in this response newest first; it does not re-rank upstream)
@@ -38,7 +40,7 @@ Search Jobs
 **Page size:** fixed 10 per page
 **Response path:** `data` (flat array of jobs)
 **Key fields:** job_id, job_title, employer_name, employer_logo, employer_website, job_publisher (always `LinkedIn`), job_employment_type, job_employment_types, job_apply_link (the LinkedIn posting URL), job_apply_is_direct (always false), apply_options (apply_link, is_direct, publisher), job_description, job_is_remote (true or null), job_posted_at, job_posted_at_timestamp, job_posted_at_datetime_utc, job_location, job_city, job_state, job_country, job_latitude, job_longitude, job_benefits, job_benefits_strings, job_google_link, job_salary, job_salary_string, job_min_salary, job_max_salary, job_salary_period, job_highlights, job_onet_soc, job_onet_job_zone, employer_reviews, job_uid, employer_linkedin_url, job_linkedin_company_id, job_seniority_level, job_function, job_industries, job_applicants_count, job_applicants_label, job_salary_currency, job_posted_at_date, job_posted_at_linkedin_label, job_linkedin_badges, job_position
-**Also in `parameters`:** the echoed request (query, page, num_pages, location, geo_id, radius, date_posted, company_id, employment_types, seniority_levels, remote_jobs_only, sort_by, include_details, fields)
+**Also in `parameters`:** the echoed request (query, page, num_pages, location, geo_id, radius, date_posted, company_id, employment_types, seniority_levels, remote_jobs_only, sort_by, include_details, fields), plus `query_titles` (the titles searched) only when `query` combines titles with `OR`
 
 ---
 
@@ -62,7 +64,7 @@ Full details for up to 20 LinkedIn jobs in one call, with the same job object as
 ### GET /company-jobs
 Company Jobs
 
-Every open LinkedIn job at one or more companies, with the same job object, filters, pagination and billing as `/search`. Identify the company by `company_id` (numeric, returned on every job as `job_linkedin_company_id`) or `company` (vanity slug or company page URL, resolved live). Several companies are OR-ed and ranked together, so a small company paired with a large one can be missing from page 1. `query` is optional here: omit it to get the company's whole job list. A company with no open jobs, or a numeric id that does not exist, returns an empty array; an unknown slug in `company` is a 404.
+Every open LinkedIn job at one or more companies, with the same job object, filters, pagination and billing as `/search`, including several job titles combined with `OR` in `query`. Identify the company by `company_id` (numeric, returned on every job as `job_linkedin_company_id`) or `company` (vanity slug or company page URL, resolved live). Several companies are OR-ed and ranked together, so a small company paired with a large one can be missing from page 1. `query` is optional here: omit it to get the company's whole job list. A company with no open jobs, or a numeric id that does not exist, returns an empty array; an unknown slug in `company` is a 404.
 
 **Billing:** same as `/search`, plus one request per `company` slug resolved.
 
@@ -72,7 +74,7 @@ Every open LinkedIn job at one or more companies, with the same job object, filt
 - `company` (string) — comma-separated vanity slugs or company page URLs, up to 10 (`microsoft`, `/company/microsoft` and a full URL all work). Each slug costs one extra billed request. Example: `microsoft`
 
 **Optional:**
-- `query` (string) — keyword filter applied within the selected companies
+- `query` (string) — keyword filter applied within the selected companies. Several job titles can be combined with `OR` exactly as on `/search` (each title searched and billed on its own).
 - `location` (string) — free-text location
 - `geo_id` (string) — LinkedIn numeric geo id. Required by `radius`.
 - `radius` (integer) — min 1, kilometres. Requires `geo_id`.
