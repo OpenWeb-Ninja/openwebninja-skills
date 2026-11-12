@@ -5,7 +5,7 @@
   "rate_limit_per_second": 5,
   "notes": "/business-search: offset pagination via 'start' (number of results to skip). /business-reviews: page-based ('page', up to 10 reviews per page; 'num_pages' fetches several pages in one call), reviews in data.reviews.",
   "spec_url": "https://openwebninja.s3.us-east-1.amazonaws.com/portal/openapi/yelp_business_data.yaml",
-  "last_updated_yaml": "2026-08-14T11:19:05.000Z",
+  "last_updated_yaml": "2026-11-12T11:44:52.000Z",
   "update_interval_seconds": 86400,
   "rapidapi_url": "https://rapidapi.com/letscrape-6bRBa3QguO5/api/red-flower-business-data",
   "openwebninja_url": "https://www.openwebninja.com/api/yelp-business-data"

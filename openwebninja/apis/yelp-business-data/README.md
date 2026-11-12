@@ -10,7 +10,7 @@
 ## Endpoints
 
 ### GET /business-search
-Business Search — Search for Yelp businesses by query / keyword and location.
+Business Search — Search for Yelp businesses by query / keyword and location. Returns Yelp's search results 10 businesses per page; use the start parameter to page through them (0, 10, 20, ...). Yelp returns up to the first 230 results of a search.
 
 **Required:**
 - `query` (string)

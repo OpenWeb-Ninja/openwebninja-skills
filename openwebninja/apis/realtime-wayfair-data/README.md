@@ -9,7 +9,7 @@
 ### GET /search
 Search
 
-Search for Wayfair products by keyword or browse by brand/manufacturer. Either `query` or `manufacturer_id` is required.
+Search for Wayfair products by keyword (`query`) or browse all products of a brand (`manufacturer_id`, optionally narrowed with `category_id`). Send either `query` or `manufacturer_id` (a request with neither is rejected with a 400 error). Supports pagination, sorting, and filters.
 
 **Required:**
 - _(none individually)_ — provide either `query` or `manufacturer_id`
@@ -30,7 +30,7 @@ Search for Wayfair products by keyword or browse by brand/manufacturer. Either `
 **Pagination:** page_number (param: `page`)
 **Page size param:** `items_per_page` (default: 48; allowed 24, 48, 96)
 **Response path:** `data` (products in `data.products[]`)
-**Page meta fields (on `data`):** total_results, current_page, items_per_page, total_pages, sort_options[] (value, name), keyword
+**Page meta fields (on `data`):** total_results, current_page, items_per_page, total_pages, sort_options[] (value, name), partial, keyword
 **Key product fields:** sku, name, brand, url, image_url, pricing (current_price, currency, original_price, discount_amount, discount_percentage), rating, review_count, free_shipping, shipping_text, delivery_estimate, in_stock, promo_text, flag, option_summary, color_option_count
 
 ---

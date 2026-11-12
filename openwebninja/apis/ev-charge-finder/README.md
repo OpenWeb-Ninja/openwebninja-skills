@@ -8,10 +8,10 @@
 ## Endpoints
 
 ### GET /search-by-location
-Search by Location — Search for EV charging stations near a specific location specified as a free-form location query (e.g. `San Francisco, CA, USA`).
+Search by Location — Search for EV charging stations near a specific location specified as a free-form location query (e.g. `San Francisco, CA, USA`). Returns 400 when `near` does not name a place. When no station in the area has connector data, a request with the `type`, `available`, `min_kw` or `max_kw` filter returns 503 instead of an empty list.
 
 **Required:**
-- `near` (string) Example: `San Francisco, CA, USA`
+- `near` (string) — Free-form location query to search near by: a city, address, ZIP code or landmark. A query that does not name a place returns 400. Example: `San Francisco, CA, USA`
 
 **Optional:**
 - `type` (string) Example: `CHAdeMO`
@@ -27,7 +27,7 @@ Search by Location — Search for EV charging stations near a specific location 
 ---
 
 ### GET /search-by-coordinates-point
-Search by Coordinates Point — Search for EV charging stations near specific geographic coordinates point.
+Search by Coordinates Point — Search for EV charging stations near specific geographic coordinates point. When no station in the area has connector data, a request with the `type`, `available`, `min_kw` or `max_kw` filter returns 503 instead of an empty list.
 
 **Required:**
 - `lat` (number) — Latitude of the geographic coordinates point to search near by. Example: `37.359428`

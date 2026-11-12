@@ -14,6 +14,7 @@ Product Search
 
 **Optional:**
 - `page` (number, default: 1) Example: `1`
+- `limit` (number, optional cap, no default) Example: `20`
 - `sort_by` (string, default: best_match) — values: best_match, price_low, price_high, best_seller, top_rated
 - `min_price` (number) Example: `10`
 - `max_price` (number) Example: `500`
@@ -23,7 +24,7 @@ Product Search
 - `state` (string) — US state code to localize availability and shipping. Example: `CA`
 
 **Pagination:** page_number (param: `page`, `data.total_pages` reported)
-**Page size:** fixed 40 (no page-size param)
+**Page size:** Walmart's own results page (typically 40-60 products); `limit` only caps it and does not change paging
 **Response path:** `data` (products in `data.products[]`)
 **Key fields:** position, product_id, us_item_id, title, description, brand, price, list_price, currency, currency_symbol, price_display, min_price, max_price, savings_amount, price_per_unit_amount, price_per_unit_type, primary_offer, image, thumbnail, url, rating, review_count, availability, out_of_stock, preorder, seller, seller_id, pickup, delivery_from_store, shipping, shipping_days, two_day_shipping, free_shipping, free_shipping_with_walmart_plus, sponsored, multiple_options_available, badge_flags, best_seller
 

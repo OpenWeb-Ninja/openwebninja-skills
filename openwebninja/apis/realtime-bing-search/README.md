@@ -13,7 +13,9 @@ Every endpoint is billed as one request per call. A search that finds nothing is
 ### GET /search
 Search
 
-Organic web results from Bing's first results page (up to 10), plus Bing's estimated result count when its page shows one (often null). Bing's click-tracking redirect is unwrapped, so `link` is the publisher's own URL. Video results (YouTube, TikTok) link to Bing's video viewer.
+Organic web results from Bing's first results page (up to 10), plus Bing's estimated result count when its page shows one (often null). Bing's click-tracking redirect is unwrapped, so `link` is the publisher's own URL. A video result (YouTube, TikTok) links to Bing's video viewer; its URL on the publisher's site is in `video_url` when Bing's video search finds it.
+
+**Page size.** One page per call, with no paging and no page-size parameter. Bing's page holds up to 10 organic results, usually 7 to 10, and fewer when Bing fills the page with its own answers (videos, news, questions). Parameters not listed here, such as `limit`, `num` or `page`, are ignored and not echoed in `parameters`.
 
 **Required:**
 - `query` (string) Example: `how to make sourdough bread`
@@ -26,7 +28,7 @@ Organic web results from Bing's first results page (up to 10), plus Bing's estim
 
 **Pagination:** none (up to 10 results)
 **Response path:** `data.organic_results`
-**Key fields:** title, link, displayed_link, source, domain, snippet, date, position
+**Key fields:** title, link, displayed_link, source, domain, snippet, date, video_url, position
 **Also in `data`:** total_organic_results (nullable)
 
 ---
