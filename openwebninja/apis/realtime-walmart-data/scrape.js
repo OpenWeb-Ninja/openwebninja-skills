@@ -30,7 +30,7 @@ Optional:
   --facet         Facet filter string
   --rating        Review star filter 1-5 (for /product-reviews)
   --sort          Review sort: relevancy, recent, rating_high_low, rating_low_high
-  --limit         Reviews per page, 1-50 (for /product-reviews, default: 10). Search/category pages are fixed at 40
+  --limit         Reviews per page, 1-50 (for /product-reviews, default: 10). Category pages are fixed at 40; search pages are Walmart's own page (about 40-60 products)
   --dry-run       Fetch first page only, print to console
   --max-calls     Safety cap on API calls (default: 50)
   --help          Show this help

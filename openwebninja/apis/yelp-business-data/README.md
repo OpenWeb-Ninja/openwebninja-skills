@@ -1,6 +1,6 @@
 # yelp-business-data
 
-> ⚠️ **Known Limitations:** Business search returns empty results for some cities (e.g., Chicago). Name matching across platforms is unreliable for complex business names.
+> ⚠️ **Known Limitations:** Name matching across platforms is unreliable for complex business names.
 
 > Full OpenAPI spec: https://openwebninja.s3.us-east-1.amazonaws.com/portal/openapi/yelp_business_data.yaml
 
