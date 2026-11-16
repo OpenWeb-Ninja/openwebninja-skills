@@ -1,5 +1,7 @@
 # ev-charge-finder — Recipes
 
+> Connector filters (`--connector-type`, `--available`, `--min-kw`, `--max-kw`) are currently not supported: Google is not providing connector data, so the API refuses them with a 400 (not billed), and `connectors` is null on every station.
+
 ## 1. Find EV chargers near a city
 
 ```bash
@@ -9,14 +11,14 @@ node --env-file=.env openwebninja_universal_scraper/apis/ev-charge-finder/scrape
 
 Exports up to 50 EV charging stations near San Francisco as JSON.
 
-## 2. Filter by connector type (CHAdeMO)
+## 2. Find one charging network (Tesla)
 
 ```bash
 node --env-file=.env openwebninja_universal_scraper/apis/ev-charge-finder/scrape.js \
-  --location "Los Angeles, CA, USA" --connector-type CHAdeMO --count 30 --format csv
+  --location "Los Angeles, CA, USA" --query tesla --count 30 --format csv
 ```
 
-Finds CHAdeMO-compatible chargers near LA and exports as CSV.
+Finds Tesla charging stations near LA and exports as CSV.
 
 ## 3. Search by exact coordinates
 
@@ -27,16 +29,7 @@ node --env-file=.env openwebninja_universal_scraper/apis/ev-charge-finder/scrape
 
 Finds the 20 nearest stations to exact GPS coordinates (e.g. Sunnyvale).
 
-## 4. High-power chargers only
-
-```bash
-node --env-file=.env openwebninja_universal_scraper/apis/ev-charge-finder/scrape.js \
-  --location "Seattle, WA, USA" --min-kw 50 --available --count 20 --format json
-```
-
-Finds available chargers with at least 50 kW power near Seattle.
-
-## 5. Chain: find EV chargers along a driving route
+## 4. Chain: find EV chargers along a driving route
 
 ```bash
 # Step 1 — get the route
@@ -45,7 +38,7 @@ node --env-file=.env openwebninja_universal_scraper/apis/driving-directions/scra
 
 # Step 2 — find chargers near the midpoint (Paso Robles)
 node --env-file=.env openwebninja_universal_scraper/apis/ev-charge-finder/scrape.js \
-  --location "Paso Robles, CA, USA" --min-kw 50 --count 10 --format json --output output/chargers_midpoint.json
+  --location "Paso Robles, CA, USA" --count 10 --format json --output output/chargers_midpoint.json
 ```
 
-Gets driving directions SF to LA, then finds fast chargers near the midpoint for a road-trip charging stop.
+Gets driving directions SF to LA, then finds chargers near the midpoint for a road-trip charging stop.

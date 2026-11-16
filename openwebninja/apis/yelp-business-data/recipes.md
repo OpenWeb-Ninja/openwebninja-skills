@@ -28,22 +28,23 @@ node --env-file=.env openwebninja_universal_scraper/apis/yelp-business-data/scra
 
 Fetches up to 60 recent reviews sorted by newest first and exports as CSV.
 
-## 4. Search highest-rated businesses in a city
+## 4. Rank a city's businesses by rating
 
 ```bash
 node --env-file=.env openwebninja_universal_scraper/apis/yelp-business-data/scrape.js \
-  --query "coffee" --location "Portland, OR, USA" --sort-by HIGHEST_RATED \
-  --count 30 --format json
+  --query "coffee" --location "Portland, OR, USA" \
+  --count 30 --format json --output output/portland_coffee.json
+jq 'sort_by(-.rating)' output/portland_coffee.json
 ```
 
-Returns the top 30 highest-rated coffee shops in Portland.
+Fetches 30 coffee shops in Portland, then ranks them by rating. `--sort-by` and `--price-range` are currently ignored by the API (results come in Yelp's recommended order, unfiltered by price), so sort and filter the output yourself.
 
 ## 5. Multi-API chain: Yelp search + Trustpilot cross-reference
 
 ```bash
-# Find top pizza places on Yelp
+# Find pizza places on Yelp (Yelp's recommended order)
 node --env-file=.env openwebninja_universal_scraper/apis/yelp-business-data/scrape.js \
-  --query "pizza" --location "New York, NY, USA" --sort-by HIGHEST_RATED \
+  --query "pizza" --location "New York, NY, USA" \
   --count 20 --output output/nyc_pizza_yelp.json
 
 # Cross-reference a chain on Trustpilot

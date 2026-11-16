@@ -16,11 +16,11 @@ At least one location method is required:
 
 Optional:
   --endpoint        /search-by-location (default) or /search-by-coordinates-point
-  --connector-type  Connector type filter (e.g. "CHAdeMO", "CCS", "Type 2")
-  --available       Only show stations with available connectors (true/false)
-  --min-kw          Minimum power in kilowatts
-  --max-kw          Maximum power in kilowatts
-  --query           Additional search query filter
+  --connector-type  Connector type filter (e.g. "CHAdeMO", "CCS", "Type 2"); currently refused by the API (400, not billed)
+  --available       Only show stations with available connectors (true/false); currently refused (400, not billed)
+  --min-kw          Minimum power in kilowatts; currently refused by the API (400, not billed)
+  --max-kw          Maximum power in kilowatts; currently refused by the API (400, not billed)
+  --query           Keyword or network to match (e.g. "tesla", "evgo", "chargepoint")
   --count           Max results (default: 20)
   --format          json | csv (default: json)
   --output          Output file path (auto-generated if omitted)

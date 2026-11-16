@@ -17,9 +17,9 @@ Business Search — Search for Yelp businesses by query / keyword and location. 
 - `location` (string) Example: `San Francisco, CA, USA`
 
 **Optional:**
-- `sort_by` (string, default: RECOMMENDED) — values: RECOMMENDED, HIGHEST_RATED, REVIEW_COUNT
+- `sort_by` (string, default: RECOMMENDED) — values: RECOMMENDED, HIGHEST_RATED, REVIEW_COUNT. **Currently not supported:** the parameter is accepted but ignored; results come in Yelp's default (recommended) order.
 - `start` (integer, default: 0) Example: `0`
-- `price_range` (string)
+- `price_range` (string) — comma delimited list of $, $$, $$$, $$$$. **Currently not supported:** the parameter is accepted but ignored; results are not filtered by price range.
 - `yelp_domain` (string, default: yelp.com) — values: yelp.com, yelp.com.au, yelp.co.nz, ms.yelp.my, yelp.cz, yelp.dk, yelp.de, yelp.at, de.yelp.ch, en.yelp.be, yelp.ca, en.yelp.com.hk, en.yelp.my, en.yelp.com.ph, yelp.ie, yelp.com.sg, en.yelp.ch, yelp.co.uk, yelp.com.ar, yelp.cl, yelp.es, yelp.com.mx, fil.yelp.com.ph, yelp.fr, fr.yelp.ca, fr.yelp.ch, fr.yelp.be, yelp.no, yelp.pl, yelp.pot, yelp.com.br, fi.yelp.fi, sv.yelp.fi, yelp.se, yelp.com.tr, yelp.co.jp, zh.yelp.com.hk, yelp.com.tw
 
 **Pagination:** offset (param: `start`)

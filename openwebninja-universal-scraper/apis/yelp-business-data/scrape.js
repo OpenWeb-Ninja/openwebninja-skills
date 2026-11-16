@@ -20,9 +20,9 @@ Optional:
   --count         Max results (default: 100)
   --format        json | csv (default: json)
   --output        Output file path (auto-generated if omitted)
-  --sort-by       Search sort: RECOMMENDED, HIGHEST_RATED, REVIEW_COUNT (for /business-search)
+  --sort-by       Search sort: RECOMMENDED, HIGHEST_RATED, REVIEW_COUNT (for /business-search; currently ignored by the API)
   --sort          Review sort: BEST_MATCH, NEWEST, OLDEST, HIGHEST_RATED, LOWEST_RATED, ELITES
-  --price-range   Price filter (for /business-search)
+  --price-range   Price filter (for /business-search; currently ignored by the API)
   --yelp-domain   Yelp domain (default: yelp.com)
   --language      Review language (default: en)
   --dry-run       Fetch first page only, print to console
