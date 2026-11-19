@@ -209,7 +209,7 @@ Business Reviews — Get all / paginate business reviews by Business Id using a 
 **Pagination:** cursor (param: `cursor`, next value in `data.cursor`)
 **Page size param:** `limit` (default: 20)
 **Response path:** `data` (reviews in `data.reviews[]`)
-**Key fields:** review_id, review_text, rating, review_datetime_utc, review_link, review_photos, review_language, like_count, author_id, author_name, author_link, author_review_count, owner_response_text, owner_response_datetime_utc
+**Key fields:** business_id, review_id, review_text, rating, review_datetime_utc, review_link, review_photos, review_language, like_count, author_id, author_name, author_link, author_review_count, owner_response_text, owner_response_datetime_utc
 
 ---
 
@@ -246,7 +246,7 @@ Business Photos — Get business photos by Business Id.
 **Pagination:** cursor (param: `cursor`)
 **Page size param:** `limit` (default: 20)
 **Response path:** `data`
-**Key fields:** photo_id, photo_url, photo_url_large, video_thumbnail_url, type, photo_datetime_utc
+**Key fields:** business_id, photo_id, photo_url, photo_url_large, video_thumbnail_url, type, photo_datetime_utc
 
 ---
 
@@ -276,7 +276,7 @@ Business Posts — Get all / paginate Business Owner Posts ("From the owner" sec
 
 **Pagination:** cursor (param: `cursor`, next value in `data.cursor`)
 **Response path:** `data` (posts in `data.posts[]`)
-**Key fields:** post_id, post_link, post_datetime_utc, post_text, post_links, post_photos
+**Key fields:** business_id, business_name, post_id, post_link, post_datetime_utc, post_text, post_links, post_photos
 
 ---
 

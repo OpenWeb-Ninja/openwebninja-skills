@@ -102,6 +102,6 @@ Product Reviews
 **Pagination:** page_number (param: `page`)
 **Page size param:** `limit` (default: 10)
 **Response path:** `data`
-**Key fields:** name, url, is_external_source, external_source, author_name, author_id, verified_purchase, type
+**Key fields:** product_id, product_title, name, url, is_external_source, external_source, author_name, author_id, verified_purchase, type
 
 ---

@@ -71,6 +71,6 @@ Get paginated product reviews by Wayfair SKU (10 per page). Returns review text,
 **Page size:** 10 (fixed)
 **Response path:** `data` (reviews in `data.reviews[]`)
 **Page meta fields (on `data`):** sku, total_reviews, reviews_returned, sort_by, end_cursor, ai_summary, aspects[] (name, count, sentiment)
-**Key review fields:** review_id, rating, body, date, reviewer_name, reviewer_location, badge, locale, is_verified
+**Key review fields:** sku, product_title, review_id, rating, body, date, reviewer_name, reviewer_location, badge, locale, is_verified
 
 ---

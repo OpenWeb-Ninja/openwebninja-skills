@@ -149,7 +149,7 @@ Business Photos — Get business photos by Business Id.
 **Pagination:** cursor (param: `cursor`)
 **Page size param:** `limit` (default: 20)
 **Response path:** `data`
-**Key fields:** photo_id
+**Key fields:** business_id, photo_id
 
 ---
 
@@ -179,7 +179,7 @@ Business Posts — Get all / paginate Business Owner Posts (
 
 **Pagination:** cursor (param: `cursor`)
 **Response path:** `data`
-**Key fields:** post_id
+**Key fields:** business_id, business_name, post_id
 
 ---
 

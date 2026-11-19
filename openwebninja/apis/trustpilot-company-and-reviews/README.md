@@ -56,6 +56,7 @@ Company Reviews
 
 **Pagination:** page_number (param: `page`, up to 20 reviews per page; pages beyond 10 need `cookie`)
 **Response path:** `data` (reviews in `data.reviews[]`, plus `data.total_reviews`, `data.rating_distribution`)
+**Key fields:** company_id, company_domain, company_name, review_id, review_title, review_text, review_rating, review_is_verified, review_is_pending, review_likes, review_language, review_time, review_source, review_experienced_time, reply_text, reply_time, consumer_id, consumer_name, consumer_image, consumer_review_count, consumer_country, consumer_is_verified, consumer_review_count_same_domain
 
 ---
 

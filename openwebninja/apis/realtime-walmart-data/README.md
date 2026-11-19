@@ -102,6 +102,6 @@ Product Reviews
 **Pagination:** page_number (param: `page`, 1-100, `data.total_pages` reported)
 **Page size param:** `limit` (default: 10, max: 50)
 **Response path:** `data` (reviews in `data.reviews[]`; also rating, ratings_count, review_count, rating_breakdown, recommended_percentage, top_positive_review, top_negative_review)
-**Key fields:** position, id, title, body, rating, date, author, top_reviewer, positive_feedback, negative_feedback, source, badges, media
+**Key fields:** product_id, product_title, position, id, title, body, rating, date, author, top_reviewer, positive_feedback, negative_feedback, source, badges, media
 
 ---

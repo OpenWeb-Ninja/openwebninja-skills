@@ -41,7 +41,7 @@ App Reviews — Get all app reviews.
 **Pagination:** cursor (param: `cursor`; next value in `data.cursor`)
 **Page size param:** `limit` (default: 20)
 **Response path:** `data` (reviews in `data.reviews[]`)
-**Key fields:** review_id, review_text, review_rating, author_id, author_name, author_photo, author_app_version, review_timestamp, review_datetime_utc, review_likes, app_developer_reply, app_developer_reply_timestamp, app_developer_reply_datetime_utc
+**Key fields:** app_id, review_id, review_text, review_rating, author_id, author_name, author_photo, author_app_version, review_timestamp, review_datetime_utc, review_likes, app_developer_reply, app_developer_reply_timestamp, app_developer_reply_datetime_utc
 
 ---
 

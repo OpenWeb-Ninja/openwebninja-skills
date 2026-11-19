@@ -112,6 +112,8 @@ Product Reviews
 
 **Pagination:** cursor (param: `cursor`)
 **Page size param:** `limit` (default: 10)
+**Response path:** `data` (reviews in `data.reviews[]`)
+**Key fields:** product_id, review_id, review_title, rating, review_text, review_date, review_datetime_utc, review_author, review_author_photo, review_source, review_source_url
 
 ---
 
@@ -161,5 +163,7 @@ Store Reviews — Get all store / merchant reviews with pagination/scrolling sup
 
 **Pagination:** cursor (param: `cursor`)
 **Page size param:** `limit` (default: 10)
+**Response path:** `data` (reviews in `data.reviews[]`)
+**Key fields:** store_domain, store_name, review_id, review_text, rating, review_author, review_author_photo, review_datetime_utc
 
 ---

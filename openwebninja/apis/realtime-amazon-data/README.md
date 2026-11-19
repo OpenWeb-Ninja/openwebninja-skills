@@ -108,7 +108,7 @@ Product Reviews — Get and paginate through product reviews on Amazon. Each pag
 
 **Pagination:** cursor (param: `cursor`, next value in `data.cursor`)
 **Response path:** `data` (reviews in `data.reviews[]`)
-**Key fields:** review_id, review_title, review_comment, review_star_rating, review_link, review_author, review_images, review_date, review_date_iso, is_verified_purchase, helpful_votes, country, review_language, reviewed_product_asin, reviewed_product_variant, is_different_asin, is_vine
+**Key fields:** asin, product_title, review_id, review_title, review_comment, review_star_rating, review_link, review_author, review_images, review_date, review_date_iso, is_verified_purchase, helpful_votes, country, review_language, reviewed_product_asin, reviewed_product_variant, is_different_asin, is_vine
 
 ---
 
@@ -143,7 +143,7 @@ Top Product Reviews — Get top product reviews by ASIN from the Amazon product 
 
 **Pagination:** none
 **Response path:** `data` (reviews in `data.reviews[]`)
-**Key fields:** review_id, review_title, review_comment, review_star_rating, review_link, review_author_id, review_author, review_author_url, review_author_avatar, review_images, review_video, review_date, review_date_iso, is_verified_purchase, helpful_vote_statement, helpful_votes, country, review_language, reviewed_product_asin, reviewed_product_variant, is_different_asin, is_vine
+**Key fields:** asin, product_title, review_id, review_title, review_comment, review_star_rating, review_link, review_author_id, review_author, review_author_url, review_author_avatar, review_images, review_video, review_date, review_date_iso, is_verified_purchase, helpful_vote_statement, helpful_votes, country, review_language, reviewed_product_asin, reviewed_product_variant, is_different_asin, is_vine
 
 ---
 
@@ -200,7 +200,7 @@ Seller Reviews
 
 **Pagination:** page_number (param: `page`)
 **Response path:** `data` (reviews in `data.seller_reviews[]`)
-**Key fields:** review_author, review_comment, review_star_rating, has_response, review_date
+**Key fields:** seller_id, review_id, review_author, review_comment, review_star_rating, has_response, review_date
 
 ---
 
@@ -270,12 +270,12 @@ Deals
 Deal Products
 
 **Required:**
-- `deal_id` (string) — Deal ID of the deal to fetch Example: `B08B477BHS`
+- `deal_id` (string) — Deal ID of the deal to fetch Example: `186a6ce6`
 
 **Optional:**
 - `country` (string, default: US) — values: US, AU, BR, CA, CN, FR, DE, IN, IT, MX, NL, SG, ES, TR, AE, GB, JP, SA, PL, SE, BE, EG, ZA, IE
 - `delivery_country` (string) — Delivery destination country (ISO 3166-1 alpha-2). Defaults to the marketplace country. Only `country` = DE, FR, IT or ES with `delivery_country` = NL is supported; other combinations return a 400 error. Example: `NL`
-- `sort_by` (string, default: FEATURED) — values: FEATURED, LOWEST_PRICE, HIGHEST_PRICE, REVIEWS, NEWEST, BEST_SELLERS
+- `sort_by` (string, default: FEATURED) — Currently ignored, as Amazon no longer sorts deal pages. Values: FEATURED, LOWEST_PRICE, HIGHEST_PRICE, REVIEWS, NEWEST, BEST_SELLERS
 - `page` (integer, default: 1) Example: `1`
 - `language` (string) Example: `en_US`
 - `fields` (string) Example: `product_title,deal_price,deal_badge`

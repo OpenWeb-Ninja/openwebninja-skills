@@ -52,6 +52,8 @@ Company Reviews — Get company (employer) reviews from Glassdoor, with filters,
 - `domain` (string, default: www.glassdoor.com) — values: www.glassdoor.com, www.glassdoor.co.uk, www.glassdoor.com.ar, www.glassdoor.com.au, www.glassdoor.be, www.glassdoor.be, www.glassdoor.com.br, www.glassdoor.ca, www.glassdoor.ca, www.glassdoor.de, www.glassdoor.es, www.glassdoor.fr, www.glassdoor.com.hk, www.glassdoor.co.in, www.glassdoor.ie, www.glassdoor.it, www.glassdoor.com.mx, www.glassdoor.nl, www.glassdoor.co.nz, www.glassdoor.at, de.glassdoor.ch, www.glassdoor.sg, fr.glassdoor.ch
 
 **Pagination:** page_number (param: `page`)
+**Response path:** `data` (reviews in `data.reviews[]`)
+**Key fields:** company_id, company_name, review_id, summary, pros, cons, rating, review_link, job_title, review_datetime, employment_status, is_current_employee, years_of_employment, location, advice_to_management, employer_response, employer_response_datetime, helpful_count, not_helpful_count, business_outlook_rating, career_opportunities_rating, ceo_rating, compensation_and_benefits_rating, culture_and_values_rating, diversity_and_inclusion_rating, recommend_to_friend_rating, senior_management_rating, work_life_balance_rating, language
 
 ---
 

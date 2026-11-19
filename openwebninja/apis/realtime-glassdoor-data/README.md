@@ -55,7 +55,7 @@ Company Reviews — Get company (employer) reviews from Glassdoor, with filters,
 
 **Pagination:** page_number (param: `page`), 10 reviews per page, `data.page_count` pages
 **Response path:** `data` (reviews in `data.reviews[]`)
-**Key fields:** review_id, summary, pros, cons, rating, review_link, job_title, review_datetime, employment_status, is_current_employee, location, helpful_count, work_life_balance_rating, culture_and_values_rating, compensation_and_benefits_rating, career_opportunities_rating, senior_management_rating, language
+**Key fields:** company_id, company_name, review_id, summary, pros, cons, rating, review_link, job_title, review_datetime, employment_status, is_current_employee, location, helpful_count, work_life_balance_rating, culture_and_values_rating, compensation_and_benefits_rating, career_opportunities_rating, senior_management_rating, language
 
 ---
 

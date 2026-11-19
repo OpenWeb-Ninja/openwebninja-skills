@@ -57,6 +57,6 @@ Business Reviews — Fetch a single or multiple business review pages from Yelp 
 
 **Pagination:** page_number (param: `page`)
 **Response path:** `data`
-**Key fields:** language, count, useful, funny, cool, helpful, thanks, love_this, oh_no
+**Key fields:** business_id, business_name, review_id, review_rating, review_text, review_datetime_utc, review_language, author_id, author_name, business_owner_replies, total, review_languages
 
 ---
