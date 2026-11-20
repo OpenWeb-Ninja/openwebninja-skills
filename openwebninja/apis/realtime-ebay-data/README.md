@@ -96,7 +96,7 @@ Seller feedback and reviews. Use `seller_id` for all feedback, or combine with `
 **Pagination:** page_number (param: `page`, up to 25 reviews/page)
 **Page size:** fixed 25 (no page-size param)
 **Response path:** `data.reviews`
-**Key fields:** feedback_id, rating, comment, author, date, verified_purchase, has_images
+**Key fields:** seller_id, feedback_id, rating, comment, author, date, verified_purchase, has_images
 **Also in `data`:** seller_id, product_id, total_reviews, current_page, total_pages, topics[] (name/value)
 
 ---

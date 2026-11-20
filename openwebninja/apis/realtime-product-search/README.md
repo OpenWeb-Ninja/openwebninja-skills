@@ -65,7 +65,7 @@ Product Offers
 
 **Pagination:** page_number (param: `page`; each page holds offers from 10 sellers)
 **Response path:** `data` (offers in `data.offers[]`)
-**Key fields:** offer_id, offer_title, offer_page_url, price, original_price, on_sale, percent_off, shipping, returns, offer_badge, product_condition, store_name, merchant_id, store_rating, store_review_count, store_reviews_page_url, store_favicon, payment_methods
+**Key fields:** product_id, offer_id, offer_title, offer_page_url, price, original_price, on_sale, percent_off, shipping, returns, offer_badge, product_condition, store_name, merchant_id, store_rating, store_review_count, store_reviews_page_url, store_favicon, payment_methods
 
 ---
 
@@ -154,6 +154,6 @@ Store Reviews — Get all store / merchant reviews with pagination/scrolling sup
 **Pagination:** cursor (param: `cursor`; next value in `data.cursor`)
 **Page size param:** `limit` (default: 10)
 **Response path:** `data` (reviews in `data.reviews[]`)
-**Key fields:** store_rating, store_num_reviews, cursor, reviews (store_domain, store_name, review_id, review_text, rating, review_author, review_author_photo, review_datetime_utc)
+**Key fields:** cursor, reviews (store_domain, store_name, review_id, review_text, rating, review_author, review_author_photo, review_datetime_utc)
 
 ---

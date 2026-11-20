@@ -3,7 +3,7 @@
   "portal_api_id": "real_time_ebay_data",
   "rapidapi_host": "real-time-ebay-data2.p.rapidapi.com",
   "spec_url": "https://openwebninja.s3.us-east-1.amazonaws.com/portal/openapi/realtime_ebay_data.yaml",
-  "last_updated_yaml": "2026-10-09T14:07:54.000Z",
+  "last_updated_yaml": "2026-11-20T16:03:42.000Z",
   "update_interval_seconds": 86400,
   "rapidapi_url": "https://rapidapi.com/letscrape-6bRBa3QguO5/api/real-time-ebay-data2",
   "openwebninja_url": "https://www.openwebninja.com/api/real-time-ebay-data",

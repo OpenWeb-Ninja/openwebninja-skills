@@ -109,7 +109,7 @@ Company Salaries v2 — Get and Search Company Data, Jobs, Employer Reviews, Sal
 
 **Pagination:** page_number (param: `page`)
 **Response path:** `data`
-**Key fields:** job_title, job_title_id, salary_currency, salary_count, salary_period, min_salary, median_salary, max_salary, min_base_salary, median_base_salary, max_base_salary, min_additional_pay, median_additional_pay, max_additional_pay, min_cash_bonus, median_cash_bonus, max_cash_bonus, min_stock_bonus, median_stock_bonus, max_stock_bonus
+**Key fields:** company_id, company_name, job_title, job_title_id, salary_currency, salary_count, salary_period, min_salary, median_salary, max_salary, min_base_salary, median_base_salary, max_base_salary, min_additional_pay, median_additional_pay, max_additional_pay, min_cash_bonus, median_cash_bonus, max_cash_bonus, min_stock_bonus, median_stock_bonus, max_stock_bonus
 
 ---
 

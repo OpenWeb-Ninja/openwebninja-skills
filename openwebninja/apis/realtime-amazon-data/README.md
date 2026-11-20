@@ -219,6 +219,7 @@ Seller Products — Get and paginate through the products sold by an Amazon Sell
 - `fields` (string) Example: `product_price,product_url,is_prime`
 
 **Pagination:** page_number (param: `page`)
+**Key fields:** seller_id, asin, product_title, product_price, product_original_price, currency, product_star_rating, product_num_ratings, product_url, product_photo, is_best_seller, is_amazon_choice, is_prime
 
 ---
 
@@ -282,7 +283,7 @@ Deal Products
 
 **Pagination:** page_number (param: `page`)
 **Response path:** `data` (products in `data.products[]`)
-**Key fields:** product_asin, product_title, product_url, product_photo, deal_price, list_price, savings_percentage, deal_badge, additional_info
+**Key fields:** deal_id, product_asin, product_title, product_url, product_photo, deal_price, list_price, savings_percentage, deal_badge, additional_info
 
 ---
 
@@ -337,6 +338,7 @@ Influencer Posts — Get all Amazon Influencer posts with pagination support.
 **Page size param:** `limit` (default: 20)
 
 ---
+**Key fields:** post_id, post_type, post_title, post_url, post_thumbnail, is_pinned, list_items_count (List posts), video_duration (Video posts)
 
 ### GET /influencer-post-products
 Influencer Post Products — Get products related to an influencer post
@@ -350,6 +352,7 @@ Influencer Post Products — Get products related to an influencer post
 - `language` (string) Example: `en_US`
 
 **Pagination:** cursor (param: `cursor`)
+**Key fields:** post_id, asin, product_title, product_price, product_original_price, product_url, product_brand, deal_badge_label, deal_badge_message, is_best_seller
 
 ---
 

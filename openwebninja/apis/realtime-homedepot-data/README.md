@@ -110,6 +110,6 @@ Product Reviews
 **Page size param:** `items_per_page` (default: 20, max 100)
 **Response path:** `data` (reviews in `data.reviews[]`)
 **Result-set fields:** total_reviews, total_pages, current_page, reviews_count, items_per_page, rating, rating_histogram (per-star count, 5→1), sort_by, item_id, total_recommended, total_not_recommended, reviews
-**Review fields:** review_id, title, review_text, rating, date, last_modified, is_recommended, is_featured, is_verified_purchaser, badges, helpful_count, unhelpful_count, comment_count, author_id, author_name, author_location, images, product_id, original_product_name, merchant_responses, context_data, content_locale, source_client
+**Review fields:** item_id, product_title, review_id, title, review_text, rating, date, last_modified, is_recommended, is_featured, is_verified_purchaser, badges, helpful_count, unhelpful_count, comment_count, author_id, author_name, author_location, images, product_id, original_product_name, merchant_responses, context_data, content_locale, source_client
 
 ---

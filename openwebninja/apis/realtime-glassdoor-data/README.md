@@ -75,6 +75,7 @@ Company Jobs — Get jobs posted by a specific company with filtering support an
 - `domain` (string, default: www.glassdoor.com) — values: www.glassdoor.com, www.glassdoor.co.uk, www.glassdoor.com.ar, www.glassdoor.com.au, www.glassdoor.be, www.glassdoor.be, www.glassdoor.com.br, www.glassdoor.ca, www.glassdoor.ca, www.glassdoor.de, www.glassdoor.es, www.glassdoor.fr, www.glassdoor.com.hk, www.glassdoor.co.in, www.glassdoor.ie, www.glassdoor.it, www.glassdoor.com.mx, www.glassdoor.nl, www.glassdoor.co.nz, www.glassdoor.at, de.glassdoor.ch, www.glassdoor.sg, fr.glassdoor.ch
 
 **Pagination:** page_number (param: `page`)
+**Key fields:** company_id, company_name, job_id, job_title (each job starts with the company it belongs to)
 
 ---
 
@@ -111,7 +112,7 @@ Company Salaries v2 — Get and Search Company Data, Jobs, Employer Reviews, Sal
 
 **Pagination:** page_number (param: `page`), `data.num_pages` pages
 **Response path:** `data` (salaries in `data.salaries[]`)
-**Key fields:** job_title, job_title_id, salary_currency, salary_count, salary_period, min_salary, median_salary, max_salary, min_base_salary, median_base_salary, max_base_salary, min_additional_pay, median_additional_pay, max_additional_pay, min_cash_bonus, median_cash_bonus, max_cash_bonus, min_stock_bonus, median_stock_bonus, max_stock_bonus
+**Key fields:** company_id, company_name, job_title, job_title_id, salary_currency, salary_count, salary_period, min_salary, median_salary, max_salary, min_base_salary, median_base_salary, max_base_salary, min_additional_pay, median_additional_pay, max_additional_pay, min_cash_bonus, median_cash_bonus, max_cash_bonus, min_stock_bonus, median_stock_bonus, max_stock_bonus
 
 ---
 
@@ -135,7 +136,7 @@ Company Interviews — Get interviews made by the company, including questions, 
 **Pagination:** page_number (param: `page`)
 **Page size param:** `page_size` (default: 10)
 **Response path:** `data` (interviews in `data.interviews[]`)
-**Key fields:** interview_id, job_title, location, interview_datetime, process_description, difficulty, outcome, duration_days, advice, questions
+**Key fields:** company_id, company_name, interview_id, job_title, location, interview_datetime, process_description, difficulty, outcome, duration_days, advice, questions
 
 ---
 

@@ -3,7 +3,7 @@
   "portal_api_id": "realtime_homedepot_data",
   "rapidapi_host": "real-time-home-depot-data.p.rapidapi.com",
   "spec_url": "https://openwebninja.s3.us-east-1.amazonaws.com/portal/openapi/realtime_homedepot_data.yaml",
-  "last_updated_yaml": "2026-08-14T11:19:05.000Z",
+  "last_updated_yaml": "2026-11-20T16:03:50.000Z",
   "update_interval_seconds": 86400,
   "rapidapi_url": "https://rapidapi.com/letscrape-6bRBa3QguO5/api/real-time-home-depot-data",
   "openwebninja_url": "https://www.openwebninja.com/api/real-time-home-depot-data",
